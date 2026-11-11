@@ -132,7 +132,7 @@ if (!process.argv.includes("--app-only")) {
     .replace(/>/g, "&gt;");
   await writeFile(
     "dist/tutorial-firebase.html",
-    tutorialTemplate.replace("__FIRESTORE_RULES__", escapedRules),
+    tutorialTemplate.replace("__FIRESTORE_RULES__", () => escapedRules),
   );
   await createProjectArchive();
 }

@@ -1,3 +1,4 @@
+import { readFile } from "node:fs/promises";
 import { test, expect, type Page } from "@playwright/test";
 import { pathToFileURL } from "node:url";
 const url = pathToFileURL(process.cwd() + "/dist/Nexo-Simulador_1.html").href;
@@ -398,4 +399,20 @@ test("blur reveal respects reduced motion and the app animation preference", asy
   await expect(app(page).locator("html")).toHaveAttribute("data-motion", "off");
   await navigate(page, "Seções");
   await expect(app(page).locator(".screen")).toHaveCSS("filter", "blur(0px)");
+});
+
+test("Firebase tutorial contains the exact rules once and the six setup steps", async ({
+  page,
+}) => {
+  await page.goto(
+    pathToFileURL(process.cwd() + "/dist/tutorial-firebase.html").href,
+  );
+  await expect(page).toHaveTitle("Marks — Tutorial do Firebase");
+  for (const id of ["projeto", "acesso", "banco", "regras", "app", "dominio"])
+    await expect(page.locator("section#" + id)).toHaveCount(1);
+  const rules = await readFile("firebase/firestore.rules", "utf8");
+  expect(await page.locator("#rules-code").textContent()).toBe(rules);
+  await expect(
+    page.getByRole("button", { name: "Copiar regras", exact: true }),
+  ).toHaveCount(1);
 });
