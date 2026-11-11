@@ -4,7 +4,7 @@ Reformulação do `Nexo-Simulador_1.html` enviado, com React, Tailwind CSS 4 e M
 
 ## Ativação na sua conta
 
-As etapas restantes para habilitar o Pages e autorizar o Firebase estão em `CONFIGURAR-ONLINE.md`. O repositório usado é `Let-Me-Solo-Automation/Controle_Dividas`.
+O site está publicado em https://let-me-solo-automation.github.io/Controle_Dividas/ . Falta autorizar e ativar o Firebase conforme `CONFIGURAR-ONLINE.md`. O repositório usado é `Let-Me-Solo-Automation/Controle_Dividas`.
 
 ## Site e compartilhamento gratuito
 

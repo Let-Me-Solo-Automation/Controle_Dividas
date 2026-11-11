@@ -1,22 +1,17 @@
-# Concluir a ativação na sua conta
+# Concluir a ativação do Firebase
 
-O código está em https://github.com/Let-Me-Solo-Automation/Controle_Dividas . A compilação no GitHub Actions já passou. A ativação do Pages ainda depende de um ajuste da conta: a integração retornou HTTP 403 ao tentar habilitá-lo por API.
+O GitHub Pages está habilitado com GitHub Actions. A publicação foi concluída em 11/11/2026, pelo workflow 43019912928.
 
-## 1. Ativar o GitHub Pages
+Site: https://let-me-solo-automation.github.io/Controle_Dividas/
+Código: https://github.com/Let-Me-Solo-Automation/Controle_Dividas
 
-Abra https://github.com/Let-Me-Solo-Automation/Controle_Dividas/settings/pages . Em **Build and deployment → Source**, escolha **GitHub Actions**.
+## Autorizar o Firebase
 
-Depois, abra a aba **Actions**, escolha **Publicar Nexo no GitHub Pages** e use **Run workflow**. Também é possível pedir nesta conversa para executar novamente, depois de salvar o Source.
+Extraia o projeto e execute **Configurar-Firebase.command** no Mac. Ele instala o ambiente necessário, abre o login Google e prepara um projeto novo sem faturamento.
 
-Após a publicação, o endereço esperado é https://let-me-solo-automation.github.io/Controle_Dividas/ . Esse endereço só deve ser tratado como ativo após a conclusão do deploy.
+Ao finalizar, envie nesta conversa somente o JSON público impresso no Terminal, ou o conteúdo de `output/firebase-config-publico.json`. A conexão com o site será publicada a partir dele. Não envie senha, token de login ou chave de conta de serviço.
 
-## 2. Autorizar o Firebase
-
-Extraia o projeto e execute **Configurar-Firebase.command** no Mac. O configurador instala o ambiente necessário, abre o login Google e prepara um projeto novo sem faturamento.
-
-Ao finalizar, copie nesta conversa somente o JSON público impresso no Terminal, ou o conteúdo de `output/firebase-config-publico.json`. A conexão com o site será publicada a partir dele. Não envie senha, token de login ou chave de conta de serviço.
-
-Até isso ser feito, o compartilhamento informa que o Firebase não foi ativado. O simulador continua funcionando com seus dados locais.
+Até essa etapa, o compartilhamento informa que o Firebase não foi ativado. O simulador continua funcionando com seus dados locais.
 
 ## Custos
 

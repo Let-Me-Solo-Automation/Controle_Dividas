@@ -40,3 +40,7 @@ Os 11 testes foram executados e aprovados após a implementação desses comport
 - Uma execução do teste mobile expirou durante a execução simultânea com emuladores; a repetição isolada passou. Os outros dez testes de interface passaram nessa execução.
 
 - Persistência de acesso Firebase após recarregar validada no teste de ponta a ponta; a ponte do simulador intercepta somente a chave financeira e preserva o armazenamento do SDK de autenticação.
+
+## Publicação do GitHub Pages
+
+Em 11/11/2026, depois da ativação do Pages pelo proprietário, o workflow 43019912928 concluiu a publicação com sucesso. HTTPS habilitado. O Firebase de produção continua sem configuração até a autorização Google do proprietário.
