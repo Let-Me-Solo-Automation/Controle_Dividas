@@ -1,0 +1,28 @@
+rules_version = '2';
+service cloud.firestore {
+ match /databases/{database}/documents {
+  function owner() { return request.auth != null && request.auth.uid == resource.data.ownerUid; }
+  function validShare() {
+   let d = request.resource.data;
+   let s = d.section;
+   return d.keys().hasOnly(['ownerUid','section','updatedAt','expiresAt'])
+    && d.ownerUid == request.auth.uid
+    && d.updatedAt == request.time
+    && d.expiresAt is timestamp && d.expiresAt > request.time && d.expiresAt <= request.time + duration.value(31,'d')
+    && s is map && s.keys().hasOnly(['version','title','kind','total','count','start','updatedAt','payments','entries'])
+    && s.version == 1 && s.title is string && s.title.size() > 0 && s.title.size() <= 120
+    && s.kind in ['receive','pay','ledger'] && s.total is int && s.total >= 0 && s.total <= 1000000000000
+    && s.count is int && s.count >= 0 && s.count <= 600
+    && s.start is string && s.updatedAt is string
+    && s.payments is list && s.payments.size() <= 1200 && s.entries is list && s.entries.size() <= 1000;
+  }
+  match /shares/{token} {
+   allow get: if owner() || (request.time < resource.data.expiresAt);
+   allow list: if false;
+   allow create: if request.auth != null && token.matches('^[a-f0-9]{48}$') && validShare();
+   allow update: if owner() && validShare();
+   allow delete: if owner();
+  }
+  match /{document=**} { allow read,write: if false; }
+ }
+}

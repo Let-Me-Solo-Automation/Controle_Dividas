@@ -1,0 +1,6489 @@
+import { FirebaseConnection, FirebaseSectionShare } from '../components/FirebaseSharing';
+import { publishSection as publishFirebaseSection, revokeShare as revokeFirebaseShare } from '../sharing/firebase';
+// Recovered from the supplied simulator. Financial rules, cents, validation and data schema are preserved.
+import * as React from 'react';
+import * as ReactDOM from 'react-dom/client';
+import { motion, AnimatePresence, MotionConfig } from 'motion/react';
+import { FluidNavigation, ContinuousTabs, AnimatedMoney, MotionProgress, MotionToggle, CommandPalette, CreateGrid, ScreenTransition, AppModal, MotionCard, BlurSlider, DashboardTools, MotionAppRoot } from '../components/nexo-ui';
+import { ComponentGallery } from '../components/ComponentGallery';
+const ReactCompat = { ...React, default: React };
+  var ca = ReactCompat;
+  var Lr = ReactCompat;
+  var pf = (e) => e.replace(/([a-z0-9])([A-Z])/g, "$1-$2").toLowerCase(),
+    br = (...e) =>
+      e
+        .filter((a, t, l) => !!a && a.trim() !== "" && l.indexOf(a) === t)
+        .join(" ")
+        .trim();
+  var Zo = ReactCompat;
+  var mf = {
+    xmlns: "http://www.w3.org/2000/svg",
+    width: 24,
+    height: 24,
+    viewBox: "0 0 24 24",
+    fill: "none",
+    stroke: "currentColor",
+    strokeWidth: 2,
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+  };
+  var gf = (0, Zo.forwardRef)(
+    (
+      {
+        color: e = "currentColor",
+        size: a = 24,
+        strokeWidth: t = 2,
+        absoluteStrokeWidth: l,
+        className: o = "",
+        children: u,
+        iconNode: i,
+        ...d
+      },
+      s,
+    ) =>
+      (0, Zo.createElement)(
+        "svg",
+        {
+          ref: s,
+          ...mf,
+          width: a,
+          height: a,
+          stroke: e,
+          strokeWidth: l ? (Number(t) * 24) / Number(a) : t,
+          className: br("lucide", o),
+          ...d,
+        },
+        [
+          ...i.map(([c, h]) => (0, Zo.createElement)(c, h)),
+          ...(Array.isArray(u) ? u : [u]),
+        ],
+      ),
+  );
+  var M = (e, a) => {
+    let t = (0, Lr.forwardRef)(({ className: l, ...o }, u) =>
+      (0, Lr.createElement)(gf, {
+        ref: u,
+        iconNode: a,
+        className: br(`lucide-${pf(e)}`, l),
+        ...o,
+      }),
+    );
+    return ((t.displayName = `${e}`), t);
+  };
+  var dl = M("ArrowDownLeft", [
+    ["path", { d: "M17 7 7 17", key: "15tmo1" }],
+    ["path", { d: "M17 17H7V7", key: "1org7z" }],
+  ]);
+  var Da = M("ArrowUpRight", [
+    ["path", { d: "M7 7h10v10", key: "1tivn9" }],
+    ["path", { d: "M7 17 17 7", key: "1vkiza" }],
+  ]);
+  var sl = M("Bell", [
+    ["path", { d: "M10.268 21a2 2 0 0 0 3.464 0", key: "vwvbt9" }],
+    [
+      "path",
+      {
+        d: "M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326",
+        key: "11g9vi",
+      },
+    ],
+  ]);
+  var Ta = M("Bike", [
+    ["circle", { cx: "18.5", cy: "17.5", r: "3.5", key: "15x4ox" }],
+    ["circle", { cx: "5.5", cy: "17.5", r: "3.5", key: "1noe27" }],
+    ["circle", { cx: "15", cy: "5", r: "1", key: "19l28e" }],
+    ["path", { d: "M12 17.5V14l-3-3 4-3 2 3h2", key: "1npguv" }],
+  ]);
+  var Ra = M("CalendarDays", [
+    ["path", { d: "M8 2v4", key: "1cmpym" }],
+    ["path", { d: "M16 2v4", key: "4m81vk" }],
+    [
+      "rect",
+      { width: "18", height: "18", x: "3", y: "4", rx: "2", key: "1hopcy" },
+    ],
+    ["path", { d: "M3 10h18", key: "8toen8" }],
+    ["path", { d: "M8 14h.01", key: "6423bh" }],
+    ["path", { d: "M12 14h.01", key: "1etili" }],
+    ["path", { d: "M16 14h.01", key: "1gbofw" }],
+    ["path", { d: "M8 18h.01", key: "lrp35t" }],
+    ["path", { d: "M12 18h.01", key: "mhygvu" }],
+    ["path", { d: "M16 18h.01", key: "kzsmim" }],
+  ]);
+  var Ze = M("Check", [["path", { d: "M20 6 9 17l-5-5", key: "1gmf2c" }]]);
+  var $a = M("ChevronLeft", [["path", { d: "m15 18-6-6 6-6", key: "1wnfg3" }]]);
+  var Pe = M("ChevronRight", [["path", { d: "m9 18 6-6-6-6", key: "mthhwq" }]]);
+  var At = M("CircleCheck", [
+    ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+    ["path", { d: "m9 12 2 2 4-4", key: "dzmm74" }],
+  ]);
+  var Mt = M("CircleHelp", [
+    ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+    ["path", { d: "M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3", key: "1u773s" }],
+    ["path", { d: "M12 17h.01", key: "p32p05" }],
+  ]);
+  var Ko = M("Clock", [
+    ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+    ["polyline", { points: "12 6 12 12 16 14", key: "68esgv" }],
+  ]);
+  var Yl = M("Download", [
+    ["path", { d: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4", key: "ih7n3h" }],
+    ["polyline", { points: "7 10 12 15 17 10", key: "2ggqvy" }],
+    ["line", { x1: "12", x2: "12", y1: "15", y2: "3", key: "1vk2je" }],
+  ]);
+  var et = M("Ellipsis", [
+    ["circle", { cx: "12", cy: "12", r: "1", key: "41hilf" }],
+    ["circle", { cx: "19", cy: "12", r: "1", key: "1wjl8i" }],
+    ["circle", { cx: "5", cy: "12", r: "1", key: "1pcz8c" }],
+  ]);
+  var Jo = M("ExternalLink", [
+    ["path", { d: "M15 3h6v6", key: "1q9fwt" }],
+    ["path", { d: "M10 14 21 3", key: "gplh6r" }],
+    [
+      "path",
+      {
+        d: "M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6",
+        key: "a6xqqp",
+      },
+    ],
+  ]);
+  var fl = M("EyeOff", [
+    [
+      "path",
+      {
+        d: "M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49",
+        key: "ct8e1f",
+      },
+    ],
+    ["path", { d: "M14.084 14.158a3 3 0 0 1-4.242-4.242", key: "151rxh" }],
+    [
+      "path",
+      {
+        d: "M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143",
+        key: "13bj9a",
+      },
+    ],
+    ["path", { d: "m2 2 20 20", key: "1ooewy" }],
+  ]);
+  var Ql = M("Eye", [
+    [
+      "path",
+      {
+        d: "M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0",
+        key: "1nclc0",
+      },
+    ],
+    ["circle", { cx: "12", cy: "12", r: "3", key: "1v7zrd" }],
+  ]);
+  var Dt = M("House", [
+    [
+      "path",
+      { d: "M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8", key: "5wwlr5" },
+    ],
+    [
+      "path",
+      {
+        d: "M3 10a2 2 0 0 1 .709-1.528l7-5.999a2 2 0 0 1 2.582 0l7 5.999A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z",
+        key: "1d0kgt",
+      },
+    ],
+  ]);
+  var Tt = M("Image", [
+    [
+      "rect",
+      {
+        width: "18",
+        height: "18",
+        x: "3",
+        y: "3",
+        rx: "2",
+        ry: "2",
+        key: "1m3agn",
+      },
+    ],
+    ["circle", { cx: "9", cy: "9", r: "2", key: "af1f0g" }],
+    ["path", { d: "m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21", key: "1xmnt7" }],
+  ]);
+  var Bt = M("Info", [
+    ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+    ["path", { d: "M12 16v-4", key: "1dtifu" }],
+    ["path", { d: "M12 8h.01", key: "e9boi3" }],
+  ]);
+  var ta = M("Layers", [
+    [
+      "path",
+      {
+        d: "M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z",
+        key: "zw3jo",
+      },
+    ],
+    [
+      "path",
+      {
+        d: "M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12",
+        key: "1wduqc",
+      },
+    ],
+    [
+      "path",
+      {
+        d: "M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17",
+        key: "kqbvx6",
+      },
+    ],
+  ]);
+  var Zl = M("Link", [
+    [
+      "path",
+      {
+        d: "M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71",
+        key: "1cjeqo",
+      },
+    ],
+    [
+      "path",
+      {
+        d: "M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71",
+        key: "19qd67",
+      },
+    ],
+  ]);
+  var at = M("Lock", [
+    [
+      "rect",
+      {
+        width: "18",
+        height: "11",
+        x: "3",
+        y: "11",
+        rx: "2",
+        ry: "2",
+        key: "1w4ew1",
+      },
+    ],
+    ["path", { d: "M7 11V7a5 5 0 0 1 10 0v4", key: "fwvmzm" }],
+  ]);
+  var Wo = M("MapPin", [
+    [
+      "path",
+      {
+        d: "M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0",
+        key: "1r0f0z",
+      },
+    ],
+    ["circle", { cx: "12", cy: "10", r: "3", key: "ilqhr7" }],
+  ]);
+  var Ro = M("Menu", [
+    ["line", { x1: "4", x2: "20", y1: "12", y2: "12", key: "1e0a9i" }],
+    ["line", { x1: "4", x2: "20", y1: "6", y2: "6", key: "1owob3" }],
+    ["line", { x1: "4", x2: "20", y1: "18", y2: "18", key: "yk5zj1" }],
+  ]);
+  var $o = M("Moon", [
+    ["path", { d: "M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z", key: "a7tn18" }],
+  ]);
+  var eu = M("Palette", [
+    [
+      "circle",
+      { cx: "13.5", cy: "6.5", r: ".5", fill: "currentColor", key: "1okk4w" },
+    ],
+    [
+      "circle",
+      { cx: "17.5", cy: "10.5", r: ".5", fill: "currentColor", key: "f64h9f" },
+    ],
+    [
+      "circle",
+      { cx: "8.5", cy: "7.5", r: ".5", fill: "currentColor", key: "fotxhn" },
+    ],
+    [
+      "circle",
+      { cx: "6.5", cy: "12.5", r: ".5", fill: "currentColor", key: "qy21gx" },
+    ],
+    [
+      "path",
+      {
+        d: "M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z",
+        key: "12rzf8",
+      },
+    ],
+  ]);
+  var Kl = M("Pin", [
+    ["path", { d: "M12 17v5", key: "bb1du9" }],
+    [
+      "path",
+      {
+        d: "M9 10.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V7a1 1 0 0 1 1-1 2 2 0 0 0 0-4H8a2 2 0 0 0 0 4 1 1 0 0 1 1 1z",
+        key: "1nkz8b",
+      },
+    ],
+  ]);
+  var be = M("Plus", [
+    ["path", { d: "M5 12h14", key: "1ays0h" }],
+    ["path", { d: "M12 5v14", key: "s699le" }],
+  ]);
+  var cl = M("Receipt", [
+    [
+      "path",
+      {
+        d: "M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z",
+        key: "q3az6g",
+      },
+    ],
+    ["path", { d: "M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8", key: "1h4pet" }],
+    ["path", { d: "M12 17.5v-11", key: "1jc1ny" }],
+  ]);
+  var zt = M("Repeat", [
+    ["path", { d: "m17 2 4 4-4 4", key: "nntrym" }],
+    ["path", { d: "M3 11v-1a4 4 0 0 1 4-4h14", key: "84bu3i" }],
+    ["path", { d: "m7 22-4-4 4-4", key: "1wqhfi" }],
+    ["path", { d: "M21 13v1a4 4 0 0 1-4 4H3", key: "1rx37r" }],
+  ]);
+  var pl = M("RotateCcw", [
+    [
+      "path",
+      { d: "M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8", key: "1357e3" },
+    ],
+    ["path", { d: "M3 3v5h5", key: "1xhq8a" }],
+  ]);
+  var Jl = M("Settings", [
+    [
+      "path",
+      {
+        d: "M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z",
+        key: "1qme2f",
+      },
+    ],
+    ["circle", { cx: "12", cy: "12", r: "3", key: "1v7zrd" }],
+  ]);
+  var tt = M("Share2", [
+    ["circle", { cx: "18", cy: "5", r: "3", key: "gq8acd" }],
+    ["circle", { cx: "6", cy: "12", r: "3", key: "w7nqdw" }],
+    ["circle", { cx: "18", cy: "19", r: "3", key: "1xt0gg" }],
+    [
+      "line",
+      { x1: "8.59", x2: "15.42", y1: "13.51", y2: "17.49", key: "47mynk" },
+    ],
+    [
+      "line",
+      { x1: "15.41", x2: "8.59", y1: "6.51", y2: "10.49", key: "1n3mei" },
+    ],
+  ]);
+  var Et = M("ShieldCheck", [
+    [
+      "path",
+      {
+        d: "M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z",
+        key: "oel41y",
+      },
+    ],
+    ["path", { d: "m9 12 2 2 4-4", key: "dzmm74" }],
+  ]);
+  var au = M("Shuffle", [
+    ["path", { d: "m18 14 4 4-4 4", key: "10pe0f" }],
+    ["path", { d: "m18 2 4 4-4 4", key: "pucp1d" }],
+    [
+      "path",
+      {
+        d: "M2 18h1.973a4 4 0 0 0 3.3-1.7l5.454-8.6a4 4 0 0 1 3.3-1.7H22",
+        key: "1ailkh",
+      },
+    ],
+    ["path", { d: "M2 6h1.972a4 4 0 0 1 3.6 2.2", key: "km57vx" }],
+    ["path", { d: "M22 18h-6.041a4 4 0 0 1-3.3-1.8l-.359-.45", key: "os18l9" }],
+  ]);
+  var tu = M("SlidersHorizontal", [
+    ["line", { x1: "21", x2: "14", y1: "4", y2: "4", key: "obuewd" }],
+    ["line", { x1: "10", x2: "3", y1: "4", y2: "4", key: "1q6298" }],
+    ["line", { x1: "21", x2: "12", y1: "12", y2: "12", key: "1iu8h1" }],
+    ["line", { x1: "8", x2: "3", y1: "12", y2: "12", key: "ntss68" }],
+    ["line", { x1: "21", x2: "16", y1: "20", y2: "20", key: "14d8ph" }],
+    ["line", { x1: "12", x2: "3", y1: "20", y2: "20", key: "m0wm8r" }],
+    ["line", { x1: "14", x2: "14", y1: "2", y2: "6", key: "14e1ph" }],
+    ["line", { x1: "8", x2: "8", y1: "10", y2: "14", key: "1i6ji0" }],
+    ["line", { x1: "16", x2: "16", y1: "18", y2: "22", key: "1lctlv" }],
+  ]);
+  var Ot = M("Sparkles", [
+    [
+      "path",
+      {
+        d: "M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z",
+        key: "4pj2yx",
+      },
+    ],
+    ["path", { d: "M20 3v4", key: "1olli1" }],
+    ["path", { d: "M22 5h-4", key: "1gvqau" }],
+    ["path", { d: "M4 17v2", key: "vumght" }],
+    ["path", { d: "M5 18H3", key: "zchphs" }],
+  ]);
+  var lu = M("Sun", [
+    ["circle", { cx: "12", cy: "12", r: "4", key: "4exip2" }],
+    ["path", { d: "M12 2v2", key: "tus03m" }],
+    ["path", { d: "M12 20v2", key: "1lh1kg" }],
+    ["path", { d: "m4.93 4.93 1.41 1.41", key: "149t6j" }],
+    ["path", { d: "m17.66 17.66 1.41 1.41", key: "ptbguv" }],
+    ["path", { d: "M2 12h2", key: "1t8f8n" }],
+    ["path", { d: "M20 12h2", key: "1q8mjw" }],
+    ["path", { d: "m6.34 17.66-1.41 1.41", key: "1m8zz5" }],
+    ["path", { d: "m19.07 4.93-1.41 1.41", key: "1shlcs" }],
+  ]);
+  var Pa = M("Target", [
+    ["circle", { cx: "12", cy: "12", r: "10", key: "1mglay" }],
+    ["circle", { cx: "12", cy: "12", r: "6", key: "1vlfrh" }],
+    ["circle", { cx: "12", cy: "12", r: "2", key: "1c9p78" }],
+  ]);
+  var Ge = M("Trash2", [
+    ["path", { d: "M3 6h18", key: "d0wm0j" }],
+    ["path", { d: "M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6", key: "4alrt4" }],
+    ["path", { d: "M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2", key: "v07s0e" }],
+    ["line", { x1: "10", x2: "10", y1: "11", y2: "17", key: "1uufr5" }],
+    ["line", { x1: "14", x2: "14", y1: "11", y2: "17", key: "xtxkd" }],
+  ]);
+  var ou = M("TrendingUp", [
+    ["polyline", { points: "22 7 13.5 15.5 8.5 10.5 2 17", key: "126l90" }],
+    ["polyline", { points: "16 7 22 7 22 13", key: "kwv8wd" }],
+  ]);
+  var ml = M("Upload", [
+    ["path", { d: "M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4", key: "ih7n3h" }],
+    ["polyline", { points: "17 8 12 3 7 8", key: "t8dd8p" }],
+    ["line", { x1: "12", x2: "12", y1: "3", y2: "15", key: "widbto" }],
+  ]);
+  var lt = M("Wallet", [
+    [
+      "path",
+      {
+        d: "M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1",
+        key: "18etb6",
+      },
+    ],
+    ["path", { d: "M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4", key: "xoc0q4" }],
+  ]);
+  var uu = M("X", [
+    ["path", { d: "M18 6 6 18", key: "1bl5f8" }],
+    ["path", { d: "m6 6 12 12", key: "d8bk6v" }],
+  ]);
+  var ru = {
+      menuStyle: [
+        ["popover", "Flutuante"],
+        ["drawer", "Gaveta"],
+        ["compact", "Barra de \xEDcones"],
+      ],
+      nav: [
+        ["capsule", "C\xE1psula"],
+        ["dock", "Dock"],
+        ["island", "Ilha"],
+        ["centered", "Central"],
+        ["minimal", "Minimal"],
+        ["elevated", "Elevada"],
+      ],
+      switchStyle: [
+        ["soft", "Suave"],
+        ["sculpted", "Esculpido"],
+        ["daynight", "Dia e noite"],
+        ["glass", "Vidro"],
+      ],
+      buttonStyle: [
+        ["solid", "S\xF3lido"],
+        ["raised", "Relevo"],
+        ["glass", "Vidro"],
+        ["orbital", "Orbital"],
+      ],
+      cardStyle: [
+        ["theme", "Escolhido pelo tema"],
+        ["soft", "Suave"],
+        ["glass", "Vidro"],
+        ["outline", "Contorno"],
+        ["textured", "Textura"],
+      ],
+      calendarStyle: [
+        ["classic", "Cl\xE1ssico"],
+        ["rings", "An\xE9is"],
+      ],
+      iconStyle: [
+        ["outline", "Tra\xE7o fino"],
+        ["duotone", "Duotone"],
+      ],
+    },
+    hf = {
+      menuStyle: "Estilo do menu",
+      switchStyle: "Estilo dos interruptores",
+      buttonStyle: "Estilo dos bot\xF5es",
+      cardStyle: "Estilo dos cart\xF5es",
+      calendarStyle: "Estilo do calend\xE1rio",
+      iconStyle: "Estilo dos \xEDcones",
+    };
+  function xf(e) {
+    for (let [a, t] of Object.entries(ru))
+      t.some(([l]) => l === e[a]) || (e[a] = t[0][0]);
+    if (
+      ((e.blurStrength = Math.min(
+        28,
+        Math.max(8, Number(e.blurStrength) || 16),
+      )),
+      (e.intensity = Math.min(2, Math.max(0.4, Number(e.intensity) || 1))),
+      e.heroImage &&
+        !/^data:image\/(jpeg|png|webp);base64,[a-zA-Z0-9+/=]+$/.test(
+          e.heroImage,
+        ))
+    )
+      throw Error("Imagem de personaliza\xE7\xE3o inv\xE1lida.");
+    return e;
+  }
+  var ee = () => crypto.randomUUID(),
+    Ve = () => {
+      let e = new Date();
+      return `${e.getFullYear()}-${String(e.getMonth() + 1).padStart(2, "0")}-${String(e.getDate()).padStart(2, "0")}`;
+    },
+    ye = (e) =>
+      new Intl.NumberFormat("pt-BR", {
+        style: "currency",
+        currency: "BRL",
+      }).format(e / 100),
+    fa = (e) =>
+      e
+        ? new Date(e + "T12:00:00").toLocaleDateString("pt-BR", {
+            day: "2-digit",
+            month: "short",
+          })
+        : "Sem data";
+  function Rl(e) {
+    let a = String(e)
+      .trim()
+      .replace(/R\$\s*/, "");
+    if (
+      (a.includes(",") && (a = a.replace(/\./g, "").replace(",", ".")),
+      !/^\d+(\.\d{1,2})?$/.test(a))
+    )
+      throw Error("Use um valor positivo com at\xE9 dois centavos.");
+    let t = Math.round(Number(a) * 100);
+    if (!Number.isSafeInteger(t) || t > 1e12)
+      throw Error("Valor fora do limite.");
+    return t;
+  }
+  function gl(e, a) {
+    let [t, l, o] = e.split("-").map(Number),
+      u = new Date(t, l - 1 + a, 1, 12),
+      i = new Date(u.getFullYear(), u.getMonth() + 1, 0).getDate();
+    return `${u.getFullYear()}-${String(u.getMonth() + 1).padStart(2, "0")}-${String(Math.min(o, i)).padStart(2, "0")}`;
+  }
+  function yr(e, a = Ve()) {
+    let t = new Date(a + "T12:00:00"),
+      l,
+      o,
+      u = (i) =>
+        `${i.getFullYear()}-${String(i.getMonth() + 1).padStart(2, "0")}-${String(i.getDate()).padStart(2, "0")}`;
+    return (
+      e === "day"
+        ? ((l = new Date(t)), (o = new Date(t)), o.setDate(o.getDate() + 1))
+        : e === "week"
+          ? ((l = new Date(t)),
+            l.setDate(l.getDate() - ((l.getDay() + 6) % 7)),
+            (o = new Date(l)),
+            o.setDate(o.getDate() + 7))
+          : e === "year"
+            ? ((l = new Date(t.getFullYear(), 0, 1)),
+              (o = new Date(t.getFullYear() + 1, 0, 1)))
+            : ((l = new Date(t.getFullYear(), t.getMonth(), 1)),
+              (o = new Date(t.getFullYear(), t.getMonth() + 1, 1))),
+      [u(l), u(o)]
+    );
+  }
+  var nu = (e, a) => e >= a[0] && e < a[1];
+  function Wl(e) {
+    if (typeof e != "string" || !/^\d{4}-\d{2}-\d{2}$/.test(e)) return !1;
+    let a = new Date(e + "T12:00:00");
+    return (
+      !Number.isNaN(a.getTime()) &&
+      `${a.getFullYear()}-${String(a.getMonth() + 1).padStart(2, "0")}-${String(a.getDate()).padStart(2, "0")}` ===
+        e
+    );
+  }
+  function Ba(e) {
+    let { total: a, count: t, start: l, payments: o = [] } = e;
+    if (
+      !Number.isSafeInteger(a) ||
+      a <= 0 ||
+      !Number.isInteger(t) ||
+      t < 1 ||
+      t > 600
+    )
+      throw Error("Parcelamento inv\xE1lido.");
+    if (!Wl(l) || !Array.isArray(o))
+      throw Error("Data ou hist\xF3rico do parcelamento inv\xE1lido.");
+    let u = [],
+      i = a,
+      d = 0,
+      s = Math.floor(a / t),
+      c = Array.from({ length: t }, (C, m) => s + (m < a % t ? 1 : 0)),
+      h = 0;
+    for (; h < t || (i > 0 && h < o.length + 1);) {
+      let C = h >= t,
+        m = C ? 0 : c[h],
+        b = Math.min(i, Math.max(0, m + d)),
+        D = o[h];
+      if (
+        D &&
+        (!Number.isSafeInteger(D.amount) || D.amount < 0 || D.amount > i)
+      )
+        throw Error("Pagamento superior ao saldo ou inv\xE1lido.");
+      if (C && !D && i === 0) break;
+      let E = D?.amount ?? 0,
+        Z = !!D || b === 0,
+        g = Z ? (C ? b - E : m + d - E) : 0;
+      if (
+        (u.push({
+          index: h,
+          number: h + 1,
+          extra: C,
+          base: m,
+          due: b,
+          paid: E,
+          carry: g,
+          adjustment: d,
+          date: gl(l, h),
+          closed: Z,
+          payment: D,
+        }),
+        (i -= E),
+        Z ? (d = C ? i : g) : (d = 0),
+        h++,
+        h > o.length + t + 1)
+      )
+        break;
+    }
+    return {
+      rows: u,
+      paid: a - i,
+      remaining: i,
+      progress: (a - i) / a,
+      current: u.find((C) => !C.closed),
+    };
+  }
+  function Sr(e, a) {
+    return (
+      (e.accounts.find((t) => t.id === a)?.initial || 0) +
+      e.entries.reduce(
+        (t, l) =>
+          t +
+          (l.accountId === a
+            ? l.type === "income"
+              ? l.amount
+              : -l.amount
+            : 0) +
+          (l.type === "transfer" && l.toAccountId === a ? l.amount : 0),
+        0,
+      )
+    );
+  }
+  var za = (e) => (e.contributions || []).reduce((a, t) => a + t.amount, 0);
+  function Cr(e, a, t) {
+    let l = e.goals
+        .filter((u) => u.id !== t)
+        .reduce(
+          (u, i) =>
+            u +
+            (i.contributions || [])
+              .filter((d) => d.accountId === a)
+              .reduce((d, s) => d + s.amount, 0),
+          0,
+        ),
+      o = (e.reserve || [])
+        .filter((u) => u.accountId === a)
+        .reduce((u, i) => u + i.amount, 0);
+    return Sr(e, a) - l - o;
+  }
+  function vf(e, a) {
+    let t = e.entries.filter((l) => !a || nu(l.date, a));
+    return {
+      balance: e.accounts.reduce((l, o) => l + Sr(e, o.id), 0),
+      income: t
+        .filter((l) => l.type === "income")
+        .reduce((l, o) => l + o.amount, 0),
+      expense: t
+        .filter((l) => l.type === "expense")
+        .reduce((l, o) => l + o.amount, 0),
+      reserved: (e.reserve || []).reduce((l, o) => l + o.amount, 0),
+      goals: e.goals.reduce((l, o) => l + za(o), 0),
+    };
+  }
+  function Ir(e, a) {
+    let t = e.sections.find((l) => l.id === a);
+    if (!t) throw Error("Se\xE7\xE3o n\xE3o encontrada.");
+    return {
+      version: 1,
+      title: t.title,
+      kind: t.kind,
+      total: t.total || 0,
+      count: t.count || 0,
+      start: t.start || "",
+      updatedAt: new Date().toISOString(),
+      payments: (t.payments || []).map((l) => ({
+        amount: l.amount,
+        date: l.date,
+      })),
+      entries: e.entries
+        .filter((l) => l.sectionId === a && !l.paymentId)
+        .map((l) => ({
+          title: l.title,
+          type: l.type,
+          amount: l.amount,
+          date: l.date,
+        })),
+    };
+  }
+  var iu = {
+    theme: "porcelana",
+    showOnOpen: !1,
+    motion: !0,
+    transition: !0,
+    reveal: !0,
+    numbers: !0,
+    progress: !0,
+    feedback: !0,
+    glow: !1,
+    haptic: !0,
+    glass: !0,
+    texture: !1,
+    compact: !1,
+    nav: "capsule",
+    footerBlur: !0,
+    blurStrength: 16,
+    menuStyle: "popover",
+    switchStyle: "soft",
+    buttonStyle: "solid",
+    cardStyle: "theme",
+    calendarStyle: "classic",
+    iconStyle: "outline",
+    swipeActions: !0,
+    focusMode: !1,
+    heroImage: "",
+    chart: "auto",
+    intensity: 1,
+    lock: !1,
+    notifications: !0,
+    components: {
+      consistency: !0,
+      trend: !0,
+      platforms: !0,
+      goals: !0,
+      sections: !0,
+      agenda: !0,
+      activity: !0,
+      reserve: !0,
+    },
+  };
+  function du() {
+    return {
+      version: 1,
+      accounts: [],
+      entries: [],
+      sections: [],
+      goals: [],
+      deliveries: [],
+      platforms: ["iFood", "99Food", "Keeta", "Outras"],
+      recurring: [],
+      reserve: [],
+      settings: structuredClone(iu),
+      sharing: { url: "", key: "", grants: {} },
+    };
+  }
+  function $l(e) {
+    if (!e || e.version !== 1) throw Error("Backup incompat\xEDvel.");
+    for (let o of [
+      "accounts",
+      "entries",
+      "sections",
+      "goals",
+      "deliveries",
+      "platforms",
+      "recurring",
+      "reserve",
+    ])
+      if (!Array.isArray(e[o]) || e[o].length > 5e4)
+        throw Error("Backup inv\xE1lido: " + o);
+    let a = (o) => Number.isSafeInteger(o) && Math.abs(o) <= 1e12;
+    for (let o of e.accounts)
+      if (!o.id || typeof o.title != "string" || !a(o.initial) || o.initial < 0)
+        throw Error("Conta inv\xE1lida.");
+    let t = new Set(e.accounts.map((o) => o.id));
+    for (let o of [
+      "accounts",
+      "entries",
+      "sections",
+      "goals",
+      "deliveries",
+      "recurring",
+    ])
+      if (new Set(e[o].map((u) => u.id)).size !== e[o].length)
+        throw Error("Identificadores duplicados no backup.");
+    for (let o of e.entries)
+      if (typeof o.title != "string" || !Wl(o.date))
+        throw Error("T\xEDtulo ou data do lan\xE7amento inv\xE1lido.");
+    for (let o of e.sections)
+      if (
+        typeof o.title != "string" ||
+        !["receive", "pay", "ledger"].includes(o.kind) ||
+        !Array.isArray(o.payments) ||
+        o.payments.some((u) => !Wl(u.date))
+      )
+        throw Error("Se\xE7\xE3o inv\xE1lida.");
+    for (let o of e.goals)
+      if (
+        !Wl(o.due) ||
+        !Array.isArray(o.contributions) ||
+        o.contributions.some((u) => !Wl(u.date))
+      )
+        throw Error("Data da meta inv\xE1lida.");
+    for (let o of e.deliveries)
+      if (!Wl(o.date)) throw Error("Data da entrega inv\xE1lida.");
+    for (let o of e.entries)
+      if (
+        !a(o.amount) ||
+        o.amount <= 0 ||
+        !t.has(o.accountId) ||
+        !["income", "expense", "transfer"].includes(o.type) ||
+        !/\d{4}-\d{2}-\d{2}/.test(o.date) ||
+        (o.type === "transfer" &&
+          (!t.has(o.toAccountId) || o.toAccountId === o.accountId))
+      )
+        throw Error("Lan\xE7amento inv\xE1lido.");
+    for (let o of e.sections) o.kind !== "ledger" && Ba(o);
+    for (let o of e.goals)
+      if (
+        !a(o.target) ||
+        o.target <= 0 ||
+        typeof o.title != "string" ||
+        !Array.isArray(o.contributions) ||
+        o.contributions.some((u) => !a(u.amount) || !t.has(u.accountId)) ||
+        za(o) < 0
+      )
+        throw Error("Meta inv\xE1lida.");
+    for (let o of e.reserve)
+      if (!a(o.amount) || o.amount < 0 || !t.has(o.accountId))
+        throw Error("Reserva inv\xE1lida.");
+    for (let o of e.goals)
+      for (let u of e.accounts)
+        if (
+          o.contributions
+            .filter((i) => i.accountId === u.id)
+            .reduce((i, d) => i + d.amount, 0) < 0
+        )
+          throw Error("Resgate inv\xE1lido na meta.");
+    for (let o of e.deliveries)
+      if (
+        !o.id ||
+        typeof o.title != "string" ||
+        typeof o.platform != "string" ||
+        !a(o.amount) ||
+        o.amount <= 0 ||
+        !a(o.cost) ||
+        o.cost < 0 ||
+        typeof o.km != "number" ||
+        !Number.isFinite(o.km) ||
+        o.km <= 0
+      )
+        throw Error("Entrega inv\xE1lida.");
+    for (let o of e.recurring)
+      if (
+        !o.id ||
+        typeof o.title != "string" ||
+        !a(o.amount) ||
+        o.amount <= 0 ||
+        !t.has(o.accountId) ||
+        !Number.isInteger(o.day) ||
+        o.day < 1 ||
+        o.day > 31 ||
+        !["income", "expense"].includes(o.type)
+      )
+        throw Error("Recorr\xEAncia inv\xE1lida.");
+    if (e.platforms.some((o) => typeof o != "string" || !o.trim()))
+      throw Error("Plataforma inv\xE1lida.");
+    for (let o of e.accounts)
+      if (Cr(e, o.id) < 0)
+        throw Error(
+          "A conta " + o.title + " tem reservas e metas acima do saldo.",
+        );
+    e.settings = {
+      ...structuredClone(iu),
+      ...e.settings,
+      components: { ...iu.components, ...e.settings?.components },
+    };
+    let l = e.sharing && typeof e.sharing == "object" ? e.sharing : {};
+    e.sharing = {
+      url: typeof l.url == "string" ? l.url : "",
+      key: typeof l.key == "string" ? l.key : "",
+      grants:
+        l.grants && typeof l.grants == "object" && !Array.isArray(l.grants)
+          ? l.grants
+          : {},
+    };
+    for (let [o, u] of Object.entries(e.sharing.grants))
+      if (
+        !u ||
+        typeof u.id != "string" ||
+        typeof u.readKey != "string" ||
+        typeof u.writeKey != "string" ||
+        !e.sections.some((i) => i.id === o)
+      )
+        throw Error("Publica\xE7\xE3o inv\xE1lida no backup.");
+    for (let o of e.goals)
+      if (o.extensions === void 0) o.extensions = [];
+      else if (!Array.isArray(o.extensions))
+        throw Error("Hist\xF3rico da meta inv\xE1lido.");
+    return (xf(e.settings), e);
+  }
+  function bf() {
+    let e = du(),
+      a = Ve(),
+      t = a.slice(0, 7);
+    ((e.accounts = [
+      { id: "bradesco", title: "Bradesco", initial: 48e4, color: "#d84154" },
+      { id: "nubank", title: "Nubank", initial: 15e4, color: "#8456d9" },
+    ]),
+      (e.entries = [
+        {
+          id: ee(),
+          title: "Sal\xE1rio",
+          type: "income",
+          amount: 32e4,
+          date: t + "-05",
+          accountId: "bradesco",
+          category: "Sal\xE1rio",
+        },
+        {
+          id: ee(),
+          title: "Mercado da semana",
+          type: "expense",
+          amount: 28640,
+          date: a,
+          accountId: "nubank",
+          category: "Alimenta\xE7\xE3o",
+        },
+        {
+          id: ee(),
+          title: "Internet",
+          type: "expense",
+          amount: 9990,
+          date: t + "-03",
+          accountId: "bradesco",
+          category: "Casa",
+        },
+      ]),
+      (e.sections = [
+        {
+          id: "console",
+          title: "Venda do videogame",
+          person: "Rafael",
+          kind: "receive",
+          total: 1e5,
+          count: 10,
+          start: t + "-10",
+          payments: [{ id: ee(), amount: 8e3, date: a, accountId: "bradesco" }],
+          privateNote: "",
+        },
+        {
+          id: "emprestimo",
+          title: "Empr\xE9stimo pessoal",
+          person: "Marina",
+          kind: "pay",
+          total: 2e5,
+          count: 5,
+          start: t + "-20",
+          payments: [],
+        },
+      ]),
+      e.entries.push({
+        id: ee(),
+        title: "Venda do videogame \u2022 parcela 1",
+        type: "income",
+        amount: 8e3,
+        date: a,
+        accountId: "bradesco",
+        sectionId: "console",
+        paymentId: e.sections[0].payments[0].id,
+        category: "Parcelas",
+      }),
+      (e.goals = [
+        {
+          id: "notebook",
+          title: "Meu pr\xF3ximo notebook",
+          target: 6e5,
+          due: gl(a, 5),
+          link: "",
+          image: "",
+          contributions: [
+            { id: ee(), accountId: "bradesco", amount: 18e4, date: a },
+          ],
+          extensions: [],
+        },
+      ]),
+      (e.reserve = [{ id: ee(), accountId: "nubank", amount: 7e4 }]));
+    for (let l = 0; l < 8; l++) {
+      let o = new Date(a + "T12:00:00");
+      o.setDate(o.getDate() - l);
+      let u = `${o.getFullYear()}-${String(o.getMonth() + 1).padStart(2, "0")}-${String(o.getDate()).padStart(2, "0")}`,
+        i = ee(),
+        d = 1800 + l * 350;
+      (e.deliveries.push({
+        id: i,
+        platform: e.platforms[l % 3],
+        title: ["Sabor da Vila", "Pizza Central", "Caf\xE9 da Pra\xE7a"][l % 3],
+        pickup: "Rua das Flores, 120",
+        destination: "",
+        amount: d,
+        km: 4 + l * 0.4,
+        cost: 300,
+        date: u,
+      }),
+        e.entries.push(
+          {
+            id: ee(),
+            deliveryId: i,
+            title: "Entrega \u2022 " + e.platforms[l % 3],
+            type: "income",
+            amount: d,
+            date: u,
+            accountId: "bradesco",
+            category: "Entregas",
+          },
+          {
+            id: ee(),
+            deliveryId: i,
+            title: "Custo da entrega",
+            type: "expense",
+            amount: 300,
+            date: u,
+            accountId: "bradesco",
+            category: "Trabalho",
+          },
+        ));
+    }
+    e.recurring = [
+      {
+        id: ee(),
+        title: "Internet",
+        type: "expense",
+        amount: 9990,
+        day: 3,
+        accountId: "bradesco",
+        category: "Casa",
+        active: !0,
+      },
+      {
+        id: ee(),
+        title: "Sal\xE1rio",
+        type: "income",
+        amount: 32e4,
+        day: 5,
+        accountId: "bradesco",
+        category: "Sal\xE1rio",
+        active: !0,
+      },
+    ];
+    for (let l of e.recurring) {
+      let o = e.entries.find((u) => u.title === l.title);
+      o && ((o.recurringId = l.id), (o.competence = t));
+    }
+    return e;
+  }
+  function fn({ data: e, date: a, onSelect: t }) {
+    let [l] = yr("week", a),
+      o = Array.from({ length: 7 }, (i, d) => {
+        let s = new Date(l + "T12:00:00");
+        s.setDate(s.getDate() + d);
+        let c = `${s.getFullYear()}-${String(s.getMonth() + 1).padStart(2, "0")}-${String(s.getDate()).padStart(2, "0")}`,
+          h = e.deliveries.filter((m) => m.date === c).length,
+          C = e.entries.filter((m) => m.date === c).length;
+        return {
+          iso: c,
+          rides: h,
+          moves: C,
+          label: s
+            .toLocaleDateString("pt-BR", { weekday: "short" })
+            .replace(".", ""),
+          day: s.getDate(),
+        };
+      }),
+      u = o.filter((i) => i.moves > 0 || i.rides > 0).length;
+    return ca.default.createElement(
+      ca.default.Fragment,
+      null,
+      ca.default.createElement(
+        "div",
+        { className: "week-caption" },
+        ca.default.createElement("strong", null, u, " de 7 dias"),
+        ca.default.createElement(
+          "small",
+          null,
+          "com lan\xE7amentos ou entregas",
+        ),
+      ),
+      ca.default.createElement(
+        "div",
+        { className: "activity-week" },
+        o.map((i) =>
+          ca.default.createElement(
+            "button",
+            {
+              key: i.iso,
+              "aria-label": `${i.iso}: ${i.rides} entregas e ${i.moves} lan\xE7amentos`,
+              className: i.rides || i.moves ? "has-activity" : "",
+              onClick: () => t(i.iso),
+            },
+            ca.default.createElement("small", null, i.label),
+            ca.default.createElement(
+              "span",
+              null,
+              i.rides || i.moves
+                ? ca.default.createElement(Ze, { size: 19 })
+                : i.day,
+            ),
+            ca.default.createElement(
+              "small",
+              null,
+              i.rides
+                ? i.rides + " ent."
+                : i.moves
+                  ? i.moves + " mov."
+                  : "\u2014",
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+  var qe = ReactCompat;
+function cn(props){return React.createElement(FluidNavigation,props);}
+  var Ue = ReactCompat;
+  function wr({ label: e, enabled: a, onOpen: t, onDelete: l, children: o }) {
+    let [u, i] = (0, Ue.useState)(!1),
+      d = (0, Ue.useRef)(null),
+      s = (0, Ue.useRef)(!1);
+    return a
+      ? Ue.default.createElement(
+          "div",
+          {
+            className: "swipe-card " + (u ? "swipe-open" : ""),
+            role: "group",
+            "aria-label": "A\xE7\xF5es de " + e,
+            tabIndex: 0,
+            onKeyDown: (c) => {
+              (c.key === "ArrowLeft" && (c.preventDefault(), i(!0)),
+                (c.key === "ArrowRight" || c.key === "Escape") && i(!1));
+            },
+            onPointerDown: (c) => {
+              ((d.current = { x: c.clientX, y: c.clientY }), (s.current = !1));
+            },
+            onPointerUp: (c) => {
+              if (!d.current) return;
+              let h = c.clientX - d.current.x,
+                C = c.clientY - d.current.y;
+              (Math.abs(h) > 48 &&
+                Math.abs(h) > Math.abs(C) * 1.5 &&
+                ((s.current = !0), i(h < 0)),
+                (d.current = null));
+            },
+            onClickCapture: (c) => {
+              s.current &&
+                (c.preventDefault(), c.stopPropagation(), (s.current = !1));
+            },
+          },
+          Ue.default.createElement(
+            "div",
+            {
+              className: "swipe-actions",
+              "aria-hidden": !u,
+              inert: u ? void 0 : !0,
+            },
+            Ue.default.createElement(
+              "button",
+              { "aria-label": "Abrir " + e, onClick: t },
+              Ue.default.createElement(Da, { size: 20 }),
+              Ue.default.createElement("small", null, "Abrir"),
+            ),
+            Ue.default.createElement(
+              "button",
+              {
+                className: "swipe-delete",
+                "aria-label": "Excluir " + e,
+                onClick: l,
+              },
+              Ue.default.createElement(Ge, { size: 19 }),
+              Ue.default.createElement("small", null, "Excluir"),
+            ),
+          ),
+          Ue.default.createElement("div", { className: "swipe-content" }, o),
+          Ue.default.createElement(
+            "button",
+            {
+              className: "swipe-handle",
+              "aria-label": (u ? "Fechar" : "Mostrar") + " a\xE7\xF5es",
+              "aria-expanded": u,
+              onClick: () => i((c) => !c),
+            },
+            Ue.default.createElement($a, { size: 15 }),
+          ),
+        )
+      : o;
+  }
+  var r = ReactCompat,
+    Pg = ReactDOM;
+  var Go = [
+      {
+        id: "porcelana",
+        name: "Porcelana",
+        description: "Relevo suave, balan\xE7o amplo e cart\xF5es em pares.",
+        bg: "#f4f5f2",
+        surface: "#ffffff",
+        text: "#202b29",
+        muted: "#687570",
+        accent: "#087f6d",
+        accentText: "#ffffff",
+        line: "#e2e7e2",
+        positive: "#087c59",
+        negative: "#c54c52",
+        dark: !1,
+        font: "DM Sans",
+        layout: "soft",
+        hero: "balance",
+        chart: "area",
+        order: [
+          "trend",
+          "goals",
+          "sections",
+          "platforms",
+          "reserve",
+          "agenda",
+          "activity",
+        ],
+      },
+      {
+        id: "aurora",
+        name: "Aurora",
+        description: "Vidro frio, metas orbitais e um horizonte colorido.",
+        bg: "#e8f2f5",
+        surface: "#f8fcff",
+        text: "#173441",
+        muted: "#4b6876",
+        accent: "#176f7b",
+        accentText: "#ffffff",
+        line: "#c2d8df",
+        positive: "#176c4f",
+        negative: "#af354c",
+        dark: !1,
+        font: "Manrope",
+        layout: "glass",
+        hero: "goal",
+        chart: "area",
+        order: [
+          "goals",
+          "trend",
+          "platforms",
+          "sections",
+          "reserve",
+          "activity",
+          "agenda",
+        ],
+      },
+      {
+        id: "obsidiana",
+        name: "Obsidiana",
+        description: "Preto OLED, n\xFAmeros amplos e sinais de luz.",
+        bg: "#080a0e",
+        surface: "#171b22",
+        text: "#f0f3fa",
+        muted: "#a5b0c2",
+        accent: "#a9e9c6",
+        accentText: "#10271b",
+        line: "#343c49",
+        positive: "#91e4b8",
+        negative: "#ff9cac",
+        dark: !0,
+        font: "Space Grotesk",
+        layout: "oled",
+        hero: "cashflow",
+        chart: "bars",
+        order: [
+          "platforms",
+          "trend",
+          "sections",
+          "activity",
+          "goals",
+          "reserve",
+          "agenda",
+        ],
+      },
+      {
+        id: "editorial",
+        name: "Editorial",
+        description:
+          "Leitura de jornal, t\xEDtulos serifados e extrato primeiro.",
+        bg: "#f5f2ef",
+        surface: "#fffdfa",
+        text: "#252329",
+        muted: "#635d67",
+        accent: "#713c54",
+        accentText: "#ffffff",
+        line: "#d8ced1",
+        positive: "#276345",
+        negative: "#ad3145",
+        dark: !1,
+        font: "Lora",
+        layout: "paper",
+        hero: "balance",
+        chart: "line",
+        order: [
+          "activity",
+          "sections",
+          "trend",
+          "agenda",
+          "goals",
+          "reserve",
+          "platforms",
+        ],
+      },
+      {
+        id: "oceano",
+        name: "Oceano",
+        description: "Azul profundo, rotas e desempenho das entregas.",
+        bg: "#092635",
+        surface: "#113a4c",
+        text: "#eef9ff",
+        muted: "#aac8d5",
+        accent: "#77d8fa",
+        accentText: "#073042",
+        line: "#356073",
+        positive: "#89e3c2",
+        negative: "#ffadb5",
+        dark: !0,
+        font: "Manrope",
+        layout: "marine",
+        hero: "delivery",
+        chart: "line",
+        order: [
+          "platforms",
+          "trend",
+          "activity",
+          "goals",
+          "sections",
+          "agenda",
+          "reserve",
+        ],
+      },
+      {
+        id: "jardim",
+        name: "Jardim",
+        description:
+          "Metas em crescimento, verdes naturais e cart\xF5es org\xE2nicos.",
+        bg: "#edf2ea",
+        surface: "#fafcf7",
+        text: "#263b2b",
+        muted: "#546650",
+        accent: "#426c38",
+        accentText: "#ffffff",
+        line: "#cfdcc8",
+        positive: "#326330",
+        negative: "#ac3e44",
+        dark: !1,
+        font: "DM Sans",
+        layout: "organic",
+        hero: "goal",
+        chart: "bars",
+        order: [
+          "goals",
+          "reserve",
+          "agenda",
+          "trend",
+          "sections",
+          "platforms",
+          "activity",
+        ],
+      },
+      {
+        id: "cobalto",
+        name: "Cobalto",
+        description:
+          "Agenda \xE0 frente, blocos gr\xE1ficos e a\xE7\xF5es diretas.",
+        bg: "#eff3fc",
+        surface: "#ffffff",
+        text: "#172c52",
+        muted: "#526583",
+        accent: "#235bc7",
+        accentText: "#ffffff",
+        line: "#cdd9ef",
+        positive: "#166a52",
+        negative: "#b63247",
+        dark: !1,
+        font: "Manrope",
+        layout: "blocks",
+        hero: "agenda",
+        chart: "bars",
+        order: [
+          "agenda",
+          "sections",
+          "activity",
+          "trend",
+          "platforms",
+          "goals",
+          "reserve",
+        ],
+      },
+      {
+        id: "lavanda",
+        name: "Lavanda",
+        description: "Planejamento calmo, an\xE9is e curvas delicadas.",
+        bg: "#f0edf7",
+        surface: "#fdfbff",
+        text: "#382d4e",
+        muted: "#6a5c7f",
+        accent: "#7651ab",
+        accentText: "#ffffff",
+        line: "#d9cee7",
+        positive: "#356c56",
+        negative: "#ad385a",
+        dark: !1,
+        font: "DM Sans",
+        layout: "petal",
+        hero: "goal",
+        chart: "area",
+        order: [
+          "goals",
+          "agenda",
+          "sections",
+          "reserve",
+          "trend",
+          "activity",
+          "platforms",
+        ],
+      },
+      {
+        id: "ambar",
+        name: "\xC2mbar",
+        description:
+          "Or\xE7amento vis\xEDvel, luz quente e despesas em destaque.",
+        bg: "#fbf0e4",
+        surface: "#fffaf3",
+        text: "#4b3021",
+        muted: "#795b46",
+        accent: "#a34b16",
+        accentText: "#ffffff",
+        line: "#e8d1b9",
+        positive: "#346b42",
+        negative: "#ad3545",
+        dark: !1,
+        font: "Manrope",
+        layout: "warm",
+        hero: "expense",
+        chart: "bars",
+        order: [
+          "activity",
+          "agenda",
+          "trend",
+          "sections",
+          "goals",
+          "platforms",
+          "reserve",
+        ],
+      },
+      {
+        id: "grafite",
+        name: "Grafite",
+        description: "Faixas de dados, precis\xE3o e densidade controlada.",
+        bg: "#191c22",
+        surface: "#252a33",
+        text: "#f1f3f7",
+        muted: "#b2bdcf",
+        accent: "#c2d1ff",
+        accentText: "#202e51",
+        line: "#495261",
+        positive: "#a2e5bc",
+        negative: "#ffb0b8",
+        dark: !0,
+        font: "IBM Plex Mono",
+        layout: "data",
+        hero: "cashflow",
+        chart: "bars",
+        order: [
+          "trend",
+          "platforms",
+          "sections",
+          "activity",
+          "reserve",
+          "agenda",
+          "goals",
+        ],
+      },
+      {
+        id: "origami",
+        name: "Origami",
+        description:
+          "Dobras geom\xE9tricas, se\xE7\xF5es grandes e contraste gr\xE1fico.",
+        bg: "#f2f1eb",
+        surface: "#ffffff",
+        text: "#283439",
+        muted: "#5e6b6b",
+        accent: "#176873",
+        accentText: "#ffffff",
+        line: "#d0d9d7",
+        positive: "#286b4b",
+        negative: "#b33c48",
+        dark: !1,
+        font: "Space Grotesk",
+        layout: "fold",
+        hero: "sections",
+        chart: "line",
+        order: [
+          "sections",
+          "goals",
+          "trend",
+          "platforms",
+          "activity",
+          "agenda",
+          "reserve",
+        ],
+      },
+      {
+        id: "cosmos",
+        name: "Cosmos",
+        description:
+          "Vidro noturno violeta, \xF3rbitas e objetivos em destaque.",
+        bg: "#141126",
+        surface: "#24203b",
+        text: "#f5f0ff",
+        muted: "#c0b2db",
+        accent: "#cab3ff",
+        accentText: "#302044",
+        line: "#504463",
+        positive: "#9de4cb",
+        negative: "#ffb0cc",
+        dark: !0,
+        font: "Space Grotesk",
+        layout: "orbital",
+        hero: "goal",
+        chart: "area",
+        order: [
+          "goals",
+          "trend",
+          "reserve",
+          "sections",
+          "platforms",
+          "agenda",
+          "activity",
+        ],
+      },
+      {
+        id: "areia",
+        name: "Areia",
+        description:
+          "Fluxo em p\xE1ginas, tons minerais e espa\xE7o para respirar.",
+        bg: "#f0ebe3",
+        surface: "#faf7f2",
+        text: "#3e3830",
+        muted: "#70665a",
+        accent: "#6e5c3d",
+        accentText: "#ffffff",
+        line: "#d6cbbb",
+        positive: "#346344",
+        negative: "#a73d42",
+        dark: !1,
+        font: "Lora",
+        layout: "journal",
+        hero: "cashflow",
+        chart: "line",
+        order: [
+          "trend",
+          "activity",
+          "goals",
+          "reserve",
+          "sections",
+          "agenda",
+          "platforms",
+        ],
+      },
+      {
+        id: "rubi",
+        name: "Rubi",
+        description: "Bord\xF4 profundo, compromissos e agenda de pagamentos.",
+        bg: "#24151c",
+        surface: "#39222d",
+        text: "#fff0f4",
+        muted: "#d6b4c3",
+        accent: "#ffb3c6",
+        accentText: "#492333",
+        line: "#684352",
+        positive: "#a3e4bb",
+        negative: "#ffb7a4",
+        dark: !0,
+        font: "Manrope",
+        layout: "velvet",
+        hero: "agenda",
+        chart: "area",
+        order: [
+          "agenda",
+          "sections",
+          "trend",
+          "activity",
+          "goals",
+          "reserve",
+          "platforms",
+        ],
+      },
+      {
+        id: "menta",
+        name: "Menta",
+        description:
+          "Trilha semanal, metas r\xE1pidas e controles arredondados.",
+        bg: "#eaf5f1",
+        surface: "#fcfffe",
+        text: "#1c3d36",
+        muted: "#4c6f66",
+        accent: "#16745e",
+        accentText: "#ffffff",
+        line: "#c5dfd5",
+        positive: "#14674c",
+        negative: "#b2354b",
+        dark: !1,
+        font: "DM Sans",
+        layout: "fresh",
+        hero: "delivery",
+        chart: "bars",
+        order: [
+          "platforms",
+          "goals",
+          "agenda",
+          "trend",
+          "activity",
+          "sections",
+          "reserve",
+        ],
+      },
+    ],
+    qg = (e) => Go.find((a) => a.id === e) || Go[0];
+  function Ug() {
+    try {
+      let e = window.NexoNative
+        ? window.NexoNative.load()
+        : localStorage.getItem("nexo-v1");
+      return e ? $l(JSON.parse(e)) : du();
+    } catch (e) {
+      return ((window.nexoLoadError = e.message), null);
+    }
+  }
+  function Ng(e) {
+    let a = JSON.stringify(e);
+    if (window.NexoNative) {
+      if (!window.NexoNative.save(a))
+        throw Error("N\xE3o foi poss\xEDvel salvar no aparelho.");
+    } else localStorage.setItem("nexo-v1", a);
+  }
+  async function Us(e) {
+    let a = JSON.stringify(e, null, 2);
+    if (window.NexoNative) {
+      window.NexoNative.exportBackup(a);
+      return;
+    }
+    let t = URL.createObjectURL(new Blob([a], { type: "application/json" })),
+      l = document.createElement("a");
+    ((l.href = t),
+      (l.download = "Nexo-backup.json"),
+      l.click(),
+      setTimeout(() => URL.revokeObjectURL(t), 1e3));
+  }
+  async function Ns(e, a) {
+    let { url: t, key: l, grants: o } = e.sharing;
+    if (!o[a] || o[a].provider === 'firebase') return publishFirebaseSection(e,a);
+    if (!t || !l)
+      throw Error("Configure o servidor de compartilhamento primeiro.");
+    if (!/^https:\/\/[^\s]+$/.test(t)) throw Error("Use um endere\xE7o HTTPS.");
+    let u = o[a],
+      i = new AbortController(),
+      d = setTimeout(() => i.abort(), 15e3),
+      s;
+    try {
+      s = await fetch(
+        t.replace(/\/$/, "") + (u ? "/api/shares/" + u.id : "/api/shares"),
+        {
+          signal: i.signal,
+          method: u ? "PUT" : "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(u ? { "X-Write-Key": u.writeKey } : { "X-Owner-Key": l }),
+          },
+          body: JSON.stringify({ section: Ir(e, a), expiresDays: 30 }),
+        },
+      );
+    } catch {
+      throw Error(
+        "N\xE3o foi poss\xEDvel alcan\xE7ar o servidor. Verifique sua conex\xE3o e tente publicar novamente.",
+      );
+    } finally {
+      clearTimeout(d);
+    }
+    let c = await s.json();
+    if (!s.ok) throw Error(c.error || "N\xE3o foi poss\xEDvel publicar.");
+    return { ...u, ...c, syncedAt: new Date().toISOString(), error: "" };
+  }
+  var A = ReactCompat;
+  function pe({ label: e, children: a, onClick: t, ...l }) {
+    return A.default.createElement(
+      "button",
+      { className: "icon-button", "aria-label": e, title: e, onClick: t, ...l },
+      a,
+    );
+  }
+  function F({ children: e, onClick: a, variant: t = "", ...l }) {
+    return A.default.createElement(
+      "button",
+      { className: "button " + t, onClick: a, ...l },
+      e,
+    );
+  }
+  function St({ icon: e = be, title: a, children: t, action: l, onAction: o }) {
+    return A.default.createElement(
+      "div",
+      { className: "empty" },
+      A.default.createElement(e, { size: 30 }),
+      A.default.createElement("h3", null, a),
+      A.default.createElement("p", null, t),
+      l &&
+        A.default.createElement(
+          F,
+          { onClick: o },
+          A.default.createElement(be, { size: 18 }),
+          l,
+        ),
+    );
+  }
+function Hs(props){return React.createElement(AnimatedMoney,props);}
+  function Pl({ progress: e = 0, size: a = 90, label: t, children: l }) {
+    let u = 2 * Math.PI * 40;
+    return A.default.createElement(
+      "div",
+      {
+        className: "ring",
+        style: { width: a, height: a },
+        role: "img",
+        "aria-label": t || `${Math.round(e * 100)}% conclu\xEDdo`,
+      },
+      A.default.createElement(
+        "svg",
+        { viewBox: "0 0 96 96" },
+        A.default.createElement("circle", {
+          className: "ring-track",
+          cx: "48",
+          cy: "48",
+          r: 40,
+        }),
+        A.default.createElement("circle", {
+          className: "ring-value",
+          cx: "48",
+          cy: "48",
+          r: 40,
+          strokeDasharray: u,
+          strokeDashoffset: u * (1 - Math.min(1, Math.max(0, e))),
+        }),
+      ),
+      A.default.createElement(
+        "div",
+        null,
+        l ||
+          A.default.createElement(
+            "strong",
+            null,
+            Math.round(e * 100),
+            A.default.createElement("small", null, "%"),
+          ),
+      ),
+    );
+  }
+function Gl(props){return React.createElement(MotionProgress,props);}
+function Ye(props){return React.createElement(MotionToggle,props);}
+function Wi(props){return React.createElement(ContinuousTabs,props);}
+  function J({
+    title: e,
+    subtitle: a,
+    action: t,
+    onAction: l,
+    children: o,
+    className: u = "",
+    icon: i,
+  }) {
+    return A.default.createElement(
+      MotionCard,
+      { className: "card " + u },
+      e &&
+        A.default.createElement(
+          "div",
+          { className: "card-heading" },
+          A.default.createElement(
+            "div",
+            null,
+            i && A.default.createElement(i, { size: 18 }),
+            A.default.createElement(
+              "div",
+              null,
+              A.default.createElement("h2", null, e),
+              a && A.default.createElement("p", null, a),
+            ),
+          ),
+          t &&
+            A.default.createElement(
+              "button",
+              { className: "text-button", onClick: l },
+              t,
+              A.default.createElement(Pe, { size: 16 }),
+            ),
+        ),
+      o,
+    );
+  }
+function Hg(props){return React.createElement(AppModal,props);}
+  function X({
+    label: e,
+    name: a,
+    type: t = "text",
+    required: l = !1,
+    options: o,
+    defaultValue: u = "",
+    hint: i,
+    ...d
+  }) {
+    return A.default.createElement(
+      "label",
+      { className: "field" },
+      A.default.createElement(
+        "span",
+        null,
+        e,
+        l && A.default.createElement("span", { "aria-hidden": "true" }, " *"),
+      ),
+      o
+        ? A.default.createElement(
+            "select",
+            {
+              "aria-label": e,
+              name: a,
+              ...(d.value !== void 0 ? {} : { defaultValue: u }),
+              required: l,
+              ...d,
+            },
+            o.map((s) =>
+              A.default.createElement(
+                "option",
+                { key: s.value, value: s.value },
+                s.label,
+              ),
+            ),
+          )
+        : t === "textarea"
+          ? A.default.createElement("textarea", {
+              "aria-label": e,
+              name: a,
+              ...(d.value !== void 0 ? {} : { defaultValue: u }),
+              required: l,
+              ...d,
+            })
+          : A.default.createElement("input", {
+              "aria-label": e,
+              name: a,
+              type: t,
+              ...(d.value !== void 0 ? {} : { defaultValue: u }),
+              required: l,
+              ...d,
+            }),
+      i && A.default.createElement("small", null, i),
+    );
+  }
+  function Fs({
+    values: e = [],
+    labels: a = [],
+    kind: t = "area",
+    visible: l = !0,
+  }) {
+    if (!l)
+      return A.default.createElement(
+        "p",
+        { className: "muted" },
+        "Gr\xE1fico oculto enquanto os valores est\xE3o protegidos.",
+      );
+    let o = Math.max(1, ...e),
+      u = e.map((d, s) => [
+        12 + (s * 276) / Math.max(1, e.length - 1),
+        108 - (d / o) * 90,
+      ]),
+      i = u.map((d, s) => (s ? "L" : "M") + d.join(",")).join(" ");
+    return A.default.createElement(
+      "div",
+      { className: "chart chart-" + t },
+      A.default.createElement(
+        "svg",
+        {
+          viewBox: "0 0 300 130",
+          role: "img",
+          "aria-label": e.map((d, s) => a[s] + ": " + ye(d)).join("; "),
+        },
+        A.default.createElement(
+          "defs",
+          null,
+          A.default.createElement(
+            "linearGradient",
+            { id: "areaFill", x1: "0", y1: "0", x2: "1", y2: "1" },
+            A.default.createElement("stop", {
+              stopColor: "var(--accent)",
+              stopOpacity: ".4",
+            }),
+            A.default.createElement("stop", {
+              offset: "1",
+              stopColor: "var(--accent)",
+              stopOpacity: ".02",
+            }),
+          ),
+        ),
+        [28, 68, 108].map((d) =>
+          A.default.createElement("line", {
+            key: d,
+            className: "gridline",
+            x1: "5",
+            x2: "295",
+            y1: d,
+            y2: d,
+          }),
+        ),
+        t === "bars"
+          ? e.map((d, s) =>
+              A.default.createElement(
+                "rect",
+                {
+                  key: s,
+                  className: "bar",
+                  x: 9 + (s * 284) / Math.max(1, e.length),
+                  y: 108 - (d / o) * 90,
+                  width: Math.max(4, 220 / Math.max(1, e.length)),
+                  height: Math.max(2, (d / o) * 90),
+                  rx: "6",
+                },
+                A.default.createElement("title", null, a[s], ": ", ye(d)),
+              ),
+            )
+          : A.default.createElement(
+              A.default.Fragment,
+              null,
+              t === "area" &&
+                u.length > 0 &&
+                A.default.createElement("path", {
+                  d: i + " L288,108 L12,108 Z",
+                  fill: "url(#areaFill)",
+                }),
+              A.default.createElement("path", { d: i, className: "line" }),
+              u.map(([d, s], c) =>
+                A.default.createElement(
+                  "circle",
+                  { key: c, cx: d, cy: s, r: "3", className: "point" },
+                  A.default.createElement("title", null, a[c], ": ", ye(e[c])),
+                ),
+              ),
+            ),
+      ),
+      A.default.createElement(
+        "div",
+        { className: "chart-labels" + (a.length > 8 ? " dense-labels" : "") },
+        a.map((d, s) => A.default.createElement("span", { key: s }, d)),
+      ),
+      A.default.createElement(
+        "details",
+        { className: "chart-data" },
+        A.default.createElement("summary", null, "Ver valores do gr\xE1fico"),
+        A.default.createElement(
+          "table",
+          null,
+          A.default.createElement(
+            "thead",
+            null,
+            A.default.createElement(
+              "tr",
+              null,
+              A.default.createElement("th", null, "Per\xEDodo"),
+              A.default.createElement("th", null, "Receita em R$"),
+            ),
+          ),
+          A.default.createElement(
+            "tbody",
+            null,
+            e.map((d, s) =>
+              A.default.createElement(
+                "tr",
+                { key: s },
+                A.default.createElement("td", null, a[s]),
+                A.default.createElement("td", null, ye(d)),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+  function Ri({ entry: e, visible: a, onClick: t }) {
+    let l = e.type === "income";
+    return A.default.createElement(
+      "button",
+      { className: "transaction row-button", onClick: t },
+      A.default.createElement(
+        "span",
+        { className: "round-icon " + (l ? "positive" : "negative") },
+        l
+          ? A.default.createElement(dl, { size: 20 })
+          : A.default.createElement(Da, { size: 20 }),
+      ),
+      A.default.createElement(
+        "span",
+        { className: "grow" },
+        A.default.createElement("strong", null, e.title),
+        A.default.createElement(
+          "small",
+          null,
+          e.category || "Geral",
+          " \xB7 ",
+          fa(e.date),
+        ),
+      ),
+      A.default.createElement(Hs, {
+        value: e.type === "expense" ? -e.amount : e.amount,
+        visible: a,
+        className: l ? "positive-text" : "",
+      }),
+    );
+  }
+  function ve({ children: e }) {
+    return A.default.createElement(
+      "p",
+      { className: "help" },
+      A.default.createElement(Bt, { size: 16 }),
+      A.default.createElement("span", null, e),
+    );
+  }
+  function Ps() {
+    let [e, a] = A.default.useState(0);
+    return A.default.createElement(
+      "div",
+      { className: "motion-preview" },
+      A.default.createElement(
+        "button",
+        {
+          className: "morph-control morph-stage-" + e,
+          "aria-label": "Testar morph de componentes",
+          "aria-pressed": e > 0,
+          onClick: () => a((t) => (t + 1) % 3),
+        },
+        A.default.createElement(
+          "svg",
+          {
+            viewBox: "0 0 24 24",
+            width: "26",
+            height: "26",
+            "aria-hidden": "true",
+          },
+          A.default.createElement("path", {
+            fill: "none",
+            stroke: "currentColor",
+            strokeWidth: "1.7",
+            strokeLinecap: "round",
+            strokeLinejoin: "round",
+            style: {
+              d:
+                e === 2
+                  ? "path('M5 12 L10 17 M10 17 L20 7')"
+                  : "path('M12 5 L12 19 M5 12 L19 12')",
+            },
+          }),
+        ),
+        A.default.createElement(
+          "span",
+          null,
+          e === 1
+            ? "Guardar um plano"
+            : e === 2
+              ? "Plano confirmado"
+              : "Testar morph",
+        ),
+        e === 2 &&
+          A.default.createElement(
+            "small",
+            null,
+            "Forma, espa\xE7o e cor em uma transi\xE7\xE3o.",
+          ),
+      ),
+      A.default.createElement(
+        "small",
+        null,
+        "Toque para transformar c\xEDrculo, c\xE1psula e cart\xE3o.",
+      ),
+    );
+  }
+  var $i = Ug(),
+    rv = {
+      dashboard: "Vis\xE3o geral",
+      sections: "Minhas se\xE7\xF5es",
+      deliveries: "Entregas",
+      goals: "Meus objetivos",
+      accounts: "Contas e reserva",
+      entries: "Lan\xE7amentos",
+      recurring: "Recorr\xEAncias",
+      agenda: "Minha agenda",
+      settings: "Seu jeito de usar",
+      help: "Sobre o Nexo",
+    },
+    Fg = [
+      "Alimenta\xE7\xE3o",
+      "Casa",
+      "Transporte",
+      "Sa\xFAde",
+      "Lazer",
+      "Trabalho",
+      "Sal\xE1rio",
+      "Entregas",
+      "Parcelas",
+      "Outros",
+    ];
+  function iv() {
+    let [e, a] = (0, r.useState)($i || du()),
+      [t, l] = (0, r.useState)("dashboard"),
+      [o, u] = (0, r.useState)($i ? null : { type: "loadError" }),
+      [i, d] = (0, r.useState)(!1),
+      [s, c] = (0, r.useState)($i?.settings.showOnOpen || !1),
+      [h, C] = (0, r.useState)("month"),
+      [m, b] = (0, r.useState)(Ve()),
+      [D, E] = (0, r.useState)(""),
+      [Z, g] = (0, r.useState)(null),
+      [p, x] = (0, r.useState)(null),
+      [I, T] = (0, r.useState)(""),
+      [N, B] = (0, r.useState)(!1),
+      [z, me] = (0, r.useState)(""),
+      [j, ka] = (0, r.useState)(0),
+      gr = (0, r.useRef)(!1),
+      hr = (0, r.useRef)(!$i),
+      Gs = (0, r.useRef)({}),
+      en = (0, r.useRef)({}),
+      Ja = (0, r.useRef)(e),
+      agendaOrigin = (0, r.useRef)(null);
+    Ja.current = e;
+    let Vs = (0, r.useRef)(),
+      O = p || e.settings,
+      we = qg(O.theme),
+      Vo = yr(h, m),
+      Te = vf(e, Vo),
+      P = (n) => r.default.createElement(Hs, { value: n, visible: s }),
+      Qe = (n) => {
+        (E(n),
+          clearTimeout(Vs.current),
+          (Vs.current = setTimeout(() => E(""), 4500)));
+      };
+    function ke(n) {
+      if (n === 'agenda' && t !== 'agenda') {
+        agendaOrigin.current = { screen:t, section:Z, period:h, date:m, query:z, scrollY:window.scrollY };
+      } else if (n !== 'agenda') agendaOrigin.current = null;
+      (l(n), g(null), d(!1), me(""), window.scrollTo(0, 0));
+    }
+    function toggleAgenda() {
+      if (t !== 'agenda') { ke('agenda'); return; }
+      const previous = agendaOrigin.current;
+      if (!previous) { ke('dashboard'); return; }
+      agendaOrigin.current = null;
+      l(previous.screen); g(previous.section); C(previous.period); b(previous.date); me(previous.query); d(false);
+      requestAnimationFrame(() => requestAnimationFrame(() => window.scrollTo(0, previous.scrollY)));
+    }
+    function Aa() {
+      (window.NexoNative?.clearDraft?.(), u(null));
+    }
+    function U(n, f = {}) {
+      (T(""), u({ type: n, ...f }), d(!1));
+    }
+    function le(n, f, L = {}) {
+      try {
+        if (hr.current && o?.type !== "importConfirm")
+          throw Error(
+            "Restaure um backup antes de gravar novos dados. O arquivo original foi preservado.",
+          );
+        let y = Ja.current;
+        if (L.replaceData && Object.keys(y.sharing.grants).length)
+          throw Error(
+            "Revogue os links ativos antes de substituir seus dados. Assim voc\xEA mant\xE9m o controle dos acessos.",
+          );
+        let v = structuredClone(y);
+        n(v);
+        for (let [S, k] of Object.entries(en.current))
+          if (!v.sections.some((q) => q.id === S) || v.sharing.url !== k)
+            throw Error(
+              "Aguarde a publica\xE7\xE3o terminar antes de remover a se\xE7\xE3o ou mudar o servidor.",
+            );
+        ($l(v),
+          Ng(v),
+          o?.type === "importConfirm" && (hr.current = !1),
+          a(v),
+          (Ja.current = v),
+          v.goals.length > y.goals.length &&
+            v.settings.notifications &&
+            window.NexoNative?.requestNotifications());
+        for (let S of v.sections)
+          !v.sharing.grants[S.id] ||
+            !y.sections.some((k) => k.id === S.id) ||
+            (xr(y, S.id) !== xr(v, S.id) && an(S.id));
+        return (f && Qe(f), O.haptic && window.NexoNative?.haptic(), !0);
+      } catch (y) {
+        return (T(y.message), Qe(y.message), !1);
+      }
+    }
+    function xr(n, f) {
+      let L = Ir(n, f);
+      return (delete L.updatedAt, JSON.stringify(L));
+    }
+    function an(n) {
+      Gs.current[n] = (Gs.current[n] || Promise.resolve())
+        .catch(() => {})
+        .then(async () => {
+          let f = Ja.current,
+            L = f.sharing.grants[n];
+          if (!(!L || (!f.sharing.url && L.provider !== 'firebase') || hr.current))
+            try {
+              let y = await Ns(f, n);
+              Ja.current.sharing.grants[n]?.id === L.id &&
+                le((v) => {
+                  v.sharing.grants[n] = y;
+                });
+            } catch {
+              Ja.current.sharing.grants[n]?.id === L.id &&
+                le((v) => {
+                  v.sharing.grants[n].error =
+                    "H\xE1 altera\xE7\xF5es aguardando publica\xE7\xE3o. Verifique sua conex\xE3o e atualize o link.";
+                });
+            }
+        });
+    }
+    ((0, r.useEffect)(() => {
+      let n = () => {
+        if (!document.hidden)
+          for (let f of Object.keys(Ja.current.sharing.grants)) an(f);
+      };
+      return (
+        n(),
+        window.addEventListener("online", n),
+        document.addEventListener("visibilitychange", n),
+        () => {
+          (window.removeEventListener("online", n),
+            document.removeEventListener("visibilitychange", n));
+        }
+      );
+    }, []),
+      (0, r.useEffect)(() => {
+        ((document.documentElement.dataset.theme = we.id),
+          (document.documentElement.dataset.dark = String(we.dark)),
+          window.parent.postMessage({type:'nexo-simulator-theme',id:we.id},'*'),
+          (document.documentElement.dataset.layout = we.layout),
+          (document.documentElement.dataset.motion = O.motion ? "on" : "off"),
+          (document.documentElement.dataset.glass = O.glass ? "on" : "off"),
+          (document.documentElement.dataset.texture = O.texture ? "on" : "off"),
+          (document.documentElement.dataset.compact = O.compact
+            ? "on"
+            : "off"));
+        for (let n of [
+          "menuStyle",
+          "switchStyle",
+          "buttonStyle",
+          "cardStyle",
+          "calendarStyle",
+          "iconStyle",
+        ])
+          document.documentElement.dataset[n] = O[n];
+        for (let n of [
+          "transition",
+          "reveal",
+          "numbers",
+          "progress",
+          "feedback",
+          "glow",
+        ])
+          document.documentElement.dataset[n] = O[n] ? "on" : "off";
+        (document.documentElement.style.setProperty(
+          "--speed",
+          `${Math.max(0.15, O.intensity) * 300}ms`,
+        ),
+          Object.entries({
+            bg: we.bg,
+            surface: we.surface,
+            text: we.text,
+            muted: we.muted,
+            accent: we.accent,
+            "accent-text": we.accentText,
+            line: we.line,
+            positive: we.positive,
+            negative: we.negative,
+            font: `'${we.font}',sans-serif`,
+          }).forEach(([n, f]) =>
+            document.documentElement.style.setProperty("--" + n, f),
+          ),
+          (document.querySelector('meta[name="theme-color"]').content = we.bg),
+          window.NexoNative?.setSystemTheme(we.dark, we.bg));
+      }, [O, we]),
+      (0, r.useEffect)(() => {
+        let n = (y) => {
+            (u((v) => v && { ...v, image: y.detail }),
+              window.NexoNative?.clearDraft?.());
+          },
+          f = (y) => {
+            try {
+              let v = $l(JSON.parse(y.detail));
+              U("importConfirm", { importData: v });
+            } catch (v) {
+              Qe("Backup inv\xE1lido: " + v.message);
+            }
+          },
+          L = () => {
+            o
+              ? Aa()
+              : i
+                ? d(!1)
+                : Z
+                  ? g(null)
+                  : t === "agenda"
+                    ? toggleAgenda()
+                    : t !== "dashboard"
+                    ? ke("dashboard")
+                    : window.NexoNative?.finishApp();
+          };
+        if (
+          (window.addEventListener("nexo-image", n),
+          window.addEventListener("nexo-import", f),
+          window.addEventListener("nexo-back", L),
+          !gr.current && window.NexoNative)
+        ) {
+          gr.current = !0;
+          try {
+            let y = window.NexoNative.getDraft?.();
+            y && u(JSON.parse(y));
+          } catch {}
+          window.NexoNative.ready?.();
+        }
+        return () => {
+          (window.removeEventListener("nexo-image", n),
+            window.removeEventListener("nexo-import", f),
+            window.removeEventListener("nexo-back", L));
+        };
+      }, [o, i, Z, t]),
+      (0, r.useEffect)(() => {
+        if (!e.settings.notifications) return;
+        let n = e.goals.filter((f) => f.due < Ve() && za(f) < f.target);
+        n.length &&
+          Qe(
+            `${n.length} meta(s) passaram do prazo. Voc\xEA pode estender na tela de objetivos.`,
+          );
+      }, []),
+      (0, r.useEffect)(() => {
+        !window.NexoNative ||
+          hr.current ||
+          window.NexoNative.scheduleGoals(
+            JSON.stringify(
+              e.settings.notifications
+                ? e.goals
+                    .filter((n) => za(n) < n.target)
+                    .map((n) => ({ id: n.id, title: n.title, date: n.due }))
+                : [],
+            ),
+          );
+      }, [e.goals, e.settings.notifications]));
+    let Ha = e.deliveries.filter((n) => nu(n.date, Vo)),
+      il = Ha.reduce((n, f) => n + f.amount, 0),
+      _o = Ha.reduce((n, f) => n + f.cost, 0),
+      Ct = Ha.reduce((n, f) => n + f.km, 0),
+      Xo = e.goals.reduce((n, f) => n + za(f), 0),
+      jo = e.goals.reduce((n, f) => n + f.target, 0),
+      _s = e.sections
+        .filter((n) => n.kind === "receive")
+        .reduce((n, f) => n + Ba(f).remaining, 0),
+      Xs = e.sections
+        .filter((n) => n.kind === "pay")
+        .reduce((n, f) => n + Ba(f).remaining, 0);
+    function It(n, f) {
+      U("delete", { kind: n, id: f });
+    }
+    async function Gg(n) {
+      if (N) return;
+      B(!0);
+      let f = Ja.current,
+        L = xr(f, n);
+      en.current[n] = f.sharing.url;
+      try {
+        let y = await Ns(f, n),
+          v = L !== xr(Ja.current, n);
+        le((k) => {
+          k.sharing.grants[n] = y;
+        }, "Se\xE7\xE3o publicada. Link pronto.") &&
+          (v && an(n), U("share", { id: n }));
+      } catch (y) {
+        Qe(y.message);
+      } finally {
+        (delete en.current[n], B(!1));
+      }
+    }
+    async function Vg(n) {
+      let f = e.sharing.grants[n];
+      if (f) {
+        B(!0);
+        try {
+          if (f.provider === 'firebase') await revokeFirebaseShare(f);
+          else if (
+            !(
+              await fetch(
+                e.sharing.url.replace(/\/$/, "") + "/api/shares/" + f.id,
+                { method: "DELETE", headers: { "X-Write-Key": f.writeKey } },
+              )
+            ).ok
+          )
+            throw Error("N\xE3o foi poss\xEDvel revogar.");
+          le((y) => {
+            delete y.sharing.grants[n];
+          }, "Link revogado.");
+        } catch (L) {
+          Qe(L.message);
+        } finally {
+          B(!1);
+        }
+      }
+    }
+    function ge(n) {
+      x((f) => {
+        let L = structuredClone(f || e.settings);
+        return (n(L), L);
+      });
+    }
+    function _g(n) {
+      let f = e.sharing.grants[n];
+      if (f?.provider === 'firebase') return f.url;
+      return f
+        ? e.sharing.url.replace(/\/$/, "") + "/s/" + f.id + "#" + f.readKey
+        : "";
+    }
+    function Xg(n) {
+      window.NexoNative
+        ? window.NexoNative.share(n)
+        : navigator.share
+          ? navigator.share({ text: n }).catch(() => {})
+          : navigator.clipboard?.writeText(n).then(() => Qe("Link copiado."));
+    }
+    let js = [
+        { value: "", label: "Escolha a conta" },
+        ...e.accounts.map((n) => ({ value: n.id, label: n.title })),
+      ],
+      Wa = (n = "Valor (R$)", f = "amount", L = "") =>
+        r.default.createElement(X, {
+          label: n,
+          name: f,
+          inputMode: "decimal",
+          required: !0,
+          defaultValue: L,
+          placeholder: "0,00",
+        }),
+      nl = (n = "Data", f = "date", L = Ve()) =>
+        r.default.createElement(X, {
+          label: n,
+          name: f,
+          type: "date",
+          required: !0,
+          defaultValue: L,
+        }),
+      Vl = (n = "accountId", f = "Conta banc\xE1ria") =>
+        r.default.createElement(X, {
+          label: f,
+          name: n,
+          required: !0,
+          options: js,
+        }),
+      Ma = () =>
+        e.accounts.length
+          ? !1
+          : (U("account"),
+            Qe("Cadastre primeiro a conta para este lan\xE7amento."),
+            !0);
+    function tn() {
+      if (window.NexoNative) {
+        let n = document.querySelector(".modal form"),
+          f = {
+            ...o,
+            formData: n ? Object.fromEntries(new FormData(n)) : o.formData,
+          };
+        if (!window.NexoNative.stageDraft(JSON.stringify(f))) {
+          Qe(
+            "N\xE3o foi poss\xEDvel preservar o formul\xE1rio. Tente novamente.",
+          );
+          return;
+        }
+        window.NexoNative.pickImage();
+      } else document.getElementById("image-file").click();
+    }
+    (0, r.useEffect)(() => {
+      if (!o?.formData) return;
+      let n = document.querySelector(".modal form");
+      if (n)
+        for (let [f, L] of Object.entries(o.formData)) {
+          let y = n.elements.namedItem(f);
+          y && y.type !== "file" && (y.value = L);
+        }
+    }, [o?.type, o?.image, o?.formData]);
+    function jg(n) {
+      (n.preventDefault(), T(""));
+      let f = Object.fromEntries(new FormData(n.currentTarget));
+      try {
+        let L = !1,
+          y = () => {
+            let S = Rl(f.amount);
+            if (S <= 0) throw Error("O valor deve ser maior que zero.");
+            return S;
+          },
+          v = () => {
+            let S = f.title?.trim();
+            if (!S) throw Error("Escreva um t\xEDtulo.");
+            return S;
+          };
+        switch (o.type) {
+          case "account":
+            L = le(
+              (S) =>
+                S.accounts.push({
+                  id: ee(),
+                  title: v(),
+                  initial: Rl(f.amount),
+                  color: f.color,
+                }),
+              "Conta cadastrada.",
+            );
+            break;
+          case "entry": {
+            let S = y();
+            if (f.type === "transfer" && f.accountId === f.toAccountId)
+              throw Error("Escolha duas contas diferentes.");
+            L = le(
+              (k) =>
+                k.entries.push({
+                  id: ee(),
+                  image: o.image || "",
+                  title: v(),
+                  type: f.type,
+                  amount: S,
+                  date: f.date,
+                  accountId: f.accountId,
+                  toAccountId: f.type === "transfer" ? f.toAccountId : void 0,
+                  category: f.category,
+                  sectionId: f.sectionId || void 0,
+                }),
+              "Lan\xE7amento salvo.",
+            );
+            break;
+          }
+          case "section": {
+            let S = Number(f.count),
+              k = f.kind,
+              q = k === "ledger" ? 0 : y();
+            if (k !== "ledger" && (!Number.isInteger(S) || S < 1 || S > 600))
+              throw Error("Use de 1 a 600 parcelas.");
+            L = le(
+              (ne) =>
+                ne.sections.push({
+                  id: ee(),
+                  title: v(),
+                  person: f.person,
+                  kind: k,
+                  total: q,
+                  count: k === "ledger" ? 0 : S,
+                  start: f.date,
+                  payments: [],
+                  privateNote: f.privateNote,
+                }),
+              "Se\xE7\xE3o criada.",
+            );
+            break;
+          }
+          case "payment": {
+            let S = e.sections.find(($) => $.id === o.id),
+              k = Ba(S),
+              q = Rl(f.amount);
+            if (q > k.remaining)
+              throw Error("O valor supera o saldo restante.");
+            let ne = ee();
+            L = le(($) => {
+              let Qo = $.sections.find((nh) => nh.id === o.id),
+                Ws = k.current.index;
+              for (; Qo.payments.length < Ws;)
+                Qo.payments.push({
+                  id: ee(),
+                  amount: 0,
+                  date: f.date,
+                  auto: !0,
+                });
+              (Qo.payments.push({
+                id: ne,
+                amount: q,
+                date: f.date,
+                accountId: f.accountId,
+              }),
+                q > 0 &&
+                  $.entries.push({
+                    id: ee(),
+                    paymentId: ne,
+                    image: o.image || "",
+                    sectionId: S.id,
+                    title: S.title + " \u2022 parcela " + (Ws + 1),
+                    type: S.kind === "receive" ? "income" : "expense",
+                    amount: q,
+                    date: f.date,
+                    accountId: f.accountId,
+                    category: "Parcelas",
+                  }));
+            }, "Pagamento registrado e parcelas recalculadas.");
+            break;
+          }
+          case "delivery": {
+            let S = y(),
+              k = Number(f.km.replace(",", ".")),
+              q = Rl(f.cost || "0");
+            if (!Number.isFinite(k) || k <= 0)
+              throw Error("Informe a dist\xE2ncia real em km.");
+            if (!f.platform.trim()) throw Error("Escolha uma plataforma.");
+            let ne = ee();
+            L = le(($) => {
+              ($.deliveries.push({
+                id: ne,
+                platform: f.platform,
+                title: v(),
+                pickup: f.pickup.trim(),
+                destination: f.destination.trim(),
+                amount: S,
+                km: k,
+                cost: q,
+                date: f.date,
+              }),
+                $.entries.push({
+                  id: ee(),
+                  deliveryId: ne,
+                  title: "Entrega \u2022 " + f.platform,
+                  type: "income",
+                  amount: S,
+                  date: f.date,
+                  accountId: f.accountId,
+                  category: "Entregas",
+                }),
+                q > 0 &&
+                  $.entries.push({
+                    id: ee(),
+                    deliveryId: ne,
+                    title: "Custo da entrega",
+                    type: "expense",
+                    amount: q,
+                    date: f.date,
+                    accountId: f.accountId,
+                    category: "Trabalho",
+                  }));
+            }, "Entrega salva. Ganhos atualizados.");
+            break;
+          }
+          case "platform":
+            L = le((S) => {
+              let k = v();
+              if (S.platforms.includes(k))
+                throw Error("Essa plataforma j\xE1 existe.");
+              S.platforms.push(k);
+            }, "Plataforma adicionada.");
+            break;
+          case "goal": {
+            let S = y();
+            if (f.link && !/^https?:\/\//.test(f.link))
+              throw Error("Use um link come\xE7ando por https:// ou http://.");
+            L = le(
+              (k) =>
+                k.goals.push({
+                  id: ee(),
+                  title: v(),
+                  target: S,
+                  due: f.date,
+                  link: f.link,
+                  image: o.image || "",
+                  contributions: [],
+                  extensions: [],
+                }),
+              "Meta criada.",
+            );
+            break;
+          }
+          case "contribution": {
+            let S = y(),
+              k = e.goals.find((ne) => ne.id === o.id);
+            if (f.direction === "add" && S > Cr(e, f.accountId))
+              throw Error("N\xE3o h\xE1 saldo livre suficiente nessa conta.");
+            let q = k.contributions
+              .filter((ne) => ne.accountId === f.accountId)
+              .reduce((ne, $) => ne + $.amount, 0);
+            if (f.direction === "remove" && S > q)
+              throw Error("Resgate superior ao valor dessa meta na conta.");
+            L = le(
+              (ne) =>
+                ne.goals
+                  .find(($) => $.id === k.id)
+                  .contributions.push({
+                    id: ee(),
+                    accountId: f.accountId,
+                    amount: f.direction === "remove" ? -S : S,
+                    date: f.date,
+                  }),
+              "Aloca\xE7\xE3o da meta atualizada.",
+            );
+            break;
+          }
+          case "extend":
+            if (f.date <= Ve()) throw Error("Escolha uma data futura.");
+            L = le((S) => {
+              let k = S.goals.find((q) => q.id === o.id);
+              (k.extensions.push({ from: k.due, to: f.date, date: Ve() }),
+                (k.due = f.date));
+            }, "Prazo estendido.");
+            break;
+          case "reserve": {
+            let S = Rl(f.amount);
+            L = le((k) => {
+              ((k.reserve = k.reserve.filter(
+                (q) => q.accountId !== f.accountId,
+              )),
+                k.reserve.push({
+                  id: ee(),
+                  accountId: f.accountId,
+                  amount: S,
+                }));
+            }, "Reserva atualizada.");
+            break;
+          }
+          case "recurring": {
+            let S = y(),
+              k = Number(f.day);
+            if (!Number.isInteger(k) || k < 1 || k > 31)
+              throw Error("Use um dia entre 1 e 31.");
+            L = le(
+              (q) =>
+                q.recurring.push({
+                  id: ee(),
+                  title: v(),
+                  type: f.type,
+                  amount: S,
+                  day: k,
+                  accountId: f.accountId,
+                  category: f.category,
+                  active: !0,
+                }),
+              "Recorr\xEAncia cadastrada.",
+            );
+            break;
+          }
+          case "sharingConfig": {
+            let S = f.url.trim().replace(/\/$/, "");
+            if (S && !/^https:\/\/[^\s/#?]+(?::\d+)?$/.test(S))
+              throw Error(
+                "Informe apenas a origem HTTPS do servidor, sem caminho.",
+              );
+            if (Object.keys(e.sharing.grants).length && S !== e.sharing.url)
+              throw Error(
+                "Revogue os links ativos antes de mudar de servidor.",
+              );
+            L = le((k) => {
+              ((k.sharing.url = S), (k.sharing.key = f.key.trim()));
+            }, "Compartilhamento configurado.");
+            break;
+          }
+        }
+        L && Aa();
+      } catch (L) {
+        T(L.message);
+      }
+    }
+    function sa(n, f, L, y) {
+      return r.default.createElement(
+        "div",
+        { className: "kpi" },
+        r.default.createElement(
+          "span",
+          { className: "kpi-label" },
+          L && r.default.createElement(L, { size: 16 }),
+          n,
+        ),
+        r.default.createElement("strong", null, f),
+        y && r.default.createElement("small", null, y),
+      );
+    }
+    function ln() {
+      return r.default.createElement(
+        "div",
+        { className: "period-controls" },
+        r.default.createElement(Wi, {
+          label: "Per\xEDodo de an\xE1lise",
+          value: h,
+          onChange: C,
+          options: [
+            { value: "day", label: "Dia" },
+            { value: "week", label: "Semana" },
+            { value: "month", label: "M\xEAs" },
+            { value: "year", label: "Ano" },
+          ],
+        }),
+        r.default.createElement(
+          "label",
+          { className: "date-filter" },
+          r.default.createElement(Ra, { size: 16 }),
+          r.default.createElement("input", {
+            "aria-label": "Data de refer\xEAncia",
+            type: "date",
+            value: m,
+            onChange: (n) => {
+              n.target.value && b(n.target.value);
+            },
+          }),
+        ),
+      );
+    }
+    function Ys(n) {
+      let f = za(n) / n.target,
+        L = n.due < Ve() && f < 1;
+      return r.default.createElement(
+        wr,
+        {
+          key: n.id,
+          label: n.title,
+          enabled: O.swipeActions,
+          onOpen: () => _l("goals", n.id),
+          onDelete: () => It("goal", n.id),
+        },
+        r.default.createElement(
+          "button",
+          {
+            className: "goal-item row-button",
+            key: n.id,
+            onClick: () => {
+              (g(n.id), _l("goals", n.id));
+            },
+          },
+          n.image && r.default.createElement("img", { src: n.image, alt: "" }),
+          r.default.createElement(
+            "div",
+            { className: "goal-top" },
+            r.default.createElement(
+              "span",
+              { className: "round-icon" },
+              r.default.createElement(Pa, { size: 20 }),
+            ),
+            r.default.createElement(
+              "div",
+              { className: "grow" },
+              r.default.createElement("strong", null, n.title),
+              r.default.createElement(
+                "small",
+                null,
+                L
+                  ? "Prazo encerrado"
+                  : f >= 1
+                    ? "Objetivo alcan\xE7ado"
+                    : fa(n.due),
+              ),
+            ),
+            r.default.createElement(Pe, { size: 18 }),
+          ),
+          r.default.createElement(
+            "div",
+            { className: "amount-pair" },
+            P(za(n)),
+            r.default.createElement(
+              "small",
+              null,
+              "de ",
+              s ? ye(n.target) : "\u2022\u2022\u2022\u2022",
+            ),
+          ),
+          r.default.createElement(Gl, { value: f, label: n.title }),
+          r.default.createElement(
+            "div",
+            { className: "amount-pair" },
+            r.default.createElement(
+              "small",
+              null,
+              L
+                ? "Estender prazo"
+                : f >= 1
+                  ? "Meta conclu\xEDda"
+                  : "Seu objetivo est\xE1 mais perto",
+            ),
+            r.default.createElement(
+              "b",
+              null,
+              s ? Math.round(f * 100) + "%" : "\u2022\u2022%",
+            ),
+          ),
+        ),
+      );
+    }
+    function _l(n, f) {
+      (ke(n), g(f));
+    }
+    function Qs(n) {
+      let f = n.kind === "ledger" ? null : Ba(n);
+      return r.default.createElement(
+        wr,
+        {
+          key: n.id,
+          label: n.title,
+          enabled: O.swipeActions,
+          onOpen: () => _l("sections", n.id),
+          onDelete: () => It("section", n.id),
+        },
+        r.default.createElement(
+          "button",
+          {
+            className: "section-item row-button",
+            key: n.id,
+            onClick: () => _l("sections", n.id),
+          },
+          r.default.createElement(
+            "span",
+            {
+              className:
+                "round-icon " + (n.kind === "pay" ? "negative" : "positive"),
+            },
+            n.kind === "pay"
+              ? r.default.createElement(Da, { size: 20 })
+              : r.default.createElement(ta, { size: 20 }),
+          ),
+          r.default.createElement(
+            "div",
+            { className: "grow" },
+            r.default.createElement(
+              "strong",
+              null,
+              n.title,
+              n.pinned &&
+                r.default.createElement(
+                  "span",
+                  { className: "badge" },
+                  "Fixada",
+                ),
+            ),
+            r.default.createElement(
+              "small",
+              null,
+              n.kind === "ledger"
+                ? "Se\xE7\xE3o livre"
+                : n.kind === "receive"
+                  ? "A receber"
+                  : "A pagar",
+              n.person ? " \xB7 " + n.person : "",
+            ),
+            f && r.default.createElement(Gl, { value: f.progress }),
+          ),
+          r.default.createElement(
+            "span",
+            null,
+            f && P(f.remaining),
+            r.default.createElement(Pe, { size: 17 }),
+          ),
+        ),
+      );
+    }
+    function Yg() {
+      let n = [],
+        f = [],
+        [L, y] = Vo,
+        v = new Date(L + "T12:00:00"),
+        S =
+          h === "year"
+            ? 12
+            : h === "day"
+              ? 1
+              : h === "month"
+                ? Math.ceil((new Date(y + "T12:00:00") - v) / 864e5 / 7)
+                : h === "week"
+                  ? 7
+                  : 4;
+      for (let k = 0; k < S; k++) {
+        let q, ne;
+        if (h === "year")
+          ((q = gl(L, k)),
+            (ne = gl(L, k + 1)),
+            f.push(
+              new Date(q + "T12:00:00").toLocaleDateString("pt-BR", {
+                month: "short",
+              }),
+            ));
+        else if (h === "day") (f.push("Total do dia"), (q = L), (ne = y));
+        else {
+          let $ = new Date(v);
+          ($.setDate($.getDate() + k * (h === "month" ? 7 : 1)),
+            (q = Js($)),
+            $.setDate($.getDate() + (h === "month" ? 7 : 1)),
+            (ne = Js($)),
+            f.push(
+              h === "month"
+                ? `${k * 7 + 1}\u2013${Math.min((k + 1) * 7, new Date(y + "T00:00:00").getDate() === 1 ? new Date(new Date(y + "T12:00:00").getTime() - 864e5).getDate() : 31)}`
+                : new Date(q + "T12:00:00").toLocaleDateString("pt-BR", {
+                    weekday: "short",
+                  }),
+            ));
+        }
+        n.push(
+          e.entries
+            .filter(($) => $.type === "income" && $.date >= q && $.date < ne)
+            .reduce(($, Qo) => $ + Qo.amount, 0),
+        );
+      }
+      return r.default.createElement(
+        J,
+        {
+          title: "Entradas no per\xEDodo",
+          subtitle: "Receitas confirmadas em R$",
+          action: "Extrato",
+          onAction: () => ke("entries"),
+        },
+        r.default.createElement(
+          "div",
+          { className: "chart-total" },
+          P(Te.income),
+          r.default.createElement(
+            "span",
+            { className: "badge" },
+            h === "day" ? "Agrupado por hor\xE1rio" : "Hist\xF3rico real",
+          ),
+        ),
+        r.default.createElement(Fs, {
+          values: n,
+          labels: f,
+          visible: s,
+          kind: O.chart === "auto" ? we.chart : O.chart,
+        }),
+        r.default.createElement(
+          "div",
+          { className: "chart-summary" },
+          r.default.createElement("span", null, "Sa\xEDdas ", P(Te.expense)),
+          r.default.createElement(
+            "span",
+            null,
+            "Resultado ",
+            P(Te.income - Te.expense),
+          ),
+        ),
+      );
+    }
+    function Zs() {
+      let n = e.platforms
+        .map((f) => ({
+          name: f,
+          value: Ha.filter((L) => L.platform === f).reduce(
+            (L, y) => L + y.amount,
+            0,
+          ),
+        }))
+        .sort((f, L) => L.value - f.value);
+      return r.default.createElement(
+        J,
+        {
+          title: "Na rua, no controle",
+          subtitle: `${Ha.length} entregas no per\xEDodo`,
+          icon: Ta,
+          action: "Abrir",
+          onAction: () => ke("deliveries"),
+        },
+        r.default.createElement(
+          "div",
+          { className: "kpi-grid" },
+          sa("Ganho l\xEDquido", P(il - _o), ou),
+          sa(
+            "Por km",
+            P(Ct ? Math.round(il / Ct) : 0),
+            Wo,
+            "Receita bruta / km",
+          ),
+        ),
+        r.default.createElement(
+          "div",
+          { className: "platform-bars" },
+          n
+            .filter((f) => f.value > 0)
+            .map((f, L) =>
+              r.default.createElement(
+                "div",
+                { key: f.name },
+                r.default.createElement(
+                  "span",
+                  null,
+                  r.default.createElement("b", null, f.name),
+                  P(f.value),
+                ),
+                r.default.createElement(
+                  "div",
+                  { className: "platform-track" },
+                  r.default.createElement("i", {
+                    style: {
+                      width:
+                        (f.value / Math.max(1, ...n.map((y) => y.value))) *
+                          100 +
+                        "%",
+                      opacity: 1 - L * 0.12,
+                    },
+                  }),
+                ),
+              ),
+            ),
+        ),
+        !Ha.length &&
+          r.default.createElement(
+            "p",
+            { className: "muted" },
+            "Registre uma entrega para comparar as plataformas.",
+          ),
+      );
+    }
+    function Yo() {
+      let n = [];
+      for (let f of e.sections.filter((L) => L.kind !== "ledger")) {
+        let L = Ba(f).current;
+        L &&
+          n.push({
+            id: f.id,
+            date: L.date,
+            title: f.title,
+            amount: L.due,
+            type: f.kind,
+            open: () => _l("sections", f.id),
+          });
+      }
+      for (let f of e.goals.filter((L) => za(L) < L.target))
+        n.push({
+          id: f.id,
+          date: f.due,
+          title: f.title,
+          amount: f.target - za(f),
+          type: "goal",
+          open: () => _l("goals", f.id),
+        });
+      for (let f of e.recurring.filter((L) => L.active)) {
+        let L = Math.min(
+            f.day,
+            new Date(Number(m.slice(0, 4)), Number(m.slice(5, 7)), 0).getDate(),
+          ),
+          y = m.slice(0, 7) + "-" + String(L).padStart(2, "0");
+        e.entries.some(
+          (v) => v.recurringId === f.id && v.competence === m.slice(0, 7),
+        ) ||
+          n.push({
+            id: f.id,
+            date: y,
+            title: f.title,
+            amount: f.amount,
+            type: f.type,
+            open: () => ke("recurring"),
+          });
+      }
+      return n.sort((f, L) => f.date.localeCompare(L.date));
+    }
+    function Ks() {
+      return r.default.createElement(
+        J,
+        {
+          title: "No seu radar",
+          subtitle: "Pr\xF3ximos compromissos e prazos",
+          action: "Agenda",
+          onAction: () => ke("agenda"),
+        },
+        r.default.createElement(
+          "div",
+          { className: "timeline" },
+          Yo()
+            .slice(0, 4)
+            .map((n) =>
+              r.default.createElement(
+                "button",
+                { key: n.id, className: "timeline-item", onClick: n.open },
+                r.default.createElement("span", { className: "timeline-dot" }),
+                r.default.createElement(
+                  "span",
+                  null,
+                  r.default.createElement(
+                    "small",
+                    null,
+                    fa(n.date),
+                    n.date < Ve() ? " \xB7 Vencido" : "",
+                  ),
+                  r.default.createElement("strong", null, n.title),
+                ),
+                P(n.amount),
+              ),
+            ),
+        ),
+        !Yo().length &&
+          r.default.createElement(
+            "p",
+            { className: "muted" },
+            "Tudo tranquilo por aqui. Seus pr\xF3ximos prazos aparecer\xE3o nesta lista.",
+          ),
+      );
+    }
+    function Qg() {
+      let n = we.hero,
+        f = e.goals[0],
+        L = "Saldo total nas contas",
+        y = Te.balance,
+        v = "Inclui metas e reserva";
+      return (
+        n === "cashflow" &&
+          ((L = "Resultado do per\xEDodo"),
+          (y = Te.income - Te.expense),
+          (v = "Receitas menos despesas confirmadas")),
+        n === "delivery" &&
+          ((L = "Seu trabalho em movimento"),
+          (y = il - _o),
+          (v = `${Ha.length} entregas \xB7 ${Ct.toFixed(1).replace(".", ",")} km`)),
+        n === "expense" &&
+          ((L = "Despesas do per\xEDodo"),
+          (y = Te.expense),
+          (v = "Acompanhe cada sa\xEDda, com clareza")),
+        n === "agenda" &&
+          ((L = "Compromissos a pagar"),
+          (y = Xs),
+          (v = Yo().length + " itens no seu radar")),
+        n === "sections" &&
+          ((L = "Saldo a receber"),
+          (y = _s),
+          (v = e.sections.length + " se\xE7\xF5es organizadas")),
+        n === "goal" &&
+          ((L = f ? f.title : "Espa\xE7o para seus pr\xF3ximos planos"),
+          (y = Xo),
+          (v = "Guardado nos seus objetivos")),
+        r.default.createElement(
+          "section",
+          {
+            className: "hero hero-" + n + (O.heroImage ? " has-photo" : ""),
+            style: O.heroImage
+              ? {
+                  backgroundImage: `linear-gradient(#101b2ddd,#101b2ddd),url("${O.heroImage}")`,
+                }
+              : void 0,
+          },
+          r.default.createElement(
+            "div",
+            { className: "hero-top" },
+            r.default.createElement(
+              "span",
+              null,
+              r.default.createElement("span", { className: "status-dot" }),
+              " ",
+              L,
+            ),
+            r.default.createElement(
+              pe,
+              {
+                label: s ? "Ocultar valores" : "Mostrar valores",
+                onClick: () => c((S) => !S),
+              },
+              s
+                ? r.default.createElement(Ql, { size: 19 })
+                : r.default.createElement(fl, { size: 19 }),
+            ),
+          ),
+          r.default.createElement(
+            "div",
+            { className: "hero-main" },
+            r.default.createElement(
+              "div",
+              null,
+              r.default.createElement(
+                "div",
+                { className: "hero-amount", key: s + y },
+                P(y),
+              ),
+              r.default.createElement("p", null, v),
+            ),
+            n === "goal" &&
+              r.default.createElement(
+                Pl,
+                { progress: jo ? Xo / jo : 0, size: 96 },
+                s
+                  ? r.default.createElement(Pa, { size: 29 })
+                  : r.default.createElement(fl, { size: 25 }),
+              ),
+            n === "delivery" &&
+              r.default.createElement(
+                "div",
+                { className: "hero-symbol" },
+                r.default.createElement(Ta, { size: 56, strokeWidth: 1.2 }),
+              ),
+          ),
+          r.default.createElement(
+            "div",
+            { className: "hero-bottom" },
+            r.default.createElement(
+              "span",
+              null,
+              n === "expense"
+                ? "Receitas"
+                : n === "goal"
+                  ? "Falta para suas metas"
+                  : "Livre de aloca\xE7\xF5es",
+              r.default.createElement(
+                "b",
+                null,
+                P(
+                  n === "expense"
+                    ? Te.income
+                    : n === "goal"
+                      ? Math.max(0, jo - Xo)
+                      : Te.balance - Te.reserved - Te.goals,
+                ),
+              ),
+            ),
+            r.default.createElement(
+              "button",
+              {
+                onClick: () => {
+                  Ma() || U(n === "delivery" ? "delivery" : "entry");
+                },
+              },
+              r.default.createElement(be, { size: 18 }),
+              n === "delivery" ? "Nova entrega" : "Lan\xE7ar",
+            ),
+          ),
+        )
+      );
+    }
+    function Zg() {
+      let n = {
+        consistency: r.default.createElement(
+          J,
+          {
+            title: "Sua semana em movimento",
+            subtitle: "Atividade registrada, de segunda a domingo",
+            icon: Ra,
+          },
+          r.default.createElement(fn, {
+            data: e,
+            date: m,
+            onSelect: (f) => {
+              (b(f), ke("agenda"));
+            },
+          }),
+        ),
+        trend: Yg(),
+        platforms: Zs(),
+        goals: r.default.createElement(
+          J,
+          {
+            title: "Seus pr\xF3ximos cap\xEDtulos",
+            action: "Metas",
+            onAction: () => ke("goals"),
+          },
+          e.goals.slice(0, 2).map(Ys),
+          !e.goals.length &&
+            r.default.createElement(
+              St,
+              {
+                icon: Pa,
+                title: "Um plano come\xE7a aqui",
+                action: "Criar meta",
+                onAction: () => U("goal"),
+              },
+              "Guarde para algo que importa para voc\xEA.",
+            ),
+        ),
+        sections: r.default.createElement(
+          J,
+          {
+            title: "Cada acordo no seu lugar",
+            action: "Se\xE7\xF5es",
+            onAction: () => ke("sections"),
+          },
+          [...e.sections]
+            .sort((f, L) => +!!L.pinned - +!!f.pinned)
+            .slice(0, 3)
+            .map(Qs),
+          !e.sections.length &&
+            r.default.createElement(
+              St,
+              {
+                icon: ta,
+                title: "Organize seus acordos",
+                action: "Criar se\xE7\xE3o",
+                onAction: () => U("section"),
+              },
+              "Vendas, empr\xE9stimos e outros controles individuais.",
+            ),
+        ),
+        reserve: r.default.createElement(
+          J,
+          {
+            title: "Sua tranquilidade",
+            subtitle: "Reserva de emerg\xEAncia",
+            icon: Et,
+            action: "Gerenciar",
+            onAction: () => ke("accounts"),
+          },
+          r.default.createElement(
+            "div",
+            { className: "reserve-value" },
+            P(Te.reserved),
+          ),
+          r.default.createElement(
+            "p",
+            { className: "muted" },
+            e.reserve.length
+              ? e.reserve
+                  .map(
+                    (f) => e.accounts.find((L) => L.id === f.accountId)?.title,
+                  )
+                  .join(", ")
+              : "Separe uma parte do saldo para imprevistos.",
+          ),
+        ),
+        agenda: Ks(),
+        activity: r.default.createElement(
+          J,
+          {
+            title: "\xDAltimos movimentos",
+            action: "Ver todos",
+            onAction: () => ke("entries"),
+          },
+          [...e.entries]
+            .sort((f, L) => L.date.localeCompare(f.date))
+            .slice(0, 4)
+            .map((f) =>
+              r.default.createElement(Ri, {
+                key: f.id,
+                entry: f,
+                visible: s,
+                onClick: () => U("entryDetail", { entry: f }),
+              }),
+            ),
+          !e.entries.length &&
+            r.default.createElement(
+              "p",
+              { className: "muted" },
+              "Seus lan\xE7amentos aparecer\xE3o aqui.",
+            ),
+        ),
+      };
+      return r.default.createElement(
+        r.default.Fragment,
+        null,
+        ln(),
+        Qg(),
+        r.default.createElement(
+          "div",
+          { className: "overview-grid" },
+          sa("Entradas", P(Te.income), dl),
+          sa("Sa\xEDdas", P(Te.expense), Da),
+          sa("A receber", P(_s), ta),
+          sa("A pagar", P(Xs), Ko),
+        ),
+        r.default.createElement(
+          "div",
+          { className: "dashboard-stack" },
+          we.order
+            .flatMap((f) => (f === "platforms" ? [f, "consistency"] : [f]))
+            .filter(
+              (f) =>
+                O.components[f] !== !1 &&
+                (!O.focusMode ||
+                  ["platforms", "sections", "agenda"].includes(f)),
+            )
+            .map((f) =>
+              r.default.createElement(
+                "div",
+                { className: "dashboard-module module-" + f, key: f },
+                n[f],
+              ),
+            ),
+        ),
+        e.accounts.length === 0 &&
+          r.default.createElement(
+            F,
+            { variant: "full", onClick: () => U("account") },
+            r.default.createElement(lt, { size: 18 }),
+            "Cadastrar minha primeira conta",
+          ),
+      );
+    }
+    function Kg() {
+      let n = e.sections.find((y) => y.id === Z);
+      if (!n)
+        return r.default.createElement(
+          r.default.Fragment,
+          null,
+          r.default.createElement(
+            "div",
+            { className: "page-intro" },
+            r.default.createElement(
+              "p",
+              null,
+              "Um espa\xE7o para cada acordo.",
+              r.default.createElement("br", null),
+              "Compartilhe apenas o que escolher.",
+            ),
+            r.default.createElement(
+              pe,
+              { label: "Criar se\xE7\xE3o", onClick: () => U("section") },
+              r.default.createElement(be, null),
+            ),
+          ),
+          r.default.createElement(X, {
+            label: "Buscar se\xE7\xE3o",
+            name: "search",
+            value: z,
+            onChange: (y) => me(y.target.value),
+            placeholder: "T\xEDtulo ou pessoa",
+          }),
+          [...e.sections]
+            .sort((y, v) => +!!v.pinned - +!!y.pinned)
+            .filter((y) =>
+              (y.title + " " + y.person)
+                .toLowerCase()
+                .includes(z.toLowerCase()),
+            )
+            .map(Qs),
+          !e.sections.length &&
+            r.default.createElement(
+              St,
+              {
+                icon: ta,
+                title: "Sua primeira se\xE7\xE3o",
+                action: "Criar se\xE7\xE3o",
+                onAction: () => U("section"),
+              },
+              "Acompanhe parcelas, valores emprestados ou um grupo de lan\xE7amentos.",
+            ),
+        );
+      let f = n.kind === "ledger" ? null : Ba(n),
+        L = e.sharing.grants[n.id];
+      return r.default.createElement(
+        r.default.Fragment,
+        null,
+        r.default.createElement(
+          "div",
+          { className: "detail-heading" },
+          r.default.createElement(
+            "button",
+            { className: "text-button", onClick: () => g(null) },
+            r.default.createElement($a, { size: 18 }),
+            "Todas as se\xE7\xF5es",
+          ),
+          r.default.createElement(
+            pe,
+            {
+              label: "Op\xE7\xF5es da se\xE7\xE3o",
+              onClick: () => U("sectionMenu", { id: n.id }),
+            },
+            r.default.createElement(et, null),
+          ),
+        ),
+        r.default.createElement("h1", { className: "detail-title" }, n.title),
+        r.default.createElement(
+          "p",
+          { className: "muted" },
+          n.person || "Controle pessoal",
+          " \xB7",
+          " ",
+          n.kind === "receive"
+            ? "A receber"
+            : n.kind === "pay"
+              ? "A pagar"
+              : "Lan\xE7amentos livres",
+        ),
+        f &&
+          r.default.createElement(
+            J,
+            null,
+            r.default.createElement(
+              "div",
+              { className: "detail-progress" },
+              r.default.createElement(
+                "div",
+                null,
+                r.default.createElement("small", null, "Saldo restante"),
+                r.default.createElement(
+                  "div",
+                  { className: "big-value" },
+                  P(f.remaining),
+                ),
+                r.default.createElement(
+                  "p",
+                  null,
+                  P(f.paid),
+                  " de ",
+                  s ? ye(n.total) : "\u2022\u2022\u2022\u2022",
+                ),
+              ),
+              r.default.createElement(
+                Pl,
+                { progress: f.progress },
+                s ? Math.round(f.progress * 100) + "%" : "\u2022\u2022",
+              ),
+            ),
+            r.default.createElement(Gl, { value: f.progress }),
+            r.default.createElement(
+              F,
+              {
+                variant: "full",
+                disabled: !f.current,
+                onClick: () => {
+                  Ma() || U("payment", { id: n.id });
+                },
+              },
+              r.default.createElement(be, { size: 18 }),
+              f.current ? "Registrar pagamento" : "Quitado",
+            ),
+          ),
+        r.default.createElement(
+          "div",
+          { className: "share-strip" },
+          r.default.createElement(tt, { size: 18 }),
+          r.default.createElement(
+            "div",
+            null,
+            r.default.createElement(
+              "strong",
+              null,
+              L ? "Link publicado" : "Acesso exclusivo desta se\xE7\xE3o",
+            ),
+            r.default.createElement(
+              "small",
+              null,
+              L
+                ? L.error ||
+                    "\xDAltima publica\xE7\xE3o: " +
+                      new Date(L.syncedAt).toLocaleString("pt-BR")
+                : "A pessoa acompanha somente este acordo.",
+            ),
+          ),
+          r.default.createElement(
+            pe,
+            {
+              label: "Compartilhar se\xE7\xE3o",
+              onClick: () => U("share", { id: n.id }),
+            },
+            r.default.createElement(Zl, { size: 19 }),
+          ),
+        ),
+        f &&
+          r.default.createElement(
+            r.default.Fragment,
+            null,
+            r.default.createElement(
+              "div",
+              { className: "section-label" },
+              r.default.createElement("h2", null, "Cronograma"),
+              r.default.createElement(
+                "span",
+                { className: "badge" },
+                n.count,
+                " previstas",
+              ),
+            ),
+            r.default.createElement(
+              "div",
+              { className: "installments" },
+              f.rows.map((y) =>
+                r.default.createElement(
+                  "div",
+                  {
+                    key: y.index,
+                    className:
+                      "installment " +
+                      (y.extra ? "extra " : "") +
+                      (y.closed ? "closed" : ""),
+                  },
+                  r.default.createElement(
+                    "span",
+                    { className: "installment-number" },
+                    y.closed
+                      ? r.default.createElement(Ze, { size: 17 })
+                      : y.number,
+                  ),
+                  r.default.createElement(
+                    "div",
+                    { className: "grow" },
+                    r.default.createElement(
+                      "strong",
+                      null,
+                      "Parcela ",
+                      y.number,
+                      y.extra &&
+                        r.default.createElement(
+                          "span",
+                          { className: "badge" },
+                          "Extra",
+                        ),
+                    ),
+                    r.default.createElement(
+                      "small",
+                      null,
+                      fa(y.date),
+                      y.closed
+                        ? " \xB7 " + (y.paid >= y.due ? "Paga" : "Parcial")
+                        : " \xB7 Prevista",
+                    ),
+                    y.adjustment !== 0 &&
+                      r.default.createElement(
+                        "button",
+                        {
+                          className: "adjustment",
+                          onClick: () =>
+                            U("info", {
+                              title: "Ajuste desta parcela",
+                              text: `Valor original: ${ye(y.base)}. ${y.adjustment > 0 ? "Faltaram" : "Foram antecipados"} ${ye(Math.abs(y.adjustment))} na parcela anterior. Valor atualizado: ${ye(y.due)}. O total do acordo n\xE3o muda.`,
+                            }),
+                        },
+                        r.default.createElement(Bt, { size: 13 }),
+                        " ",
+                        y.adjustment > 0 ? "+" : "\u2212",
+                        s ? ye(Math.abs(y.adjustment)) : "\u2022\u2022",
+                        " de ajuste",
+                      ),
+                    y.closed &&
+                      y.carry > 0 &&
+                      r.default.createElement(
+                        "small",
+                        { className: "warning-text" },
+                        s ? ye(y.carry) : "\u2022\u2022",
+                        " seguem para a pr\xF3xima",
+                      ),
+                  ),
+                  r.default.createElement(
+                    "div",
+                    { className: "installment-values" },
+                    P(y.closed ? y.paid : y.due),
+                    r.default.createElement(
+                      "small",
+                      null,
+                      y.closed ? "registrado" : "a pagar",
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            r.default.createElement(
+              ve,
+              null,
+              "Um pagamento parcial fecha esta parcela e leva a diferen\xE7a para a pr\xF3xima. Se faltar na \xFAltima, surge uma parcela extra destacada. N\xE3o h\xE1 juros autom\xE1ticos.",
+            ),
+            n.payments.length > 0 &&
+              r.default.createElement(
+                F,
+                {
+                  variant: "secondary full",
+                  onClick: () => U("undoPayment", { id: n.id }),
+                },
+                r.default.createElement(pl, { size: 17 }),
+                "Estornar \xFAltimo pagamento",
+              ),
+          ),
+        r.default.createElement(
+          J,
+          {
+            title: "Lan\xE7amentos da se\xE7\xE3o",
+            subtitle:
+              n.kind === "ledger"
+                ? void 0
+                : "Para abater parcelas, use Registrar pagamento.",
+            action: n.kind === "ledger" ? "Adicionar" : "Outro registro",
+            onAction: () => {
+              Ma() || U("entry", { sectionId: n.id });
+            },
+          },
+          e.entries
+            .filter((y) => y.sectionId === n.id)
+            .map((y) =>
+              r.default.createElement(Ri, {
+                key: y.id,
+                entry: y,
+                visible: s,
+                onClick: () => U("entryDetail", { entry: y }),
+              }),
+            ),
+          !e.entries.some((y) => y.sectionId === n.id) &&
+            r.default.createElement(
+              "p",
+              { className: "muted" },
+              "Ainda sem lan\xE7amentos.",
+            ),
+        ),
+      );
+    }
+    function Jg() {
+      let n = e.goals.find((v) => v.id === Z);
+      if (!n)
+        return r.default.createElement(
+          r.default.Fragment,
+          null,
+          r.default.createElement(
+            "div",
+            { className: "page-intro" },
+            r.default.createElement(
+              "p",
+              null,
+              "D\xEA um destino ao seu dinheiro.",
+              r.default.createElement("br", null),
+              "Cada aporte aproxima voc\xEA.",
+            ),
+            r.default.createElement(
+              pe,
+              { label: "Criar meta", onClick: () => U("goal") },
+              r.default.createElement(be, null),
+            ),
+          ),
+          r.default.createElement(
+            "div",
+            { className: "goal-summary" },
+            r.default.createElement(Pl, {
+              progress: jo ? Xo / jo : 0,
+              size: 110,
+            }),
+            r.default.createElement(
+              "div",
+              null,
+              r.default.createElement("small", null, "Guardado nos objetivos"),
+              r.default.createElement("div", { className: "big-value" }, P(Xo)),
+              r.default.createElement(
+                "small",
+                null,
+                e.goals.length,
+                " metas no seu ritmo",
+              ),
+            ),
+          ),
+          e.goals.map(Ys),
+          !e.goals.length &&
+            r.default.createElement(
+              St,
+              {
+                icon: Pa,
+                title: "O que voc\xEA quer conquistar?",
+                action: "Criar meta",
+                onAction: () => U("goal"),
+              },
+              "Adicione t\xEDtulo, imagem, link, valor e prazo.",
+            ),
+        );
+      let f = za(n),
+        L = f / n.target,
+        y = n.due < Ve() && L < 1;
+      return r.default.createElement(
+        r.default.Fragment,
+        null,
+        r.default.createElement(
+          "div",
+          { className: "detail-heading" },
+          r.default.createElement(
+            "button",
+            { className: "text-button", onClick: () => g(null) },
+            r.default.createElement($a, { size: 18 }),
+            "Todas as metas",
+          ),
+          r.default.createElement(
+            pe,
+            { label: "Excluir meta", onClick: () => It("goal", n.id) },
+            r.default.createElement(Ge, { size: 19 }),
+          ),
+        ),
+        n.image &&
+          r.default.createElement("img", {
+            className: "goal-cover",
+            src: n.image,
+            alt: n.title,
+          }),
+        r.default.createElement("h1", { className: "detail-title" }, n.title),
+        n.link &&
+          r.default.createElement(
+            F,
+            {
+              variant: "secondary",
+              onClick: () =>
+                window.NexoNative
+                  ? window.NexoNative.openExternal(n.link)
+                  : window.open(n.link, "_blank", "noopener"),
+            },
+            r.default.createElement(Jo, { size: 17 }),
+            "Ver o que quero comprar",
+          ),
+        r.default.createElement(
+          J,
+          null,
+          r.default.createElement(
+            "div",
+            { className: "detail-progress" },
+            r.default.createElement(
+              "div",
+              null,
+              r.default.createElement("small", null, "Seu progresso"),
+              r.default.createElement("div", { className: "big-value" }, P(f)),
+              r.default.createElement("p", null, "Objetivo: ", P(n.target)),
+            ),
+            r.default.createElement(Pl, { progress: L }),
+          ),
+          r.default.createElement(Gl, { value: L }),
+          r.default.createElement(
+            "div",
+            { className: "amount-pair" },
+            r.default.createElement("span", null, "Previs\xE3o: ", fa(n.due)),
+            r.default.createElement(
+              "b",
+              null,
+              L >= 1
+                ? "Conquistado!"
+                : y
+                  ? "Prazo encerrado"
+                  : Math.max(
+                      0,
+                      Math.ceil(
+                        (new Date(n.due + "T12:00:00") -
+                          new Date(Ve() + "T12:00:00")) /
+                          864e5,
+                      ),
+                    ) + " dias",
+            ),
+          ),
+          r.default.createElement(
+            F,
+            {
+              variant: "full",
+              onClick: () => {
+                Ma() || U("contribution", { id: n.id });
+              },
+            },
+            r.default.createElement(be, { size: 18 }),
+            "Adicionar ou resgatar valor",
+          ),
+          r.default.createElement(
+            F,
+            {
+              variant: "secondary full",
+              onClick: () => U("extend", { id: n.id }),
+            },
+            r.default.createElement(Ra, { size: 17 }),
+            y ? "Estender prazo" : "Alterar prazo",
+          ),
+        ),
+        y &&
+          r.default.createElement(
+            "div",
+            { className: "notice" },
+            r.default.createElement(sl, { size: 21 }),
+            r.default.createElement(
+              "div",
+              null,
+              r.default.createElement(
+                "strong",
+                null,
+                "A data chegou. Seu plano continua.",
+              ),
+              r.default.createElement(
+                "p",
+                null,
+                "Voc\xEA ainda pode ajustar o prazo e seguir juntando.",
+              ),
+            ),
+          ),
+        r.default.createElement(
+          J,
+          { title: "Onde est\xE1 guardado" },
+          e.accounts.map((v) => {
+            let S = n.contributions
+              .filter((k) => k.accountId === v.id)
+              .reduce((k, q) => k + q.amount, 0);
+            return (
+              S !== 0 &&
+              r.default.createElement(
+                "div",
+                { className: "simple-row", key: v.id },
+                r.default.createElement("span", null, v.title),
+                P(S),
+              )
+            );
+          }),
+        ),
+        r.default.createElement(
+          J,
+          { title: "Hist\xF3rico de aportes" },
+          [...n.contributions]
+            .reverse()
+            .map((v) =>
+              r.default.createElement(
+                "div",
+                { className: "simple-row", key: v.id },
+                r.default.createElement(
+                  "div",
+                  null,
+                  r.default.createElement(
+                    "strong",
+                    null,
+                    v.amount > 0 ? "Aporte" : "Resgate",
+                  ),
+                  r.default.createElement(
+                    "small",
+                    null,
+                    e.accounts.find((S) => S.id === v.accountId)?.title,
+                    " \xB7",
+                    " ",
+                    fa(v.date),
+                  ),
+                ),
+                P(v.amount),
+              ),
+            ),
+          !n.contributions.length &&
+            r.default.createElement(
+              "p",
+              { className: "muted" },
+              "A meta come\xE7a com o primeiro aporte.",
+            ),
+        ),
+        r.default.createElement(
+          ve,
+          null,
+          "O aporte separa dinheiro que j\xE1 est\xE1 na conta. Ele n\xE3o \xE9 uma nova despesa, e o saldo total n\xE3o aumenta.",
+        ),
+      );
+    }
+    function Wg() {
+      return r.default.createElement(
+        r.default.Fragment,
+        null,
+        ln(),
+        r.default.createElement(
+          "section",
+          { className: "delivery-hero" },
+          r.default.createElement(
+            "div",
+            null,
+            r.default.createElement(
+              "span",
+              { className: "round-icon" },
+              r.default.createElement(Ta, { size: 25 }),
+            ),
+            r.default.createElement(
+              "small",
+              null,
+              "Ganho l\xEDquido no per\xEDodo",
+            ),
+            r.default.createElement(
+              "div",
+              { className: "big-value" },
+              P(il - _o),
+            ),
+            r.default.createElement(
+              "p",
+              null,
+              "Seu trabalho, visto por inteiro.",
+            ),
+          ),
+          r.default.createElement(
+            F,
+            {
+              onClick: () => {
+                Ma() || U("delivery");
+              },
+            },
+            r.default.createElement(be, { size: 17 }),
+            "Entrega",
+          ),
+        ),
+        r.default.createElement(
+          "div",
+          { className: "overview-grid" },
+          sa("Bruto", P(il)),
+          sa("Custos", P(_o)),
+          sa("Receita / km", P(Ct ? Math.round(il / Ct) : 0)),
+          sa("L\xEDquido / km", P(Ct ? Math.round((il - _o) / Ct) : 0)),
+          sa("Entregas", Ha.length),
+          sa("Dist\xE2ncia", Ct.toFixed(1).replace(".", ",") + " km"),
+        ),
+        Zs(),
+        r.default.createElement(
+          "div",
+          { className: "section-label" },
+          r.default.createElement("h2", null, "Seu hist\xF3rico"),
+          r.default.createElement(
+            "button",
+            { className: "text-button", onClick: () => U("platform") },
+            "Plataformas ",
+            r.default.createElement(be, { size: 16 }),
+          ),
+        ),
+        [...Ha]
+          .sort((n, f) => f.date.localeCompare(n.date))
+          .map((n) =>
+            r.default.createElement(
+              "button",
+              {
+                className: "delivery-row row-button",
+                key: n.id,
+                onClick: () => U("deliveryDetail", { delivery: n }),
+              },
+              r.default.createElement(
+                "span",
+                { className: "round-icon" },
+                r.default.createElement(Ta, { size: 21 }),
+              ),
+              r.default.createElement(
+                "span",
+                { className: "grow" },
+                r.default.createElement("strong", null, n.title),
+                r.default.createElement(
+                  "small",
+                  null,
+                  n.platform,
+                  " \xB7 ",
+                  fa(n.date),
+                ),
+                r.default.createElement(
+                  "small",
+                  null,
+                  n.km.toFixed(1),
+                  " km \xB7",
+                  " ",
+                  s ? ye(Math.round(n.amount / n.km)) : "\u2022\u2022",
+                  "/km",
+                ),
+              ),
+              P(n.amount),
+              r.default.createElement(Pe, { size: 17 }),
+            ),
+          ),
+        !Ha.length &&
+          r.default.createElement(
+            St,
+            {
+              icon: Ta,
+              title: "Nenhuma entrega neste per\xEDodo",
+              action: "Registrar entrega",
+              onAction: () => {
+                Ma() || U("delivery");
+              },
+            },
+            "O valor por km usa a dist\xE2ncia que voc\xEA informar.",
+          ),
+        r.default.createElement(
+          ve,
+          null,
+          "Endere\xE7os s\xE3o opcionais e ficam no seu aparelho. A dist\xE2ncia \xE9 informada por voc\xEA; n\xE3o h\xE1 rastreamento autom\xE1tico.",
+        ),
+      );
+    }
+    function Rg() {
+      return r.default.createElement(
+        r.default.Fragment,
+        null,
+        r.default.createElement(
+          "div",
+          { className: "page-intro" },
+          r.default.createElement(
+            "p",
+            null,
+            "Saiba onde est\xE1 cada parte.",
+            r.default.createElement("br", null),
+            "Saldo, reserva e objetivos sem duplica\xE7\xE3o.",
+          ),
+          r.default.createElement(
+            pe,
+            { label: "Cadastrar conta", onClick: () => U("account") },
+            r.default.createElement(be, null),
+          ),
+        ),
+        r.default.createElement(
+          "section",
+          { className: "hero" },
+          r.default.createElement(
+            "small",
+            null,
+            "Seu patrim\xF4nio nas contas",
+          ),
+          r.default.createElement(
+            "div",
+            { className: "hero-amount" },
+            P(Te.balance),
+          ),
+          r.default.createElement(
+            "p",
+            null,
+            "Reserva ",
+            P(Te.reserved),
+            " \xB7 Metas ",
+            P(Te.goals),
+          ),
+        ),
+        e.accounts.map((n) =>
+          r.default.createElement(
+            J,
+            { key: n.id },
+            r.default.createElement(
+              "div",
+              { className: "card-heading" },
+              r.default.createElement(
+                "div",
+                null,
+                r.default.createElement(
+                  "span",
+                  { className: "bank-mark", style: { background: n.color } },
+                  r.default.createElement(lt, { size: 20 }),
+                ),
+                r.default.createElement("h2", null, n.title),
+              ),
+              r.default.createElement(
+                pe,
+                {
+                  label: "Excluir conta " + n.title,
+                  onClick: () => It("account", n.id),
+                },
+                r.default.createElement(Ge, { size: 17 }),
+              ),
+            ),
+            r.default.createElement(
+              "div",
+              { className: "big-value" },
+              P(Sr(e, n.id)),
+            ),
+            r.default.createElement(
+              "div",
+              { className: "simple-row" },
+              r.default.createElement(
+                "span",
+                null,
+                "Dispon\xEDvel para alocar",
+              ),
+              P(Cr(e, n.id)),
+            ),
+            r.default.createElement(
+              "div",
+              { className: "simple-row" },
+              r.default.createElement("span", null, "Reserva de emerg\xEAncia"),
+              P(
+                e.reserve
+                  .filter((f) => f.accountId === n.id)
+                  .reduce((f, L) => f + L.amount, 0),
+              ),
+            ),
+            r.default.createElement(
+              F,
+              {
+                variant: "secondary full",
+                onClick: () => U("reserve", { accountId: n.id }),
+              },
+              r.default.createElement(Et, { size: 18 }),
+              "Ajustar reserva nesta conta",
+            ),
+          ),
+        ),
+        !e.accounts.length &&
+          r.default.createElement(
+            St,
+            {
+              icon: lt,
+              title: "Seu dinheiro come\xE7a por aqui",
+              action: "Cadastrar conta",
+              onAction: () => U("account"),
+            },
+            "Informe o banco e o saldo inicial. Nenhuma conex\xE3o banc\xE1ria \xE9 feita.",
+          ),
+      );
+    }
+    function $g() {
+      return r.default.createElement(
+        r.default.Fragment,
+        null,
+        ln(),
+        r.default.createElement(
+          "div",
+          { className: "page-intro" },
+          r.default.createElement(
+            "p",
+            null,
+            "Entradas e sa\xEDdas, com contexto.",
+          ),
+          r.default.createElement(
+            pe,
+            {
+              label: "Novo lan\xE7amento",
+              onClick: () => {
+                Ma() || U("entry");
+              },
+            },
+            r.default.createElement(be, null),
+          ),
+        ),
+        r.default.createElement(X, {
+          label: "Buscar lan\xE7amento",
+          name: "query",
+          value: z,
+          onChange: (n) => me(n.target.value),
+          placeholder: "T\xEDtulo, categoria ou conta",
+        }),
+        r.default.createElement(
+          J,
+          null,
+          [...e.entries]
+            .filter(
+              (n) =>
+                nu(n.date, Vo) &&
+                (
+                  n.title +
+                  " " +
+                  n.category +
+                  " " +
+                  e.accounts.find((f) => f.id === n.accountId)?.title
+                )
+                  .toLowerCase()
+                  .includes(z.toLowerCase()),
+            )
+            .sort((n, f) => f.date.localeCompare(n.date))
+            .map((n) =>
+              r.default.createElement(Ri, {
+                key: n.id,
+                entry: n,
+                visible: s,
+                onClick: () => U("entryDetail", { entry: n }),
+              }),
+            ),
+          !e.entries.some((n) => nu(n.date, Vo)) &&
+            r.default.createElement(
+              St,
+              {
+                icon: cl,
+                title: "Sem lan\xE7amentos neste per\xEDodo",
+                action: "Novo lan\xE7amento",
+                onAction: () => {
+                  Ma() || U("entry");
+                },
+              },
+              "Receitas, despesas e transfer\xEAncias aparecem aqui.",
+            ),
+        ),
+      );
+    }
+    function eh(n) {
+      let f = m.slice(0, 7),
+        L = Math.min(
+          n.day,
+          new Date(Number(m.slice(0, 4)), Number(m.slice(5, 7)), 0).getDate(),
+        );
+      le((y) => {
+        if (y.entries.some((v) => v.recurringId === n.id && v.competence === f))
+          throw Error("Esta compet\xEAncia j\xE1 foi registrada.");
+        y.entries.push({
+          id: ee(),
+          recurringId: n.id,
+          competence: f,
+          title: n.title,
+          type: n.type,
+          amount: n.amount,
+          accountId: n.accountId,
+          date: f + "-" + String(L).padStart(2, "0"),
+          category: n.category,
+        });
+      }, "Ocorr\xEAncia confirmada.") && Aa();
+    }
+    function ah() {
+      return r.default.createElement(
+        r.default.Fragment,
+        null,
+        r.default.createElement(
+          "div",
+          { className: "page-intro" },
+          r.default.createElement(
+            "p",
+            null,
+            "Sal\xE1rio e contas que se repetem.",
+            r.default.createElement("br", null),
+            "Confirme cada m\xEAs uma \xFAnica vez.",
+          ),
+          r.default.createElement(
+            pe,
+            {
+              label: "Cadastrar recorr\xEAncia",
+              onClick: () => {
+                Ma() || U("recurring");
+              },
+            },
+            r.default.createElement(be, null),
+          ),
+        ),
+        r.default.createElement(
+          "label",
+          { className: "field" },
+          r.default.createElement("span", null, "Compet\xEAncia"),
+          r.default.createElement("input", {
+            "aria-label": "Compet\xEAncia",
+            type: "month",
+            value: m.slice(0, 7),
+            onChange: (n) => n.target.value && b(n.target.value + "-10"),
+          }),
+        ),
+        e.recurring.map((n) => {
+          let f = e.entries.some(
+            (L) => L.recurringId === n.id && L.competence === m.slice(0, 7),
+          );
+          return r.default.createElement(
+            J,
+            { key: n.id },
+            r.default.createElement(
+              "div",
+              { className: "card-heading" },
+              r.default.createElement(
+                "div",
+                null,
+                r.default.createElement(
+                  "span",
+                  { className: "round-icon" },
+                  r.default.createElement(zt, { size: 20 }),
+                ),
+                r.default.createElement(
+                  "div",
+                  null,
+                  r.default.createElement("h2", null, n.title),
+                  r.default.createElement(
+                    "p",
+                    null,
+                    "Todo dia ",
+                    n.day,
+                    " \xB7",
+                    " ",
+                    n.type === "income" ? "Receita" : "Despesa",
+                  ),
+                ),
+              ),
+              r.default.createElement(
+                pe,
+                {
+                  label: "Excluir recorr\xEAncia " + n.title,
+                  onClick: () => It("recurring", n.id),
+                },
+                r.default.createElement(Ge, { size: 17 }),
+              ),
+            ),
+            r.default.createElement(
+              "div",
+              { className: "big-value" },
+              P(n.amount),
+            ),
+            r.default.createElement(Ye, {
+              label: "Ativa",
+              checked: n.active,
+              onChange: (L) =>
+                le((y) => {
+                  y.recurring.find((v) => v.id === n.id).active = L;
+                }),
+            }),
+            r.default.createElement(
+              F,
+              {
+                variant: "full",
+                disabled: f || !n.active,
+                onClick: () => U("recurringConfirm", { id: n.id }),
+              },
+              f
+                ? r.default.createElement(Ze, { size: 17 })
+                : r.default.createElement(be, { size: 17 }),
+              f ? "Compet\xEAncia registrada" : "Confirmar " + m.slice(0, 7),
+            ),
+          );
+        }),
+        !e.recurring.length &&
+          r.default.createElement(
+            St,
+            {
+              icon: zt,
+              title: "Planeje o que se repete",
+              action: "Cadastrar recorr\xEAncia",
+              onAction: () => {
+                Ma() || U("recurring");
+              },
+            },
+            "A confirma\xE7\xE3o cria o lan\xE7amento no extrato. Uma previs\xE3o sozinha n\xE3o altera seu saldo.",
+          ),
+      );
+    }
+    function th() {
+      let n = Number(m.slice(0, 4)),
+        f = Number(m.slice(5, 7)),
+        L = new Date(n, f, 0).getDate(),
+        y = (new Date(n, f - 1, 1).getDay() + 6) % 7,
+        v = Yo();
+      return r.default.createElement(
+        r.default.Fragment,
+        null,
+        r.default.createElement(
+          J,
+          { className: "calendar-card" },
+          r.default.createElement(
+            "div",
+            { className: "card-heading" },
+            r.default.createElement(
+              pe,
+              { label: "M\xEAs anterior", onClick: () => b(gl(m, -1)) },
+              r.default.createElement($a, null),
+            ),
+            r.default.createElement(
+              "h2",
+              null,
+              new Date(m + "T12:00:00").toLocaleDateString("pt-BR", {
+                month: "long",
+                year: "numeric",
+              }),
+            ),
+            r.default.createElement(
+              pe,
+              { label: "Pr\xF3ximo m\xEAs", onClick: () => b(gl(m, 1)) },
+              r.default.createElement(Pe, null),
+            ),
+          ),
+          r.default.createElement(
+            "div",
+            { className: "calendar-grid" },
+            ["S", "T", "Q", "Q", "S", "S", "D"].map((S, k) =>
+              r.default.createElement("small", { key: k }, S),
+            ),
+            Array.from({ length: y }, (S, k) =>
+              r.default.createElement("span", { key: "blank" + k }),
+            ),
+            Array.from({ length: L }, (S, k) => {
+              let q = m.slice(0, 7) + "-" + String(k + 1).padStart(2, "0"),
+                ne = v.filter(($) => $.date === q).length;
+              return r.default.createElement(
+                "button",
+                {
+                  className:
+                    (q === m ? "selected " : "") +
+                    (q === Ve() ? "is-today" : ""),
+                  key: q,
+                  "aria-label": `${k + 1}, ${ne} compromissos`,
+                  "aria-pressed": q === m,
+                  onClick: () => b(q),
+                },
+                k + 1,
+                ne > 0 && r.default.createElement("i", null),
+              );
+            }),
+          ),
+        ),
+        r.default.createElement("h2", { className: "section-title" }, fa(m)),
+        r.default.createElement(
+          "div",
+          { className: "timeline" },
+          v
+            .filter((S) => S.date === m)
+            .map((S) =>
+              r.default.createElement(
+                "button",
+                { key: S.id, className: "timeline-item", onClick: S.open },
+                r.default.createElement("span", { className: "timeline-dot" }),
+                r.default.createElement(
+                  "div",
+                  { className: "grow" },
+                  r.default.createElement("strong", null, S.title),
+                  r.default.createElement(
+                    "small",
+                    null,
+                    S.type === "goal"
+                      ? "Prazo da meta"
+                      : S.type === "receive" || S.type === "income"
+                        ? "A receber"
+                        : "A pagar",
+                  ),
+                ),
+                P(S.amount),
+              ),
+            ),
+        ),
+        !v.some((S) => S.date === m) &&
+          r.default.createElement(
+            "p",
+            { className: "muted" },
+            "Nenhum compromisso previsto neste dia.",
+          ),
+        Ks(),
+      );
+    }
+    function lh() {
+      return r.default.createElement(
+        r.default.Fragment,
+        null,
+        r.default.createElement(
+          "p",
+          { className: "page-description" },
+          "Quinze experi\xEAncias. Um lugar para deixar tudo com a sua cara.",
+        ),
+        r.default.createElement(
+          "div",
+          { className: "settings-sticky" },
+          r.default.createElement(
+            "span",
+            null,
+            p
+              ? "Altera\xE7\xF5es em pr\xE9via"
+              : "Suas prefer\xEAncias est\xE3o salvas",
+          ),
+          p &&
+            r.default.createElement(
+              "div",
+              null,
+              r.default.createElement(
+                "button",
+                { className: "text-button", onClick: () => x(null) },
+                "Cancelar",
+              ),
+              r.default.createElement(
+                F,
+                {
+                  onClick: () => {
+                    le((n) => {
+                      n.settings = structuredClone(p);
+                    }, "Prefer\xEAncias salvas.") && x(null);
+                  },
+                },
+                r.default.createElement(Ze, { size: 16 }),
+                "Salvar",
+              ),
+            ),
+        ),
+        r.default.createElement(
+          "div",
+          { className: "section-label" },
+          r.default.createElement("h2", null, "Escolha sua experi\xEAncia"),
+          r.default.createElement("span", { className: "badge" }, "15 estilos"),
+        ),
+        r.default.createElement(
+          "div",
+          { className: "theme-grid" },
+          Go.map((n) =>
+            r.default.createElement(
+              "button",
+              {
+                className: "theme-option " + (O.theme === n.id ? "active" : ""),
+                key: n.id,
+                "aria-pressed": O.theme === n.id,
+                onClick: () =>
+                  ge((f) => {
+                    f.theme = n.id;
+                  }),
+              },
+              r.default.createElement(
+                "div",
+                {
+                  className: "theme-mini mini-" + n.layout,
+                  style: {
+                    background: n.bg,
+                    color: n.text,
+                    "--mini-accent": n.accent,
+                    "--mini-surface": n.surface,
+                  },
+                },
+                r.default.createElement("div", { className: "mini-heading" }),
+                r.default.createElement("div", { className: "mini-hero" }),
+                r.default.createElement(
+                  "div",
+                  { className: "mini-blocks" },
+                  r.default.createElement("i", null),
+                  r.default.createElement("i", null),
+                  r.default.createElement("i", null),
+                ),
+                r.default.createElement("div", { className: "mini-nav" }),
+              ),
+              r.default.createElement(
+                "span",
+                null,
+                r.default.createElement("strong", null, n.name),
+                O.theme === n.id && r.default.createElement(Ze, { size: 16 }),
+              ),
+              r.default.createElement("small", null, n.description),
+            ),
+          ),
+        ),
+        r.default.createElement(
+          J,
+          {
+            title: "Pr\xE9via interativa",
+            subtitle: "Amostra ilustrativa, sem alterar suas finan\xE7as",
+            action: "Repetir",
+            onAction: () => ka((n) => n + 1),
+          },
+          r.default.createElement(
+            "div",
+            { className: "component-preview", key: j },
+            r.default.createElement(
+              "div",
+              { className: "preview-orb" },
+              r.default.createElement(Ze, { size: 23 }),
+            ),
+            r.default.createElement(
+              "div",
+              { className: "grow" },
+              r.default.createElement(
+                "strong",
+                null,
+                "Meu pr\xF3ximo objetivo",
+              ),
+              r.default.createElement("small", null, "R$ 720 de R$ 1.000"),
+              r.default.createElement(Gl, { value: 0.72 }),
+            ),
+            r.default.createElement(Pl, { progress: 0.72, size: 64 }),
+          ),
+          r.default.createElement(Ps, null),
+          r.default.createElement(
+            F,
+            {
+              variant: "secondary full",
+              onClick: () => {
+                (ge((n) => {
+                  n.theme = Go[Math.floor(Math.random() * Go.length)].id;
+                  for (let [f, L] of Object.entries(ru))
+                    n[f] = L[Math.floor(Math.random() * L.length)][0];
+                  ((n.chart = ["area", "bars", "line"][
+                    Math.floor(Math.random() * 3)
+                  ]),
+                    (n.glass = Math.random() > 0.35),
+                    (n.texture = Math.random() > 0.5));
+                }),
+                  ka((n) => n + 1));
+              },
+            },
+            r.default.createElement(au, { size: 17 }),
+            "Combina\xE7\xE3o aleat\xF3ria",
+          ),
+          r.default.createElement(
+            F,
+            { variant: "secondary full", onClick: () => U("catalog") },
+            r.default.createElement(tu, { size: 18 }),
+            "Testar todos os componentes",
+          ),
+        ),
+        r.default.createElement(
+          J,
+          { title: "Apar\xEAncia e composi\xE7\xE3o" },
+          r.default.createElement(
+            "div",
+            { className: "nav-style-selector" },
+            r.default.createElement(Wi, {
+              label: "Estilo da navega\xE7\xE3o",
+              value: O.nav,
+              onChange: (n) =>
+                ge((f) => {
+                  f.nav = n;
+                }),
+              options: ru.nav.map(([n, f]) => ({ value: n, label: f })),
+            }),
+          ),
+          Object.entries(hf).map(([n, f]) =>
+            r.default.createElement(X, {
+              key: n,
+              label: f,
+              name: n,
+              options: ru[n].map(([L, y]) => ({ value: L, label: y })),
+              value: O[n],
+              onChange: (L) =>
+                ge((y) => {
+                  y[n] = L.target.value;
+                }),
+            }),
+          ),
+          r.default.createElement(Ye, {
+            label: "Blur sob o menu flutuante",
+            description:
+              "Desfoca o conte\xFAdo atr\xE1s do menu at\xE9 a borda inferior",
+            checked: O.footerBlur,
+            onChange: (n) =>
+              ge((f) => {
+                f.footerBlur = n;
+              }),
+          }),
+          React.createElement(BlurSlider,{value:O.blurStrength,onChange:(v)=>ge(f=>{f.blurStrength=v})}),
+          r.default.createElement(Ye, {
+            label: "A\xE7\xF5es por deslize",
+            description: "Deslize se\xE7\xF5es e metas para abrir ou excluir",
+            checked: O.swipeActions,
+            onChange: (n) =>
+              ge((f) => {
+                f.swipeActions = n;
+              }),
+          }),
+          r.default.createElement(Ye, {
+            label: "Modo foco",
+            description: "No painel, priorizar entregas, acordos e agenda",
+            checked: O.focusMode,
+            onChange: (n) =>
+              ge((f) => {
+                f.focusMode = n;
+              }),
+          }),
+          r.default.createElement(
+            F,
+            {
+              variant: "secondary full",
+              onClick: () => U("heroImage", { image: O.heroImage || "" }),
+            },
+            r.default.createElement(Tt, { size: 18 }),
+            "Imagem do cart\xE3o principal",
+          ),
+          r.default.createElement(X, {
+            label: "Formato dos gr\xE1ficos",
+            name: "chart",
+            options: [
+              { value: "auto", label: "Escolhido pelo tema" },
+              { value: "area", label: "\xC1rea" },
+              { value: "bars", label: "Barras" },
+              { value: "line", label: "Linha" },
+            ],
+            value: O.chart,
+            onChange: (n) =>
+              ge((f) => {
+                f.chart = n.target.value;
+              }),
+          }),
+          r.default.createElement(Ye, {
+            label: "Superf\xEDcies de vidro",
+            description: "Transpar\xEAncia em menus e navega\xE7\xE3o",
+            checked: O.glass,
+            onChange: (n) =>
+              ge((f) => {
+                f.glass = n;
+              }),
+          }),
+          r.default.createElement(Ye, {
+            label: "Texturas sutis",
+            checked: O.texture,
+            onChange: (n) =>
+              ge((f) => {
+                f.texture = n;
+              }),
+          }),
+          r.default.createElement(Ye, {
+            label: "Layout compacto",
+            checked: O.compact,
+            onChange: (n) =>
+              ge((f) => {
+                f.compact = n;
+              }),
+          }),
+        ),
+        r.default.createElement(
+          J,
+          { title: "Movimento e resposta" },
+          r.default.createElement(Ye, {
+            label: "Ativar anima\xE7\xF5es",
+            checked: O.motion,
+            onChange: (n) =>
+              ge((f) => {
+                f.motion = n;
+              }),
+            day: !0,
+          }),
+          r.default.createElement(
+            ve,
+            null,
+            "A prefer\xEAncia de movimento reduzido do Android ou navegador tem prioridade.",
+          ),
+          [
+            ["transition", "Transi\xE7\xF5es entre telas"],
+            ["reveal", "Revelar conte\xFAdo ao rolar"],
+            ["numbers", "Entrada dos valores"],
+            ["progress", "Morph de barras e an\xE9is"],
+            ["feedback", "Resposta ao tocar"],
+            ["glow", "Brilho dos controles"],
+            ["haptic", "Vibra\xE7\xE3o ao salvar"],
+          ].map(([n, f]) =>
+            r.default.createElement(Ye, {
+              key: n,
+              label: f,
+              checked: O[n],
+              onChange: (L) =>
+                ge((y) => {
+                  y[n] = L;
+                }),
+            }),
+          ),
+          r.default.createElement(
+            "label",
+            { className: "field" },
+            r.default.createElement("span", null, "Ritmo das anima\xE7\xF5es"),
+            r.default.createElement("input", {
+              "aria-label": "Ritmo das anima\xE7\xF5es",
+              type: "range",
+              min: "0.4",
+              max: "2",
+              step: "0.1",
+              value: O.intensity,
+              onChange: (n) =>
+                ge((f) => {
+                  f.intensity = Number(n.target.value);
+                }),
+            }),
+            r.default.createElement("small", null, "R\xE1pido \u27F7 suave"),
+          ),
+        ),
+        r.default.createElement(
+          J,
+          { title: "Seu painel inicial" },
+          Object.entries({
+            consistency: "Atividade da semana",
+            trend: "Evolu\xE7\xE3o das entradas",
+            platforms: "Desempenho nas entregas",
+            goals: "Metas",
+            sections: "Se\xE7\xF5es",
+            agenda: "Agenda",
+            activity: "\xDAltimos lan\xE7amentos",
+            reserve: "Reserva de emerg\xEAncia",
+          }).map(([n, f]) =>
+            r.default.createElement(Ye, {
+              key: n,
+              label: f,
+              checked: O.components[n],
+              onChange: (L) =>
+                ge((y) => {
+                  y.components[n] = L;
+                }),
+            }),
+          ),
+        ),
+        r.default.createElement(
+          J,
+          { title: "Privacidade e lembretes" },
+          r.default.createElement(Ye, {
+            label: "Mostrar valores ao abrir",
+            description: "Desligado: iniciar com todos os valores ocultos",
+            checked: O.showOnOpen,
+            onChange: (n) =>
+              ge((f) => {
+                f.showOnOpen = n;
+              }),
+          }),
+          r.default.createElement(Ye, {
+            label: "Bloquear com credencial do aparelho",
+            description: "Senha, PIN ou biometria configurados no Android",
+            checked: O.lock,
+            onChange: (n) => {
+              if (n) {
+                if (!window.NexoNative) {
+                  Qe("Dispon\xEDvel no aplicativo Android.");
+                  return;
+                }
+                if (!window.NexoNative.canLock()) {
+                  Qe("Configure uma senha ou PIN no Android primeiro.");
+                  return;
+                }
+              }
+              ge((f) => {
+                f.lock = n;
+              });
+            },
+          }),
+          r.default.createElement(Ye, {
+            label: "Lembretes de metas",
+            description: "Alertas no app e notifica\xE7\xF5es no Android",
+            checked: O.notifications,
+            onChange: (n) => {
+              (ge((f) => {
+                f.notifications = n;
+              }),
+                n && window.NexoNative?.requestNotifications());
+            },
+          }),
+        ),
+        r.default.createElement(
+          J,
+          { title: "Dados e compartilhamento" },
+          r.default.createElement(
+            F,
+            { variant: "secondary full", onClick: () => Us(e) },
+            r.default.createElement(Yl, { size: 18 }),
+            "Exportar backup",
+          ),
+          r.default.createElement(
+            F,
+            {
+              variant: "secondary full",
+              onClick: () =>
+                window.NexoNative
+                  ? window.NexoNative.importBackup()
+                  : document.getElementById("backup-file").click(),
+            },
+            r.default.createElement(ml, { size: 18 }),
+            "Restaurar backup",
+          ),
+          r.default.createElement(
+            F,
+            { variant: "secondary full", onClick: () => U("sharingConfig") },
+            r.default.createElement(tt, { size: 18 }),
+            "Configurar links restritos",
+          ),
+          r.default.createElement(
+            F,
+            { variant: "secondary full", onClick: () => U("demo") },
+            r.default.createElement(Ot, { size: 18 }),
+            "Carregar dados demonstrativos",
+          ),
+          r.default.createElement(
+            F,
+            {
+              variant: "secondary full",
+              onClick: () => {
+                ge((n) => Object.assign(n, structuredClone(iu)));
+              },
+            },
+            r.default.createElement(pl, { size: 17 }),
+            "Restaurar apar\xEAncia padr\xE3o",
+          ),
+        ),
+        r.default.createElement(
+          ve,
+          null,
+          "Altera\xE7\xF5es de apar\xEAncia s\xF3 s\xE3o gravadas ao tocar em Salvar. O backup cont\xE9m seus dados financeiros; guarde-o em um lugar privado.",
+        ),
+      );
+    }
+    function oh() {
+      return r.default.createElement(
+        r.default.Fragment,
+        null,
+        r.default.createElement(
+          "div",
+          { className: "brand-large" },
+          r.default.createElement("span", null, "N"),
+          r.default.createElement("h1", null, "Nexo"),
+          r.default.createElement("p", null, "Seu dinheiro, com clareza."),
+        ),
+        r.default.createElement(
+          J,
+          { title: "Feito para o seu celular" },
+          r.default.createElement(
+            "p",
+            null,
+            "Aplicativo pessoal offline. Seus dados ficam no aparelho, com arquivo protegido pela chave do Android. O modo de pr\xE9via no navegador usa armazenamento local do navegador.",
+          ),
+          r.default.createElement(
+            "p",
+            null,
+            "O olho oculta valores na interface. Ative o bloqueio por credencial para proteger a abertura do aplicativo.",
+          ),
+        ),
+        r.default.createElement(
+          J,
+          { title: "Como as parcelas funcionam" },
+          r.default.createElement(
+            "p",
+            null,
+            "R$ 1.000 em 10 parcelas: R$ 100 cada. Ao registrar R$ 80 na primeira, a segunda passa a R$ 120 e mostra o motivo do ajuste. O total continua R$ 1.000.",
+          ),
+          r.default.createElement(
+            "p",
+            null,
+            "Ao fechar a \xFAltima com saldo restante, aparece uma parcela extra. Ela \xE9 destacada e identificada por texto. O processo segue at\xE9 a quita\xE7\xE3o.",
+          ),
+        ),
+        r.default.createElement(
+          J,
+          { title: "Compartilhar uma se\xE7\xE3o" },
+          r.default.createElement(
+            "p",
+            null,
+            "O servidor opcional recebe apenas t\xEDtulo, valores, datas e pagamentos da se\xE7\xE3o escolhida. Bancos, metas, reserva, anota\xE7\xF5es privadas e endere\xE7os ficam fora do link.",
+          ),
+          r.default.createElement(
+            "p",
+            null,
+            "O link \xE9 de leitura. Quem o recebe pode encaminh\xE1-lo: trate-o como uma chave. H\xE1 revoga\xE7\xE3o e validade de 30 dias. Atualize a publica\xE7\xE3o ao registrar um pagamento.",
+          ),
+          r.default.createElement(
+            "p",
+            null,
+            "Um link na internet exige um servidor HTTPS publicado. O aplicativo funciona offline sem esse servi\xE7o.",
+          ),
+        ),
+        r.default.createElement(
+          J,
+          { title: "Contas, metas e entregas" },
+          r.default.createElement(
+            "p",
+            null,
+            "Metas e reserva s\xE3o partes do saldo das suas contas. Adicionar um aporte n\xE3o aumenta o patrim\xF4nio. Registre uma receita antes de reservar dinheiro novo.",
+          ),
+          r.default.createElement(
+            "p",
+            null,
+            "Ganhos por km usam a dist\xE2ncia informada. O bruto \xE9 a receita; o l\xEDquido desconta os custos registrados na entrega. O resultado do painel tamb\xE9m considera suas outras entradas e sa\xEDdas.",
+          ),
+        ),
+        r.default.createElement(
+          J,
+          { title: "Instala\xE7\xE3o e atualiza\xE7\xF5es" },
+          r.default.createElement(
+            "p",
+            null,
+            "Vers\xE3o 1.0.0. Instala\xE7\xE3o por APK, sem Play Store. Preserve o backup e a chave de assinatura do projeto para futuras atualiza\xE7\xF5es. Nenhum an\xFAncio, rastreador ou conex\xE3o banc\xE1ria autom\xE1tica.",
+          ),
+        ),
+      );
+    }
+    function Js(n) {
+      return `${n.getFullYear()}-${String(n.getMonth() + 1).padStart(2, "0")}-${String(n.getDate()).padStart(2, "0")}`;
+    }
+    function uh() {
+      let n = o,
+        f = e.sections.find((v) => v.id === n.id),
+        L = e.goals.find((v) => v.id === n.id),
+        y = [
+          "account",
+          "entry",
+          "section",
+          "payment",
+          "delivery",
+          "platform",
+          "goal",
+          "contribution",
+          "extend",
+          "reserve",
+          "recurring",
+          "sharingConfig",
+        ];
+      if (n.type === "heroImage")
+        return r.default.createElement(
+          r.default.Fragment,
+          null,
+          r.default.createElement(
+            "p",
+            { className: "muted" },
+            "Escolha uma imagem do aparelho. A camada de contraste mant\xE9m os valores leg\xEDveis.",
+          ),
+          n.image &&
+            r.default.createElement("img", {
+              className: "goal-cover",
+              src: n.image,
+              alt: "Pr\xE9via da imagem do cart\xE3o",
+            }),
+          r.default.createElement(
+            F,
+            { variant: "secondary full", onClick: () => tn() },
+            r.default.createElement(Tt, { size: 18 }),
+            "Escolher imagem",
+          ),
+          r.default.createElement(
+            F,
+            {
+              variant: "full",
+              onClick: () => {
+                (ge((v) => {
+                  v.heroImage = n.image || "";
+                }),
+                  Aa());
+              },
+            },
+            "Usar nesta pr\xE9via",
+          ),
+          r.default.createElement(
+            F,
+            {
+              variant: "secondary full",
+              onClick: () => {
+                (ge((v) => {
+                  v.heroImage = "";
+                }),
+                  Aa());
+              },
+            },
+            "Remover imagem",
+          ),
+        );
+      if (n.type === 'sharingConfig') return React.createElement(FirebaseConnection);
+      if (y.includes(n.type))
+        return r.default.createElement(
+          "form",
+          { onSubmit: jg, className: "form-stack" },
+          n.type === "account" &&
+            r.default.createElement(
+              r.default.Fragment,
+              null,
+              r.default.createElement(X, {
+                label: "Nome do banco ou carteira",
+                name: "title",
+                required: !0,
+                maxLength: 80,
+                placeholder: "Ex.: Bradesco",
+              }),
+              Wa("Saldo inicial (R$)"),
+              r.default.createElement(X, {
+                label: "Cor de identifica\xE7\xE3o",
+                name: "color",
+                type: "color",
+                defaultValue: "#4968db",
+              }),
+              r.default.createElement(
+                ve,
+                null,
+                "Este \xE9 o saldo antes dos lan\xE7amentos que voc\xEA vai cadastrar. A conta n\xE3o se conecta ao banco.",
+              ),
+            ),
+          n.type === "entry" &&
+            r.default.createElement(
+              r.default.Fragment,
+              null,
+              r.default.createElement(X, {
+                label: "Tipo",
+                name: "type",
+                options: [
+                  { value: "expense", label: "Despesa" },
+                  { value: "income", label: "Receita" },
+                  {
+                    value: "transfer",
+                    label: "Transfer\xEAncia entre minhas contas",
+                  },
+                ],
+                defaultValue: "expense",
+                onChange: (v) => u({ ...n, entryType: v.target.value }),
+              }),
+              r.default.createElement(X, {
+                label: "T\xEDtulo",
+                name: "title",
+                required: !0,
+                maxLength: 120,
+                placeholder: "Ex.: Mercado",
+              }),
+              Wa(),
+              Vl(),
+              n.entryType === "transfer" &&
+                Vl("toAccountId", "Conta de destino"),
+              r.default.createElement(X, {
+                label: "Categoria",
+                name: "category",
+                options: Fg.map((v) => ({ value: v, label: v })),
+              }),
+              nl(),
+              r.default.createElement(X, {
+                label: "Se\xE7\xE3o (opcional)",
+                name: "sectionId",
+                defaultValue: n.sectionId || "",
+                options: [
+                  { value: "", label: "Sem se\xE7\xE3o" },
+                  ...e.sections.map((v) => ({ value: v.id, label: v.title })),
+                ],
+              }),
+            ),
+          n.type === "section" &&
+            r.default.createElement(
+              r.default.Fragment,
+              null,
+              r.default.createElement(X, {
+                label: "T\xEDtulo da se\xE7\xE3o",
+                name: "title",
+                maxLength: 120,
+                required: !0,
+                placeholder: "Ex.: Venda do videogame",
+              }),
+              r.default.createElement(X, {
+                label: "Pessoa (opcional)",
+                name: "person",
+                maxLength: 100,
+              }),
+              r.default.createElement(X, {
+                label: "Finalidade",
+                name: "kind",
+                options: [
+                  { value: "receive", label: "Tenho a receber" },
+                  { value: "pay", label: "Tenho a pagar" },
+                  { value: "ledger", label: "Organizar lan\xE7amentos livres" },
+                ],
+                onChange: (v) => u({ ...n, kind: v.target.value }),
+              }),
+              n.kind !== "ledger" &&
+                r.default.createElement(
+                  r.default.Fragment,
+                  null,
+                  Wa("Valor total (R$)"),
+                  r.default.createElement(X, {
+                    label: "Quantidade de parcelas",
+                    name: "count",
+                    type: "number",
+                    min: "1",
+                    max: "600",
+                    required: !0,
+                    defaultValue: "10",
+                  }),
+                  nl("Primeiro vencimento"),
+                ),
+              r.default.createElement(X, {
+                label: "Anota\xE7\xE3o privada (n\xE3o vai no link)",
+                name: "privateNote",
+                type: "textarea",
+                maxLength: 1e3,
+              }),
+              r.default.createElement(
+                ve,
+                null,
+                "Voc\xEA cria o acordo. Os pagamentos s\xF3 entram no saldo quando forem registrados.",
+              ),
+            ),
+          n.type === "payment" &&
+            r.default.createElement(
+              r.default.Fragment,
+              null,
+              f &&
+                r.default.createElement(
+                  "div",
+                  { className: "notice" },
+                  r.default.createElement(Bt, { size: 20 }),
+                  r.default.createElement(
+                    "div",
+                    null,
+                    r.default.createElement(
+                      "strong",
+                      null,
+                      "Parcela ",
+                      Ba(f).current?.number,
+                    ),
+                    r.default.createElement(
+                      "p",
+                      null,
+                      "Previsto: ",
+                      ye(Ba(f).current?.due || 0),
+                      ". Saldo do acordo: ",
+                      ye(Ba(f).remaining),
+                      ".",
+                    ),
+                  ),
+                ),
+              Wa("Quanto foi pago (R$)"),
+              Vl(),
+              nl("Data do pagamento"),
+              r.default.createElement(
+                ve,
+                null,
+                "Pode registrar zero para carregar o valor integral. Um valor menor leva a falta \xE0 pr\xF3xima parcela; um maior reduz as seguintes.",
+              ),
+            ),
+          n.type === "delivery" &&
+            r.default.createElement(
+              r.default.Fragment,
+              null,
+              r.default.createElement(X, {
+                label: "Plataforma",
+                name: "platform",
+                required: !0,
+                options: e.platforms.map((v) => ({ value: v, label: v })),
+              }),
+              r.default.createElement(X, {
+                label: "Nome do estabelecimento",
+                name: "title",
+                required: !0,
+                maxLength: 120,
+                placeholder: "Ex.: Pizza Central",
+              }),
+              r.default.createElement(X, {
+                label: "Endere\xE7o de coleta (opcional)",
+                name: "pickup",
+                maxLength: 240,
+              }),
+              r.default.createElement(X, {
+                label: "Endere\xE7o do cliente (opcional)",
+                name: "destination",
+                maxLength: 240,
+              }),
+              Wa("Valor recebido (R$)"),
+              r.default.createElement(X, {
+                label: "Dist\xE2ncia percorrida (km)",
+                name: "km",
+                inputMode: "decimal",
+                required: !0,
+                placeholder: "Ex.: 4,5",
+              }),
+              r.default.createElement(X, {
+                label: "Custo desta entrega (R$)",
+                name: "cost",
+                inputMode: "decimal",
+                defaultValue: "0",
+              }),
+              Vl(),
+              nl(),
+              r.default.createElement(
+                ve,
+                null,
+                "O custo tamb\xE9m gera uma despesa. Registre somente o custo desta corrida, para n\xE3o contar duas vezes o combust\xEDvel.",
+              ),
+            ),
+          n.type === "platform" &&
+            r.default.createElement(X, {
+              label: "Nome da plataforma",
+              name: "title",
+              required: !0,
+              maxLength: 80,
+              placeholder: "Ex.: Outra plataforma",
+            }),
+          n.type === "goal" &&
+            r.default.createElement(
+              r.default.Fragment,
+              null,
+              r.default.createElement(X, {
+                label: "T\xEDtulo do objetivo",
+                name: "title",
+                required: !0,
+                maxLength: 120,
+                placeholder: "Ex.: Meu pr\xF3ximo notebook",
+              }),
+              Wa("Quanto quero juntar (R$)"),
+              nl("Data prevista"),
+              r.default.createElement(X, {
+                label: "Link do produto (opcional)",
+                name: "link",
+                type: "url",
+                placeholder: "https://",
+              }),
+              r.default.createElement(
+                "div",
+                { className: "image-picker" },
+                n.image &&
+                  r.default.createElement("img", {
+                    src: n.image,
+                    alt: "Imagem escolhida para a meta",
+                  }),
+                r.default.createElement(
+                  F,
+                  { type: "button", variant: "secondary", onClick: () => tn() },
+                  r.default.createElement(Tt, { size: 18 }),
+                  n.image ? "Trocar imagem" : "Adicionar imagem",
+                ),
+              ),
+              r.default.createElement(
+                ve,
+                null,
+                "Crie a meta e depois escolha de qual conta vai separar os aportes.",
+              ),
+            ),
+          n.type === "contribution" &&
+            r.default.createElement(
+              r.default.Fragment,
+              null,
+              r.default.createElement(X, {
+                label: "Opera\xE7\xE3o",
+                name: "direction",
+                options: [
+                  { value: "add", label: "Separar dinheiro para a meta" },
+                  { value: "remove", label: "Resgatar para saldo livre" },
+                ],
+              }),
+              Wa(),
+              Vl(),
+              nl(),
+              r.default.createElement(
+                ve,
+                null,
+                "Voc\xEA est\xE1 organizando o saldo j\xE1 existente no banco. Para dinheiro novo, cadastre primeiro uma receita.",
+              ),
+            ),
+          n.type === "extend" &&
+            r.default.createElement(
+              r.default.Fragment,
+              null,
+              nl("Novo prazo", "date", L?.due || Ve()),
+              r.default.createElement(
+                ve,
+                null,
+                "O hist\xF3rico dos prazos anteriores ser\xE1 preservado.",
+              ),
+            ),
+          n.type === "reserve" &&
+            r.default.createElement(
+              r.default.Fragment,
+              null,
+              r.default.createElement(X, {
+                label: "Conta",
+                name: "accountId",
+                required: !0,
+                options: js,
+                defaultValue: n.accountId,
+              }),
+              Wa(
+                "Novo valor total da reserva (R$)",
+                "amount",
+                (
+                  (e.reserve.find((v) => v.accountId === n.accountId)?.amount ||
+                    0) / 100
+                ).toFixed(2),
+              ),
+              r.default.createElement(
+                ve,
+                null,
+                "Informe o total reservado nesta conta, n\xE3o apenas o acr\xE9scimo. Zero libera a reserva.",
+              ),
+            ),
+          n.type === "recurring" &&
+            r.default.createElement(
+              r.default.Fragment,
+              null,
+              r.default.createElement(X, {
+                label: "T\xEDtulo",
+                name: "title",
+                required: !0,
+                maxLength: 120,
+              }),
+              r.default.createElement(X, {
+                label: "Tipo",
+                name: "type",
+                options: [
+                  { value: "expense", label: "Despesa recorrente" },
+                  {
+                    value: "income",
+                    label: "Sal\xE1rio ou receita recorrente",
+                  },
+                ],
+              }),
+              Wa(),
+              r.default.createElement(X, {
+                label: "Dia do m\xEAs",
+                name: "day",
+                type: "number",
+                min: "1",
+                max: "31",
+                required: !0,
+                defaultValue: "5",
+              }),
+              Vl(),
+              r.default.createElement(X, {
+                label: "Categoria",
+                name: "category",
+                options: Fg.map((v) => ({ value: v, label: v })),
+              }),
+              r.default.createElement(
+                ve,
+                null,
+                "Meses menores usam o \xFAltimo dia v\xE1lido. A ocorr\xEAncia s\xF3 entra no saldo quando voc\xEA confirmar.",
+              ),
+            ),
+          n.type === "sharingConfig" &&
+            r.default.createElement(
+              r.default.Fragment,
+              null,
+              r.default.createElement(X, {
+                label: "Endere\xE7o HTTPS do servidor",
+                name: "url",
+                type: "url",
+                defaultValue: e.sharing.url,
+                placeholder: "https://seu-servidor.exemplo",
+              }),
+              r.default.createElement(X, {
+                label: "Chave de cria\xE7\xE3o de links",
+                name: "key",
+                type: "password",
+                defaultValue: e.sharing.key,
+                autoComplete: "off",
+              }),
+              r.default.createElement(
+                ve,
+                null,
+                "O compartilhamento exige um servidor compatível, a ser configurado na etapa do aplicativo. Nenhum dado \xE9 enviado antes de tocar em Publicar se\xE7\xE3o.",
+              ),
+            ),
+          ["entry", "payment"].includes(n.type) &&
+            r.default.createElement(
+              "div",
+              { className: "image-picker" },
+              n.image &&
+                r.default.createElement("img", {
+                  src: n.image,
+                  alt: "Comprovante escolhido",
+                }),
+              r.default.createElement(
+                F,
+                { type: "button", variant: "secondary", onClick: () => tn() },
+                r.default.createElement(Tt, { size: 18 }),
+                n.image
+                  ? "Trocar comprovante"
+                  : "Anexar comprovante (opcional)",
+              ),
+              r.default.createElement(
+                "small",
+                null,
+                "O comprovante fica privado no aparelho e no backup.",
+              ),
+            ),
+          I &&
+            r.default.createElement(
+              "p",
+              { className: "form-error", role: "alert" },
+              I,
+            ),
+          r.default.createElement(
+            F,
+            { variant: "full", type: "submit" },
+            r.default.createElement(Ze, { size: 18 }),
+            n.type === "payment" ? "Registrar pagamento" : "Salvar",
+          ),
+        );
+      if(n.type === 'create') return React.createElement(CreateGrid,{onSelect:(id)=>{(['entry','delivery','recurring'].includes(id)&&Ma())||U(id)}});
+      if (n.type === "info")
+        return r.default.createElement("p", { className: "info-copy" }, n.text);
+      if (n.type === "delete")
+        return r.default.createElement(
+          r.default.Fragment,
+          null,
+          r.default.createElement(
+            "div",
+            { className: "notice" },
+            r.default.createElement(Ge, { size: 24 }),
+            r.default.createElement(
+              "p",
+              null,
+              "Excluir este registro? Essa a\xE7\xE3o ser\xE1 salva no aparelho.",
+            ),
+          ),
+          r.default.createElement(
+            ve,
+            null,
+            n.kind === "section"
+              ? "As transa\xE7\xF5es j\xE1 confirmadas ser\xE3o preservadas no extrato. Revogue qualquer link publicado antes de excluir a se\xE7\xE3o."
+              : n.kind === "goal"
+                ? "O dinheiro da meta volta a ficar livre nas contas. Os lan\xE7amentos banc\xE1rios permanecem no extrato."
+                : n.kind === "account"
+                  ? "S\xF3 \xE9 poss\xEDvel excluir uma conta sem lan\xE7amentos, reserva ou aportes."
+                  : "Se esse registro estiver associado a uma entrega ou parcela, remova pela tela de origem.",
+          ),
+          r.default.createElement(
+            F,
+            {
+              variant: "danger full",
+              onClick: () => {
+                le((S) => {
+                  if (n.kind === "section") {
+                    if (S.sharing.grants[n.id])
+                      throw Error(
+                        "Revogue o link desta se\xE7\xE3o antes de exclu\xED-la.",
+                      );
+                    ((S.sections = S.sections.filter((k) => k.id !== n.id)),
+                      S.entries.forEach((k) => {
+                        k.sectionId === n.id &&
+                          (delete k.sectionId, delete k.paymentId);
+                      }));
+                  }
+                  if (
+                    (n.kind === "goal" &&
+                      (S.goals = S.goals.filter((k) => k.id !== n.id)),
+                    n.kind === "account")
+                  ) {
+                    if (
+                      S.entries.some(
+                        (k) => k.accountId === n.id || k.toAccountId === n.id,
+                      ) ||
+                      S.goals.some((k) =>
+                        k.contributions.some((q) => q.accountId === n.id),
+                      ) ||
+                      S.reserve.some((k) => k.accountId === n.id && k.amount)
+                    )
+                      throw Error(
+                        "Conta em uso. Remova ou mova seus v\xEDnculos antes.",
+                      );
+                    ((S.accounts = S.accounts.filter((k) => k.id !== n.id)),
+                      (S.reserve = S.reserve.filter(
+                        (k) => k.accountId !== n.id,
+                      )),
+                      (S.recurring = S.recurring.filter(
+                        (k) => k.accountId !== n.id,
+                      )));
+                  }
+                  if (n.kind === "entry") {
+                    let k = S.entries.find((q) => q.id === n.id);
+                    if (k?.paymentId || k?.deliveryId)
+                      throw Error(
+                        "Use o estorno na parcela ou a exclus\xE3o da entrega.",
+                      );
+                    S.entries = S.entries.filter((q) => q.id !== n.id);
+                  }
+                  (n.kind === "delivery" &&
+                    ((S.deliveries = S.deliveries.filter((k) => k.id !== n.id)),
+                    (S.entries = S.entries.filter(
+                      (k) => k.deliveryId !== n.id,
+                    ))),
+                    n.kind === "recurring" &&
+                      (S.recurring = S.recurring.filter((k) => k.id !== n.id)));
+                }, "Registro exclu\xEDdo.") && (Aa(), g(null));
+              },
+            },
+            r.default.createElement(Ge, { size: 18 }),
+            "Excluir registro",
+          ),
+        );
+      if (n.type === "undoPayment")
+        return r.default.createElement(
+          r.default.Fragment,
+          null,
+          r.default.createElement(
+            "p",
+            null,
+            "Estornar o \xFAltimo pagamento desta se\xE7\xE3o e recalcular o cronograma? O lan\xE7amento correspondente tamb\xE9m ser\xE1 removido do extrato.",
+          ),
+          r.default.createElement(
+            F,
+            {
+              variant: "danger full",
+              onClick: () => {
+                le((v) => {
+                  let S = v.sections.find((q) => q.id === n.id),
+                    k = S.payments.pop();
+                  for (; S.payments.at(-1)?.auto;) S.payments.pop();
+                  v.entries = v.entries.filter((q) => q.paymentId !== k.id);
+                }, "Pagamento estornado.") && Aa();
+              },
+            },
+            r.default.createElement(pl, { size: 18 }),
+            "Confirmar estorno",
+          ),
+        );
+      if (n.type === "sectionMenu")
+        return r.default.createElement(
+          "div",
+          { className: "menu-list" },
+          r.default.createElement(
+            "button",
+            {
+              onClick: () => {
+                le(
+                  (v) => {
+                    let S = v.sections.find((k) => k.id === n.id);
+                    S.pinned = !S.pinned;
+                  },
+                  f.pinned ? "Se\xE7\xE3o desafixada." : "Se\xE7\xE3o fixada.",
+                ) && Aa();
+              },
+            },
+            r.default.createElement(Kl, null),
+            f.pinned ? "Desafixar se\xE7\xE3o" : "Fixar se\xE7\xE3o",
+            r.default.createElement(Pe, null),
+          ),
+          r.default.createElement(
+            "button",
+            { onClick: () => U("share", { id: n.id }) },
+            r.default.createElement(tt, null),
+            "Compartilhar se\xE7\xE3o",
+            r.default.createElement(Pe, null),
+          ),
+          r.default.createElement(
+            "button",
+            {
+              onClick: () =>
+                U("info", {
+                  title: "Anota\xE7\xE3o privada",
+                  text:
+                    f.privateNote ||
+                    "Sem anota\xE7\xE3o privada nesta se\xE7\xE3o.",
+                }),
+            },
+            r.default.createElement(at, null),
+            "Anota\xE7\xE3o privada",
+            r.default.createElement(Pe, null),
+          ),
+          r.default.createElement(
+            "button",
+            { className: "negative-text", onClick: () => It("section", n.id) },
+            r.default.createElement(Ge, null),
+            "Excluir se\xE7\xE3o",
+            r.default.createElement(Pe, null),
+          ),
+        );
+      if (n.type === 'share') return React.createElement(FirebaseSectionShare,{title:f?.title||'esta seção',grant:e.sharing.grants[n.id],busy:N,onPublish:()=>Gg(n.id),onRevoke:()=>Vg(n.id),onSend:Xg});
+      if (n.type === "entryDetail") {
+        let v = n.entry;
+        return r.default.createElement(
+          r.default.Fragment,
+          null,
+          r.default.createElement(
+            "div",
+            { className: "big-value" },
+            P(v.amount),
+          ),
+          v.image &&
+            r.default.createElement("img", {
+              className: "goal-cover",
+              src: v.image,
+              alt: "Comprovante deste lan\xE7amento",
+            }),
+          [
+            [
+              "Tipo",
+              v.type === "income"
+                ? "Receita"
+                : v.type === "expense"
+                  ? "Despesa"
+                  : "Transfer\xEAncia",
+            ],
+            ["Data", fa(v.date)],
+            ["Conta", e.accounts.find((S) => S.id === v.accountId)?.title],
+            ["Categoria", v.category],
+          ].map(([S, k]) =>
+            r.default.createElement(
+              "div",
+              { className: "simple-row", key: S },
+              r.default.createElement("span", null, S),
+              r.default.createElement("strong", null, k),
+            ),
+          ),
+          v.paymentId || v.deliveryId
+            ? r.default.createElement(
+                ve,
+                null,
+                "Este lan\xE7amento foi gerado por",
+                " ",
+                v.paymentId ? "uma parcela" : "uma entrega",
+                ". Para remov\xEA-lo, abra o registro de origem.",
+              )
+            : r.default.createElement(
+                F,
+                { variant: "danger full", onClick: () => It("entry", v.id) },
+                r.default.createElement(Ge, { size: 18 }),
+                "Excluir lan\xE7amento",
+              ),
+        );
+      }
+      if (n.type === "deliveryDetail") {
+        let v = n.delivery;
+        return r.default.createElement(
+          r.default.Fragment,
+          null,
+          r.default.createElement(
+            "div",
+            { className: "big-value" },
+            P(v.amount),
+          ),
+          [
+            ["Plataforma", v.platform],
+            ["Estabelecimento", v.title],
+            ["Coleta", v.pickup || "N\xE3o informado"],
+            ["Destino", v.destination || "N\xE3o informado"],
+            ["Dist\xE2ncia", v.km + " km"],
+            [
+              "Receita por km",
+              s ? ye(Math.round(v.amount / v.km)) : "\u2022\u2022\u2022\u2022",
+            ],
+            ["Custo", s ? ye(v.cost) : "\u2022\u2022\u2022\u2022"],
+            ["Data", fa(v.date)],
+          ].map(([S, k]) =>
+            r.default.createElement(
+              "div",
+              { className: "simple-row", key: S },
+              r.default.createElement("span", null, S),
+              r.default.createElement("strong", null, k),
+            ),
+          ),
+          r.default.createElement(
+            F,
+            { variant: "danger full", onClick: () => It("delivery", v.id) },
+            r.default.createElement(Ge, { size: 18 }),
+            "Excluir entrega e lan\xE7amentos",
+          ),
+        );
+      }
+      if (n.type === "recurringConfirm") {
+        let v = e.recurring.find((S) => S.id === n.id);
+        return r.default.createElement(
+          r.default.Fragment,
+          null,
+          r.default.createElement(
+            "p",
+            null,
+            "Confirmar ",
+            v.title,
+            " no valor de ",
+            ye(v.amount),
+            " para a compet\xEAncia",
+            " ",
+            m.slice(0, 7),
+            "?",
+          ),
+          r.default.createElement(
+            F,
+            { variant: "full", onClick: () => eh(v) },
+            r.default.createElement(Ze, { size: 18 }),
+            "Confirmar ocorr\xEAncia",
+          ),
+        );
+      }
+      return n.type === "demo"
+        ? r.default.createElement(
+            r.default.Fragment,
+            null,
+            r.default.createElement(
+              "p",
+              null,
+              "Carregar um conjunto de demonstra\xE7\xE3o para explorar os temas e componentes? Isso substitui os dados atuais. Exporte um backup antes de continuar.",
+            ),
+            r.default.createElement(
+              F,
+              { variant: "secondary full", onClick: () => Us(e) },
+              r.default.createElement(Yl, { size: 18 }),
+              "Exportar meus dados",
+            ),
+            r.default.createElement(
+              F,
+              {
+                variant: "full",
+                onClick: () => {
+                  let v = bf();
+                  ((v.settings = structuredClone(e.settings)),
+                    le(
+                      (S) => Object.assign(S, v),
+                      "Demonstra\xE7\xE3o carregada.",
+                      { replaceData: !0 },
+                    ) && (Aa(), c(!0), ke("dashboard")));
+                },
+              },
+              "Carregar demonstra\xE7\xE3o",
+            ),
+          )
+        : n.type === "importConfirm"
+          ? r.default.createElement(
+              r.default.Fragment,
+              null,
+              r.default.createElement(
+                "p",
+                null,
+                "Substituir os dados atuais pelos ",
+                n.importData.entries.length,
+                " ",
+                "lan\xE7amentos e ",
+                n.importData.accounts.length,
+                " contas deste backup?",
+              ),
+              r.default.createElement(
+                F,
+                {
+                  variant: "full",
+                  onClick: () => {
+                    le(
+                      (v) => Object.assign(v, n.importData),
+                      "Backup restaurado.",
+                      { replaceData: !0 },
+                    ) && (Aa(), x(null), ke("dashboard"));
+                  },
+                },
+                r.default.createElement(ml, { size: 18 }),
+                "Restaurar este backup",
+              ),
+            )
+          : n.type === "loadError"
+            ? r.default.createElement(
+                r.default.Fragment,
+                null,
+                r.default.createElement(
+                  "p",
+                  null,
+                  "O arquivo salvo n\xE3o p\xF4de ser aberto. Os dados existentes n\xE3o foram substitu\xEDdos.",
+                ),
+                r.default.createElement(
+                  "p",
+                  { className: "form-error" },
+                  window.nexoLoadError,
+                ),
+                r.default.createElement(
+                  F,
+                  {
+                    variant: "full",
+                    onClick: () =>
+                      window.NexoNative
+                        ? window.NexoNative.importBackup()
+                        : document.getElementById("backup-file").click(),
+                  },
+                  "Restaurar backup",
+                ),
+                r.default.createElement(
+                  ve,
+                  null,
+                  "Evite criar novos lan\xE7amentos antes de recuperar seu backup.",
+                ),
+              )
+            : n.type === "catalog"
+              ? r.default.createElement(ComponentGallery, { notify: Qe })
+              : null;
+    }
+    let rh = {
+        account: "Nova conta",
+        entry: "Novo lan\xE7amento",
+        section: "Nova se\xE7\xE3o",
+        payment: "Registrar pagamento",
+        delivery: "Nova entrega",
+        platform: "Adicionar plataforma",
+        goal: "Novo objetivo",
+        contribution: "Organizar aporte",
+        extend: "Ajustar prazo",
+        reserve: "Reserva de emerg\xEAncia",
+        recurring: "Nova recorr\xEAncia",
+        heroImage: "Imagem do cart\xE3o principal",
+        sharingConfig: "Links de acompanhamento",
+        create: "O que vamos registrar?",
+        delete: "Excluir registro",
+        undoPayment: "Estornar pagamento",
+        sectionMenu: "Op\xE7\xF5es da se\xE7\xE3o",
+        share: "Compartilhar se\xE7\xE3o",
+        entryDetail: o?.entry?.title || "Lan\xE7amento",
+        deliveryDetail: "Detalhes da entrega",
+        recurringConfirm: "Confirmar recorr\xEAncia",
+        demo: "Dados demonstrativos",
+        importConfirm: "Restaurar backup",
+        catalog: "Laborat\xF3rio de componentes",
+        loadError: "Recuperar seus dados",
+      },
+      ih = {
+        dashboard: Zg,
+        sections: Kg,
+        goals: Jg,
+        deliveries: Wg,
+        accounts: Rg,
+        entries: $g,
+        recurring: ah,
+        agenda: th,
+        settings: lh,
+        help: oh,
+      };
+    return r.default.createElement(
+      MotionAppRoot,
+      { className: "app navigation-" + O.nav, settings: O },
+      r.default.createElement(
+        "header",
+        { className: "app-header" },
+        r.default.createElement(
+          "button",
+          {
+            className: "brand",
+            onClick: () => ke("dashboard"),
+            "aria-label": "Nexo in\xEDcio",
+          },
+          r.default.createElement(
+            "span",
+            { className: "brand-icon" },
+            "n",
+            r.default.createElement("span", null),
+          ),
+          r.default.createElement("span", null, "nexo"),
+        ),
+        r.default.createElement(
+          "div",
+          { className: "header-actions" },
+          React.createElement(CommandPalette,{onNavigate:ke,onCreate:U,data:e}),
+          r.default.createElement(
+            pe,
+            { label: "Agenda", onClick: toggleAgenda, "aria-pressed": t === "agenda" },
+            r.default.createElement(Ra, { size: 21 }),
+            Yo().some((n) => n.date < Ve()) &&
+              r.default.createElement("i", { className: "notification-dot" }),
+          ),
+          r.default.createElement(
+            pe,
+            { label: "Abrir menu", onClick: () => d((n) => !n) },
+            r.default.createElement(Ro, { size: 22 }),
+          ),
+        ),
+      ),
+      i &&
+        r.default.createElement(
+          r.default.Fragment,
+          null,
+          r.default.createElement("div", {
+            className: "menu-scrim",
+            onClick: () => d(!1),
+          }),
+          r.default.createElement(
+            "div",
+            { className: "profile-menu" },
+            r.default.createElement(
+              "div",
+              { className: "profile-top" },
+              r.default.createElement("div", { className: "avatar" }, "K"),
+              r.default.createElement(
+                "div",
+                null,
+                r.default.createElement(
+                  "strong",
+                  null,
+                  "Seu espa\xE7o financeiro",
+                ),
+                r.default.createElement("small", null, "Salvo neste aparelho"),
+              ),
+              r.default.createElement(Et, { size: 20 }),
+            ),
+            r.default.createElement(
+              "div",
+              { className: "menu-list" },
+              [
+                ["accounts", "Contas e reserva", lt],
+                ["entries", "Lan\xE7amentos", cl],
+                ["recurring", "Recorr\xEAncias", zt],
+                ["agenda", "Agenda", Ra],
+                ["settings", "Personaliza\xE7\xE3o", eu],
+                ["help", "Ajuda e privacidade", Mt],
+              ].map(([n, f, L]) =>
+                r.default.createElement(
+                  "button",
+                  { key: n, "aria-label": f, title: f, onClick: () => ke(n) },
+                  r.default.createElement(L, { size: 20 }),
+                  r.default.createElement("span", null, f),
+                  r.default.createElement(Pe, { size: 17 }),
+                ),
+              ),
+            ),
+            r.default.createElement(
+              "div",
+              { className: "menu-footer" },
+              r.default.createElement(
+                pe,
+                {
+                  label: "Tema claro",
+                  onClick: () => {
+                    (le((n) => {
+                      n.settings.theme = "porcelana";
+                    }),
+                      x(null));
+                  },
+                },
+                r.default.createElement(lu, null),
+              ),
+              r.default.createElement(
+                pe,
+                {
+                  label: "Tema escuro",
+                  onClick: () => {
+                    (le((n) => {
+                      n.settings.theme = "obsidiana";
+                    }),
+                      x(null));
+                  },
+                },
+                r.default.createElement($o, null),
+              ),
+              r.default.createElement(
+                pe,
+                {
+                  label: "Bloquear agora",
+                  onClick: () => {
+                    window.NexoNative?.canLock()
+                      ? (d(!1), window.NexoNative.lockNow())
+                      : Qe(
+                          "Ative uma credencial no Android para bloquear o aplicativo.",
+                        );
+                  },
+                },
+                r.default.createElement(at, { size: 21 }),
+              ),
+              r.default.createElement(
+                pe,
+                { label: "Configura\xE7\xF5es", onClick: () => ke("settings") },
+                r.default.createElement(Jl, null),
+              ),
+            ),
+          ),
+        ),
+      r.default.createElement(
+        ScreenTransition,
+        { key: t + Z + j, className: "screen" },
+        r.default.createElement(
+          "div",
+          { className: "screen-heading" },
+          r.default.createElement(
+            "div",
+            null,
+            r.default.createElement(
+              "p",
+              null,
+              t === "dashboard"
+                ? new Date(Ve() + "T12:00:00").toLocaleDateString("pt-BR", {
+                    weekday: "long",
+                    day: "numeric",
+                    month: "long",
+                  })
+                : "Seu espa\xE7o, seu ritmo",
+            ),
+            r.default.createElement("h1", null, rv[t]),
+          ),
+          t !== "dashboard" &&
+            t !== "settings" &&
+            r.default.createElement(
+              pe,
+              {
+                label: "Mostrar ou ocultar valores",
+                onClick: () => c((n) => !n),
+              },
+              s
+                ? r.default.createElement(Ql, { size: 21 })
+                : r.default.createElement(fl, { size: 21 }),
+            ),
+          t === "dashboard" &&
+            r.default.createElement(
+              "button",
+              {
+                className: "avatar",
+                onClick: () => ke("settings"),
+                "aria-label": "Abrir personaliza\xE7\xE3o",
+              },
+              "K",
+            ),
+        ),
+        t === 'dashboard' && React.createElement(DashboardTools,{data:e,onNavigate:ke,onCreate:U}),
+        ih[t](),
+      ),
+      r.default.createElement(cn, {
+        items: [
+          ["dashboard", "In\xEDcio", Dt],
+          ["sections", "Se\xE7\xF5es", ta],
+          ["deliveries", "Entregas", Ta],
+          ["goals", "Metas", Pa],
+        ],
+        active: t,
+        onNavigate: ke,
+        hidden: i || !!o,
+        onCreate: () => U("create"),
+        settings: O,
+      }),
+      React.createElement(AnimatePresence, {initial:false,mode:'wait'},
+      o &&
+        r.default.createElement(
+          Hg,
+          {
+            key: o.type,
+            title: o.type === "info" ? o.title : rh[o.type] || "Nexo",
+            onClose: () => Aa(),
+          },
+          uh(),
+        )),
+      D &&
+        r.default.createElement(
+          "div",
+          { className: "toast", role: "status" },
+          r.default.createElement(At, { size: 18 }),
+          r.default.createElement("span", null, D),
+        ),
+      r.default.createElement("input", {
+        id: "backup-file",
+        type: "file",
+        accept: "application/json,.json",
+        hidden: !0,
+        onChange: async (n) => {
+          let f = n.target.files?.[0];
+          if (f) {
+            try {
+              if (f.size > 2e7) throw Error("Arquivo maior que 20 MB.");
+              let L = $l(JSON.parse(await f.text()));
+              U("importConfirm", { importData: L });
+            } catch (L) {
+              Qe(L.message);
+            }
+            n.target.value = "";
+          }
+        },
+      }),
+      r.default.createElement("input", {
+        id: "image-file",
+        type: "file",
+        accept: "image/*",
+        hidden: !0,
+        onChange: async (n) => {
+          let f = n.target.files?.[0];
+          if (f) {
+            try {
+              if (f.size > 15e6) throw Error("Imagem maior que 15 MB.");
+              let L = await createImageBitmap(f),
+                y = document.createElement("canvas"),
+                v = Math.min(1, 1e3 / L.width, 1e3 / L.height);
+              ((y.width = L.width * v),
+                (y.height = L.height * v),
+                y.getContext("2d").drawImage(L, 0, 0, y.width, y.height),
+                u((S) => ({ ...S, image: y.toDataURL("image/jpeg", 0.8) })),
+                L.close());
+            } catch {
+              Qe("N\xE3o foi poss\xEDvel ler a imagem.");
+            }
+            n.target.value = "";
+          }
+        },
+      }),
+    );
+  }
+  function nv({ notify: e }) {
+    let [a, t] = (0, r.useState)(!0),
+      [l, o] = (0, r.useState)("week"),
+      [u, i] = (0, r.useState)(0.34),
+      [d, s] = (0, r.useState)(!1);
+    return r.default.createElement(
+      "div",
+      { className: "catalog" },
+      r.default.createElement(
+        ve,
+        null,
+        "Amostras ilustrativas. Os controles desta tela n\xE3o alteram seus dados.",
+      ),
+      r.default.createElement("h3", null, "Morph de formas e estados"),
+      r.default.createElement(Ps, null),
+      r.default.createElement("h3", null, "Bot\xF5es de vidro e relevo"),
+      r.default.createElement(
+        "div",
+        { className: "catalog-buttons" },
+        [be, Da, Ze, at, sl].map((c, h) =>
+          r.default.createElement(
+            pe,
+            {
+              key: h,
+              label: "Testar bot\xE3o " + (h + 1),
+              onClick: () => e("Bot\xE3o " + (h + 1) + " acionado."),
+            },
+            r.default.createElement(c, null),
+          ),
+        ),
+        r.default.createElement(
+          F,
+          { onClick: () => s((c) => !c) },
+          r.default.createElement(et, { size: 19 }),
+          "Menu",
+        ),
+      ),
+      d &&
+        r.default.createElement(
+          "div",
+          { className: "context-menu" },
+          [
+            [tt, "Compartilhar"],
+            [Zl, "Abrir link"],
+            [Kl, "Fixar"],
+            [at, "Proteger"],
+            [Ge, "Excluir"],
+          ].map(([c, h]) =>
+            r.default.createElement(
+              "button",
+              {
+                key: h,
+                onClick: () => {
+                  (e(h + " testado."), s(!1));
+                },
+              },
+              r.default.createElement(c, { size: 18 }),
+              h,
+            ),
+          ),
+        ),
+      r.default.createElement("h3", null, "Interruptores e sele\xE7\xE3o"),
+      r.default.createElement(Ye, {
+        label: "Interruptor com relevo",
+        checked: a,
+        onChange: t,
+      }),
+      r.default.createElement(Ye, {
+        label: "Dia e noite",
+        checked: a,
+        onChange: t,
+        day: !0,
+      }),
+      r.default.createElement(Wi, {
+        label: "Amostra de per\xEDodo",
+        options: [
+          { value: "day", label: "Dia" },
+          { value: "week", label: "Semana" },
+          { value: "month", label: "M\xEAs" },
+        ],
+        value: l,
+        onChange: o,
+      }),
+      r.default.createElement(
+        "h3",
+        null,
+        "Progresso com tr\xEAs etapas de cor",
+      ),
+      r.default.createElement(
+        "div",
+        { className: "component-preview" },
+        r.default.createElement(Pl, { progress: u }),
+        r.default.createElement(
+          "div",
+          { className: "grow" },
+          r.default.createElement("strong", null, "Meu objetivo"),
+          r.default.createElement(Gl, { value: u }),
+          r.default.createElement(
+            "small",
+            null,
+            Math.round(u * 100),
+            "% conclu\xEDdo",
+          ),
+        ),
+      ),
+      r.default.createElement(
+        "label",
+        { className: "field" },
+        r.default.createElement("span", null, "Arraste para testar o morph"),
+        r.default.createElement("input", {
+          "aria-label": "Progresso de teste",
+          type: "range",
+          min: "0",
+          max: "1",
+          step: ".01",
+          value: u,
+          onChange: (c) => i(Number(c.target.value)),
+        }),
+      ),
+      r.default.createElement("h3", null, "Gr\xE1ficos e indicadores"),
+      ["area", "bars", "line"].map((c) =>
+        r.default.createElement(
+          J,
+          {
+            key: c,
+            title: { area: "\xC1rea", bars: "Barras", line: "Linha" }[c],
+            subtitle: "Receita ilustrativa em R$",
+          },
+          r.default.createElement(Fs, {
+            kind: c,
+            values: [2200, 3400, 1800, 4800, 4200, 6100, 5600],
+            labels: ["S", "T", "Q", "Q", "S", "S", "D"],
+          }),
+        ),
+      ),
+      r.default.createElement("h3", null, "Trilha semanal"),
+      r.default.createElement(
+        "div",
+        { className: "week-track" },
+        ["S", "T", "Q", "Q", "S", "S", "D"].map((c, h) =>
+          r.default.createElement(
+            "button",
+            {
+              key: h,
+              "aria-label": "Dia de teste " + (h + 1),
+              onClick: () => e("Dia " + (h + 1) + " selecionado."),
+            },
+            r.default.createElement(
+              "span",
+              null,
+              h < 4 ? r.default.createElement(Ze, { size: 17 }) : h + 1,
+            ),
+            r.default.createElement("small", null, c),
+          ),
+        ),
+      ),
+      r.default.createElement("h3", null, "Campo, estado e alerta"),
+      r.default.createElement(X, {
+        label: "T\xEDtulo de teste",
+        name: "test",
+        placeholder: "Escreva aqui",
+      }),
+      r.default.createElement("div", { className: "badge" }, "Parcela extra"),
+      r.default.createElement(
+        "div",
+        { className: "notice" },
+        r.default.createElement(sl, null),
+        r.default.createElement(
+          "p",
+          null,
+          "Exemplo de aviso de prazo com a\xE7\xE3o clara.",
+        ),
+      ),
+      r.default.createElement(
+        F,
+        {
+          variant: "danger full",
+          onClick: () =>
+            e(
+              "A\xE7\xE3o de exclus\xE3o de teste acionada. Nenhum dado foi removido.",
+            ),
+        },
+        r.default.createElement(Ge, { size: 18 }),
+        "Testar a\xE7\xE3o destrutiva",
+      ),
+    );
+  }
+
+export default function NexoApp(){return React.createElement(MotionConfig,{reducedMotion:'user',transition:{type:'spring',stiffness:320,damping:32}},React.createElement(iv));}

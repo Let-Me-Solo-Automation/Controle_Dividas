@@ -1,0 +1,17 @@
+node_modules/
+.runtime/
+test-results/
+playwright-report/
+src/generated/
+.DS_Store
+.firebase/
+firebase-debug.log
+firestore-debug.log
+ui-debug.log
+.nexo-setup.json
+output/
+
+dist/
+*.log
+
+Nexo-backup*.json

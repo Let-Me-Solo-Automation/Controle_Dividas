@@ -1,0 +1,873 @@
+@import "./styles.css";
+:root {
+  font-family:
+    "DM Sans",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+  background: #f8f9f6;
+  color: #273830;
+  --bg: #f8f9f6;
+  --text: #273830;
+  --muted: #748078;
+  --accent: #087f6d;
+  --line: #e2e7e2;
+  --surface: #fff;
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+}
+button,
+select {
+  font: inherit;
+}
+button,
+a,
+select {
+  -webkit-tap-highlight-color: transparent;
+}
+button {
+  cursor: pointer;
+}
+button {
+  color: inherit;
+  border: 0;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+button:disabled {
+  cursor: default;
+}
+button:focus-visible,
+a:focus-visible,
+select:focus-visible {
+  outline: 3px solid #2c9c86;
+  outline-offset: 3px;
+}
+.simulator {
+  min-height: 100vh;
+  background: #f8f9f6;
+}
+.sim-header {
+  height: 84px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 43px;
+  border-bottom: 1px solid #e4e8e1;
+  background: #ffffffa6;
+}
+.sim-identity,
+.sim-wordmark,
+.sim-header-right {
+  display: flex;
+  align-items: center;
+}
+.sim-identity {
+  gap: 11px;
+}
+.sim-logo {
+  display: grid;
+  place-items: center;
+  position: relative;
+  background: #173e34;
+  color: white;
+  font-size: 33px;
+  font-weight: 500;
+  width: 40px;
+  height: 41px;
+  border-radius: 14px;
+  line-height: 1;
+}
+.sim-logo > span {
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #8ad8b7;
+  right: 7px;
+  top: 8px;
+}
+.sim-wordmark {
+  font-size: 26px;
+  letter-spacing: -1.6px;
+  font-weight: 700;
+  gap: 21px;
+}
+.sim-wordmark-divider {
+  display: block;
+  width: 1px;
+  height: 23px;
+  background: #dce2da;
+}
+.sim-header-label {
+  font-size: 13px;
+  letter-spacing: -0.1px;
+  font-weight: 500;
+  color: #748078;
+}
+.sim-header-right {
+  gap: 22px;
+}
+.sim-prototype-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 11px;
+  color: #64736a;
+}
+.sim-prototype-badge > span,
+.sim-live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #339d78;
+}
+.sim-small-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 13px;
+  border: 1px solid #dce3d9;
+  border-radius: 12px;
+  background: white;
+  font-size: 11px;
+  min-height: 40px;
+}
+.sim-workspace {
+  display: grid;
+  grid-template-columns: 238px minmax(400px, 1fr) 222px;
+  max-width: 1390px;
+  gap: 38px;
+  padding: 32px 40px 20px;
+  margin: auto;
+  min-height: calc(100vh - 132px);
+}
+.sim-panel-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 9px;
+  letter-spacing: 1.4px;
+  color: #7d897e;
+  padding-top: 12px;
+}
+.sim-version {
+  font-size: 10px;
+  background: #ebeee7;
+  color: #7a897c;
+  padding: 4px 6px;
+  border-radius: 5px;
+  letter-spacing: 0;
+}
+.sim-controls h1 {
+  font-size: 28px;
+  line-height: 1.24;
+  letter-spacing: -1.1px;
+  font-weight: 500;
+  margin: 26px 0 12px;
+}
+.sim-controls h1 > span {
+  color: #278568;
+}
+.sim-intro {
+  font-size: 12px;
+  line-height: 1.8;
+  color: #839080;
+  margin: 0 0 28px;
+}
+.sim-section {
+  padding: 22px 0;
+  border-top: 1px solid #e1e6dc;
+}
+.sim-section h2 {
+  font-size: 12px;
+  font-weight: 600;
+  margin: 0 0 16px;
+}
+.sim-select-label {
+  display: block;
+  font-size: 10px;
+  color: #839080;
+  margin-bottom: 9px;
+}
+.sim-select-wrap {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  position: relative;
+  border: 1px solid #dce3d8;
+  border-radius: 13px;
+  padding: 0 13px;
+  background: #fff;
+  height: 46px;
+}
+.sim-theme-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.sim-select-wrap select {
+  min-width: 0;
+  flex: 1;
+  appearance: none;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  font-size: 12px;
+  height: 100%;
+  cursor: pointer;
+  color: #304137;
+}
+.sim-select-wrap > svg {
+  pointer-events: none;
+  color: #889383;
+}
+.sim-appearance-options {
+  display: flex;
+  gap: 6px;
+  margin-top: 9px;
+}
+.sim-appearance-options button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  background: none;
+  min-height: 35px;
+  font-size: 11px;
+  flex: 1;
+  color: #8a9689;
+}
+.sim-appearance-options button[aria-pressed="true"] {
+  border-color: #dce4d8;
+  background: #eaf0e7;
+  color: #3c614d;
+}
+.sim-view-options {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.sim-view-options button {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  text-align: left;
+  background: none;
+  padding: 11px 12px;
+  border-radius: 12px;
+  font-size: 11px;
+  color: #7b8879;
+  border: 1px solid transparent;
+  min-height: 42px;
+}
+.sim-view-options button > span {
+  flex: 1;
+}
+.sim-view-options button > svg:last-child {
+  opacity: 0;
+}
+.sim-view-options button[aria-pressed="true"] {
+  background: #edf1e9;
+  border-color: #dfe7d9;
+  color: #35523f;
+}
+.sim-view-options button[aria-pressed="true"] > svg:last-child {
+  opacity: 1;
+}
+.sim-inline-actions {
+  display: flex;
+  gap: 14px;
+  margin-top: 9px;
+}
+.sim-inline-actions button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: none;
+  min-height: 32px;
+  font-size: 10px;
+  color: #7b8879;
+  flex: 1;
+}
+.sim-demo-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  min-height: 42px;
+  font-size: 11px;
+  font-weight: 500;
+  background: #244d3d;
+  color: #fff;
+  border: 1px solid #244d3d;
+  border-radius: 12px;
+}
+.sim-demo-button:hover {
+  background: #30624e;
+}
+.sim-empty-button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 40px;
+  background: none;
+  font-size: 10px;
+  color: #788776;
+  margin-top: 6px;
+}
+.sim-storage {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 9px;
+  color: #91a08b;
+  margin: 14px 0 0;
+}
+.sim-storage > span {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #72a579;
+}
+.sim-storage > span.memory {
+  background: #c69c5e;
+}
+.sim-local-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin-top: 12px;
+  color: #9aa592;
+}
+.sim-local-note p {
+  font-size: 9px;
+  line-height: 1.8;
+  margin: 0;
+}
+.sim-stage {
+  position: relative;
+  border: 1px solid #e1e6db;
+  border-radius: 26px;
+  background-color: #edf0e8;
+  background-image: radial-gradient(#d6ded0 1px, transparent 1px);
+  background-size: 19px 19px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 14px 17px;
+  overflow: hidden;
+}
+.sim-stage-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 18px 8px;
+  flex-shrink: 0;
+}
+.sim-stage-label {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 8px;
+  letter-spacing: 1.4px;
+  color: #77856c;
+  font-weight: 600;
+}
+.sim-stage-label > span {
+  width: 5px;
+  height: 5px;
+  background: #7c9b74;
+  border-radius: 50%;
+}
+.sim-stage-size {
+  font-size: 8px;
+  letter-spacing: 1px;
+  color: #9ba590;
+}
+.sim-stage-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  flex: 1;
+  padding: 6px 0 12px;
+  min-width: 0;
+}
+.sim-phone-space {
+  position: relative;
+  flex-shrink: 0;
+}
+.sim-phone {
+  width: 428px;
+  height: 932px;
+  padding: 6px;
+  border: 2px solid #38433c;
+  border-radius: 46px;
+  background: linear-gradient(110deg, #27372e, #737b70 40%, #23352a);
+  transform-origin: top left;
+  box-shadow:
+    0 20px 35px #2e463324,
+    0 3px 8px #132d2525;
+}
+.sim-phone-screen {
+  width: 412px;
+  height: 916px;
+  border-radius: 37px;
+  overflow: hidden;
+  background: var(--device-bg);
+  position: relative;
+}
+.sim-statusbar {
+  height: 29px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 10px;
+  font-weight: 650;
+  padding: 0 23px;
+  background: var(--device-bg);
+  color: var(--device-text);
+}
+.sim-camera {
+  position: absolute;
+  top: 10px;
+  left: calc(50% - 4px);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #142119;
+  box-shadow: inset 0 0 0 2px #34463c;
+}
+.sim-status-icons {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+}
+.sim-phone iframe {
+  display: block;
+  width: 412px;
+  height: 866px;
+  border: 0;
+  background: var(--device-bg);
+}
+.sim-gesture {
+  height: 21px;
+  display: grid;
+  place-items: center;
+}
+.sim-gesture > span {
+  width: 97px;
+  height: 4px;
+  border-radius: 10px;
+  background: var(--device-text);
+  opacity: 0.5;
+}
+.sim-stage-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  color: #8e9b84;
+  font-size: 7px;
+  letter-spacing: 1.3px;
+  width: 100%;
+  padding-top: 8px;
+}
+.sim-stage-bottom .sim-live-dot {
+  width: 4px;
+  height: 4px;
+}
+.sim-stage-bottom > span:not(.sim-live-dot) {
+  font-size: 9px;
+}
+.sim-notes {
+  padding-top: 13px;
+}
+.sim-notes-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 9px;
+  letter-spacing: 1.3px;
+  color: #83917c;
+}
+.sim-notes-heading svg {
+  color: #8fa184;
+}
+.sim-note {
+  padding-top: 32px;
+}
+.sim-note-number {
+  display: block;
+  font-size: 9px;
+  letter-spacing: 0.4px;
+  color: #9ca793;
+  margin-bottom: 9px;
+}
+.sim-note h3 {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: -0.2px;
+  margin: 0 0 9px;
+}
+.sim-note p {
+  font-size: 11px;
+  line-height: 1.95;
+  color: #8a9681;
+  margin: 0;
+}
+.sim-note strong {
+  font-weight: 500;
+  color: #63765d;
+}
+.sim-mini-tabs {
+  width: 130px;
+  height: 32px;
+  border-radius: 20px;
+  background: #e6ede0;
+  border: 1px solid #dae4d3;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 4px;
+  margin: 16px 0 0;
+}
+.sim-mini-tabs span:first-child {
+  width: 50px;
+  height: 23px;
+  background: white;
+  border-radius: 15px;
+  box-shadow: 0 2px 4px #14321e0d;
+}
+.sim-mini-tabs span:nth-child(2),
+.sim-mini-tabs span:nth-child(3) {
+  width: 20px;
+  height: 6px;
+  background: #cbd8c1;
+  border-radius: 5px;
+}
+.sim-guidelines {
+  display: block;
+  border-top: 1px solid #e0e6d9;
+  border-bottom: 1px solid #e0e6d9;
+  padding: 20px 0;
+  margin-top: 30px;
+}
+.sim-guidelines > span {
+  font-size: 8px;
+  letter-spacing: 1.3px;
+  color: #98a18e;
+}
+.sim-guidelines strong {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  font-weight: 500;
+  margin-top: 8px;
+  color: #526b48;
+}
+.sim-preview-note {
+  display: flex;
+  gap: 8px;
+  color: #a0aa95;
+  margin-top: 22px;
+}
+.sim-preview-note svg {
+  flex-shrink: 0;
+}
+.sim-preview-note p {
+  font-size: 9px;
+  line-height: 1.8;
+  margin: 0;
+}
+.sim-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1390px;
+  margin: auto;
+  padding: 9px 40px 18px;
+  font-size: 8px;
+  color: #a6afa0;
+  letter-spacing: 1px;
+}
+.sim-footer > span:last-child {
+  letter-spacing: 0;
+}
+.sim-mobile-toggle {
+  display: none;
+}
+.sim-confirm-backdrop {
+  position: fixed;
+  inset: 0;
+  background: #213f2c33;
+  backdrop-filter: blur(5px);
+  z-index: 500;
+}
+.sim-confirm {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  width: calc(100% - 40px);
+  max-width: 410px;
+  border: 1px solid #d7e2d1;
+  border-radius: 25px;
+  background: #fff;
+  padding: 27px;
+  color: #304333;
+  box-shadow: 0 25px 90px #12332022;
+}
+.sim-confirm::backdrop {
+  background: transparent;
+}
+.sim-confirm h2 {
+  font-size: 20px;
+  font-weight: 550;
+  margin: 0 0 13px;
+  letter-spacing: -0.5px;
+}
+.sim-confirm p {
+  font-size: 13px;
+  line-height: 1.8;
+  color: #7b8974;
+}
+.sim-confirm > div {
+  display: flex;
+  gap: 10px;
+  margin-top: 23px;
+}
+.sim-confirm button {
+  min-height: 44px;
+  border-radius: 13px;
+  background: #eef2ea;
+  flex: 1;
+  font-size: 12px;
+}
+.sim-confirm button:last-child {
+  background: #244d3d;
+  color: #fff;
+}
+.sim-notice {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  max-width: calc(100% - 32px);
+  padding: 15px 18px;
+  border: 1px solid #dce5d6;
+  border-radius: 17px;
+  background: white;
+  color: #48603e;
+  box-shadow: 0 8px 40px #123b2520;
+  font-size: 12px;
+  z-index: 550;
+}
+.sim-notice > button {
+  display: grid;
+  place-items: center;
+  background: none;
+  min-width: 28px;
+  min-height: 28px;
+}
+.sim-expanded .sim-phone-space {
+  width: 100%;
+  height: calc(100vh - 270px);
+  min-height: 600px;
+}
+.sim-expanded .sim-phone {
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 1px solid #d4dece;
+  border-radius: 20px;
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 8px 20px #1237210c;
+}
+.sim-expanded .sim-phone-screen {
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+}
+.sim-expanded .sim-phone iframe {
+  width: 100%;
+  height: 100%;
+}
+.sim-expanded .sim-statusbar,
+.sim-expanded .sim-gesture {
+  display: none;
+}
+@media (min-width: 1500px) {
+  .sim-workspace {
+    gap: 55px;
+    grid-template-columns: 240px minmax(400px, 1fr) 230px;
+  }
+}
+@media (max-width: 1150px) {
+  .sim-workspace {
+    grid-template-columns: 210px minmax(370px, 1fr);
+    padding: 24px;
+    gap: 25px;
+    max-width: 1000px;
+  }
+  .sim-notes {
+    display: none;
+  }
+  .sim-header {
+    padding: 0 27px;
+  }
+  .sim-controls h1 {
+    font-size: 26px;
+  }
+  .sim-footer {
+    padding-left: 24px;
+    padding-right: 24px;
+  }
+}
+@media (max-width: 700px) {
+  .sim-header {
+    height: 68px;
+    padding: 0 18px;
+  }
+  .sim-header-label,
+  .sim-wordmark-divider,
+  .sim-prototype-badge {
+    display: none;
+  }
+  .sim-logo {
+    height: 33px;
+    width: 33px;
+    border-radius: 11px;
+    font-size: 28px;
+  }
+  .sim-wordmark {
+    font-size: 24px;
+  }
+  .sim-small-button {
+    font-size: 10px;
+    padding: 8px 10px;
+    min-height: 36px;
+  }
+  .sim-workspace {
+    display: flex;
+    flex-direction: column;
+    padding: 19px 12px 12px;
+    gap: 17px;
+  }
+  .sim-controls {
+    padding: 0 8px;
+  }
+  .sim-panel-title {
+    font-size: 8px;
+    padding-top: 0;
+  }
+  .sim-version {
+    display: none;
+  }
+  .sim-controls h1 {
+    font-size: 25px;
+    line-height: 1.2;
+    margin: 14px 0 13px;
+  }
+  .sim-controls h1 br {
+    display: none;
+  }
+  .sim-intro,
+  .sim-local-note {
+    display: none;
+  }
+  .sim-mobile-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    background: white;
+    border: 1px solid #dce4d7;
+    border-radius: 12px;
+    width: 100%;
+    min-height: 40px;
+    font-size: 11px;
+    padding: 10px 13px;
+  }
+  .sim-control-content {
+    display: none;
+  }
+  .sim-controls.is-open .sim-control-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+  }
+  .sim-section {
+    margin-top: 16px;
+    padding: 17px 0 0;
+    min-width: 0;
+  }
+  .sim-section:last-child {
+    grid-column: 1/-1;
+  }
+  .sim-stage {
+    border-radius: 21px;
+    padding: 0 7px 13px;
+    min-height: 0;
+  }
+  .sim-stage-top {
+    padding: 14px 10px;
+  }
+  .sim-stage-content {
+    padding-top: 0;
+    padding-bottom: 10px;
+  }
+  .sim-stage-bottom {
+    font-size: 6px;
+    letter-spacing: 0.8px;
+  }
+  .sim-footer {
+    padding: 5px 20px 20px;
+    font-size: 7px;
+  }
+  .sim-footer > span:last-child {
+    display: none;
+  }
+  .sim-expanded .sim-phone-space {
+    height: 78vh;
+    min-height: 550px;
+  }
+}
+.sim-stage-content {
+  align-items: flex-start;
+  flex: 0 0 auto;
+}
+.sim-stage-bottom {
+  margin-top: auto;
+}
+@media (min-width: 701px) {
+  .sim-stage {
+    align-self: start;
+    position: sticky;
+    top: 20px;
+    width: 100%;
+  }
+}
