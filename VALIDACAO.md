@@ -35,3 +35,8 @@ Os 11 testes foram executados e aprovados após a implementação desses comport
 - Teste completo em navegador com Auth + Firestore emulados: proprietário cria acesso, publica seção, destinatário consulta, pagamento parcial atualiza o saldo e revogação remove o acesso. Aprovado.
 - Projeção da seção testada para excluir contas bancárias, comprovantes, pessoa, anotações privadas e outras seções. Cálculos de parcelas, centavos e fim do mês aprovados.
 - Firebase de produção não provisionado neste ambiente: depende do login Google do proprietário. O configurador foi revisado e validado sintaticamente; suas chamadas administrativas ainda não foram executadas na conta do proprietário.
+
+- GitHub: código enviado ao repositório público Controle_Dividas, preservando o README anterior em original/GitHub-README-original.md. Compilação no GitHub Actions aprovada; o deploy aguarda habilitar Pages como GitHub Actions. A API de ativação retornou 403 para a integração, sem alterar o acesso do repositório.
+- Uma execução do teste mobile expirou durante a execução simultânea com emuladores; a repetição isolada passou. Os outros dez testes de interface passaram nessa execução.
+
+- Persistência de acesso Firebase após recarregar validada no teste de ponta a ponta; a ponte do simulador intercepta somente a chave financeira e preserva o armazenamento do SDK de autenticação.

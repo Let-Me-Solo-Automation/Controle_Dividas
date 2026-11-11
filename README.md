@@ -2,6 +2,10 @@
 
 Reformulação do `Nexo-Simulador_1.html` enviado, com React, Tailwind CSS 4 e Motion (`motion/react`, evolução do Framer Motion). As regras financeiras, valores em centavos, demonstração, backup e validação de dados foram preservados.
 
+## Ativação na sua conta
+
+As etapas restantes para habilitar o Pages e autorizar o Firebase estão em `CONFIGURAR-ONLINE.md`. O repositório usado é `Let-Me-Solo-Automation/Controle_Dividas`.
+
 ## Site e compartilhamento gratuito
 
 O projeto está preparado para GitHub Pages + Firebase Spark, sem faturamento. O site e o código ficam no GitHub; somente os acordos escolhidos são enviados ao Firestore. O arquivo `FIREBASE-GRATUITO.md` descreve a ativação pelo `Configurar-Firebase.command` e as cotas gratuitas.

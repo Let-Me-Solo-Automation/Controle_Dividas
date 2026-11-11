@@ -43,6 +43,19 @@ test("owner publishes one section, recipient sees payment updates, and revocatio
   const input = f.getByLabel("Link de acompanhamento");
   await expect(input).toHaveValue(/compartilhar.html#s=[a-f0-9]{48}$/);
   const link = await input.inputValue();
+  await page.reload();
+  await f.getByRole("button", { name: "Expandir navegação" }).click();
+  await f
+    .getByRole("navigation")
+    .getByRole("button", { name: "Seções", exact: true })
+    .click();
+  await f.getByText("Venda do videogame", { exact: true }).click();
+  await f
+    .getByRole("button", { name: "Compartilhar seção", exact: true })
+    .click();
+  await expect(
+    f.getByRole("button", { name: "Atualizar publicação", exact: true }),
+  ).toBeVisible();
   const recipient = await browser.newContext();
   await configure(recipient);
   const viewer = await recipient.newPage();
