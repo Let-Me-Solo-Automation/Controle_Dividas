@@ -964,3 +964,13 @@ html body .brand-large > .marks-brand-icon {
   padding: 0;
   font-size: 0;
 }
+
+.firebase-tutorial-link {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  color: var(--accent);
+  font-size: 12px;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}

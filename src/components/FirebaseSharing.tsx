@@ -1,3 +1,4 @@
+import { firebaseTutorialUrl } from "../brand";
 import { useEffect, useState } from "react";
 import { Check, Cloud, Link, Lock, LogOut, RefreshCw } from "lucide-react";
 import {
@@ -179,6 +180,16 @@ export function FirebaseConnection({
           )}
         </form>
       ) : null}
+      {unavailable && (
+        <a
+          href={firebaseTutorialUrl}
+          target="_blank"
+          rel="noreferrer"
+          className="firebase-tutorial-link"
+        >
+          Ver tutorial de configuração do Firebase ↗
+        </a>
+      )}
       {message && (
         <p className="firebase-message" role={unavailable ? "status" : "alert"}>
           {message}

@@ -121,5 +121,18 @@ if (!process.argv.includes("--app-only")) {
   await copyFile("src/assets/marks-icon.png", "dist/marks-icon.png");
   await copyFile("public/firebase-config.json", "dist/firebase-config.json");
   await writeFile("dist/.nojekyll", "");
+  const tutorialTemplate = await readFile(
+    "public/tutorial-firebase.html",
+    "utf8",
+  );
+  const rules = await readFile("firebase/firestore.rules", "utf8");
+  const escapedRules = rules
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
+  await writeFile(
+    "dist/tutorial-firebase.html",
+    tutorialTemplate.replace("__FIRESTORE_RULES__", escapedRules),
+  );
   await createProjectArchive();
 }

@@ -26,6 +26,7 @@ const files = [
   "Configurar-Firebase.command",
   "README.md",
   "FIREBASE-GRATUITO.md",
+  "TUTORIAL-FIREBASE.md",
   "CONFIGURAR-ONLINE.md",
   "GOOGLE-DRIVE.md",
   "VALIDACAO.md",
@@ -67,6 +68,7 @@ export async function createProjectArchive(root = process.cwd()) {
   for (const rel of [
     "dist/Marks-Simulador.html",
     "dist/compartilhar.html",
+    "dist/tutorial-firebase.html",
     "dist/firebase-config.json",
     "dist/marks-icon.png",
   ])

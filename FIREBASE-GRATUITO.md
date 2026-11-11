@@ -2,7 +2,11 @@
 
 O site e o código usam um repositório público no GitHub Pages. Os acordos compartilhados ficam no Firestore, protegidos por regras; não são gravados no repositório. O proprietário entra por e-mail e senha do Firebase Authentication, sem compartilhar as credenciais com o destinatário.
 
-## Ativar a conta Firebase
+## Tutorial pelo navegador
+
+Para configurar pelo console do Firebase, sem Terminal nem instalação, siga `TUTORIAL-FIREBASE.md` ou abra https://let-me-solo-automation.github.io/Controle_Dividas/tutorial-firebase.html . Esse guia inclui as regras prontas para copiar.
+
+## Ativar a conta Firebase pelo configurador do Mac
 
 1. Extraia o ZIP.
 2. Execute `Configurar-Firebase.command`. Ele prepara o Node e as dependências automaticamente. Autorize o login Google no navegador que será aberto.

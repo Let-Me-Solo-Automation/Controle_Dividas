@@ -52,3 +52,9 @@ Identidade visual renomeada para Marks no simulador, aplicativo e acompanhamento
 Os downloads passaram a ser arquivos públicos do GitHub Pages: Marks-projeto.zip e Marks-Simulador.html. O ZIP é gerado pela compilação e inclui o configurador Firebase, sem artefatos efêmeros da conversa.
 
 Na atualização Marks: TypeScript e build aprovados; cinco testes de interface aprovados (dez telas, receita com persistência, mobile, retorno do calendário e busca). O pacote ZIP foi aberto e verificado, incluindo permissões de execução do configurador para Mac e ausência de pastas de dependências e credenciais.
+
+## Revelação com blur e tutorial Firebase
+
+O efeito de entrada foi restaurado com blur de 10 px, opacidade e deslocamento; cartões revelam com blur de 7 px ao entrar na área visível. A intensidade configurada é respeitada, assim como movimento reduzido e a desativação de animações. Testes de revelação, estado final nítido, rolagem, preferência reduzida, retorno do calendário e busca aprovados.
+
+Tutorial pelo navegador disponível em tutorial-firebase.html e TUTORIAL-FIREBASE.md. A compilação incorpora as regras reais do Firestore na página, para copiar sem divergência do arquivo fonte, e inclui o tutorial no ZIP.

@@ -353,3 +353,49 @@ test("search typing has no green rectangle around the input", async ({
     f.getByRole("option", { name: "Metas", exact: true }),
   ).toBeVisible();
 });
+
+test("screen entry and scrolling reveal content from blur to a clear final state", async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await open(page);
+  const f = app(page);
+  await navigate(page, "Seções");
+  const screen = f.locator(".screen");
+  const blur = () =>
+    screen.evaluate((el) =>
+      parseFloat(
+        getComputedStyle(el).filter.match(/blur\(([^)]+)px\)/)?.[1] ?? "0",
+      ),
+    );
+  expect(await blur()).toBeGreaterThan(0.1);
+  await expect(screen).toHaveCSS("filter", "blur(0px)");
+  await navigate(page, "Início");
+  await expect(f.locator(".screen")).toHaveCSS("filter", "blur(0px)");
+  const lastCard = f.locator(".dashboard-stack .card").last();
+  await lastCard.scrollIntoViewIfNeeded();
+  await expect(lastCard).toHaveCSS("filter", "blur(0px)");
+  await expect(lastCard).toHaveCSS("opacity", "1");
+});
+
+test("blur reveal respects reduced motion and the app animation preference", async ({
+  page,
+}) => {
+  await page.emulateMedia({ reducedMotion: "reduce" });
+  await open(page);
+  const f = app(page);
+  await expect(f.locator(".screen")).toHaveCSS("filter", "blur(0px)");
+  await navigate(page, "Metas");
+  await expect(f.locator(".screen")).toHaveCSS("filter", "blur(0px)");
+  await page.emulateMedia({ reducedMotion: "no-preference" });
+  await page.evaluate(() => {
+    const key = "nexo-simulator-v1";
+    const data = JSON.parse(localStorage.getItem(key)!);
+    data.settings.motion = false;
+    localStorage.setItem(key, JSON.stringify(data));
+  });
+  await page.reload();
+  await expect(app(page).locator("html")).toHaveAttribute("data-motion", "off");
+  await navigate(page, "Seções");
+  await expect(app(page).locator(".screen")).toHaveCSS("filter", "blur(0px)");
+});

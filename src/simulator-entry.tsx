@@ -1,5 +1,10 @@
 import { BrandIcon } from "./components/BrandIcon";
-import { installBrandIcon, projectDownloadUrl, htmlDownloadUrl } from "./brand";
+import {
+  installBrandIcon,
+  firebaseTutorialUrl,
+  projectDownloadUrl,
+  htmlDownloadUrl,
+} from "./brand";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { createRoot } from "react-dom/client";
 import { AnimatePresence, MotionConfig, motion } from "motion/react";
@@ -375,6 +380,14 @@ function Simulator() {
                 </p>
               </div>
             </div>
+            <a
+              href={firebaseTutorialUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="sim-firebase-tutorial"
+            >
+              Configurar o Firebase <ArrowUpRight size={14} />
+            </a>
             <div className="sim-local-note">
               <ShieldCheck size={17} />
               <p>

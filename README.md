@@ -109,3 +109,9 @@ Use os botões **Baixar projeto** e **Baixar HTML** no cabeçalho, sem depender 
 - https://let-me-solo-automation.github.io/Controle_Dividas/Marks-Simulador.html
 
 A compilação gera o ZIP completo, incluindo o configurador Firebase para Mac, os fontes e o HTML offline. Dados de navegação, backups pessoais, credenciais, node_modules e pastas de execução não entram no pacote. O ícone da marca foi aproximado a partir da imagem fornecida. As chaves de armazenamento anteriores são mantidas para preservar seus registros locais.
+
+## Efeito de revelação e tutorial
+
+A entrada das telas volta a revelar o conteúdo com blur, opacidade e deslocamento suave. Os cartões também revelam ao entrar na área visível. A preferência de movimento reduzido do sistema e os controles de animação do app continuam tendo prioridade.
+
+Tutorial do Firebase, pelo navegador: https://let-me-solo-automation.github.io/Controle_Dividas/tutorial-firebase.html . O guia também fica em TUTORIAL-FIREBASE.md e inclui o conteúdo completo das regras.

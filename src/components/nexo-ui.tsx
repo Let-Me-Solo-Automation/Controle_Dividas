@@ -446,37 +446,46 @@ export function MotionToggle({
     </div>
   );
 }
+const revealedContent = { opacity: 1, y: 0, filter: "blur(0px)" };
+const revealEase = [0.22, 1, 0.36, 1] as const;
+function revealDuration(value: number | undefined, base: number) {
+  return base * Math.min(2, Math.max(0.4, value ?? 1));
+}
 export function MotionCard(props: HTMLMotionProps<"section">) {
   const pref = useContext(MotionPreferences);
   const reduce = useReducedMotion();
+  const disabled = pref.motion === false || pref.reveal === false || !!reduce;
   return (
     <motion.section
       {...props}
-      initial={
-        pref.motion === false || pref.reveal === false || reduce
-          ? false
-          : { opacity: 0, y: 14 }
-      }
-      whileInView={{ opacity: 1, y: 0 }}
+      initial={disabled ? false : { opacity: 0, y: 16, filter: "blur(7px)" }}
+      animate={disabled ? revealedContent : undefined}
+      whileInView={revealedContent}
       viewport={{ once: true, amount: 0.06 }}
-      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+      transition={{
+        duration: disabled ? 0 : revealDuration(pref.intensity, 0.62),
+        ease: revealEase,
+      }}
     />
   );
 }
 export function ScreenTransition(props: HTMLMotionProps<"main">) {
   const pref = useContext(MotionPreferences);
   const reduce = useReducedMotion();
+  const disabled =
+    pref.motion === false || pref.transition === false || !!reduce;
   return (
     <motion.main
       {...props}
-      initial={
-        pref.motion === false || pref.transition === false || reduce
-          ? false
-          : { opacity: 0, y: 12 }
+      initial={disabled ? false : { opacity: 0, y: 12, filter: "blur(10px)" }}
+      animate={revealedContent}
+      exit={
+        disabled ? revealedContent : { opacity: 0, y: -8, filter: "blur(5px)" }
       }
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -8 }}
-      transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+      transition={{
+        duration: disabled ? 0 : revealDuration(pref.intensity, 0.7),
+        ease: revealEase,
+      }}
     />
   );
 }

@@ -5,7 +5,11 @@ O GitHub Pages está habilitado com GitHub Actions. A publicação foi concluíd
 Site: https://let-me-solo-automation.github.io/Controle_Dividas/
 Código: https://github.com/Let-Me-Solo-Automation/Controle_Dividas
 
-## Autorizar o Firebase
+## Configurar pelo navegador
+
+Siga o tutorial em https://let-me-solo-automation.github.io/Controle_Dividas/tutorial-firebase.html ou leia TUTORIAL-FIREBASE.md. Ele orienta a criação do projeto Spark, Authentication, Firestore, regras e configuração pública. Ao terminar, envie o firebaseConfig nesta conversa.
+
+## Alternativa: autorizar pelo configurador do Mac
 
 Extraia o projeto e execute **Configurar-Firebase.command** no Mac. Ele instala o ambiente necessário, abre o login Google e prepara um projeto novo sem faturamento.
 

@@ -23,3 +23,6 @@ export function installBrandIcon() {
   }
   touch.href = icon;
 }
+
+export const firebaseTutorialUrl =
+  "https://let-me-solo-automation.github.io/Controle_Dividas/tutorial-firebase.html";
