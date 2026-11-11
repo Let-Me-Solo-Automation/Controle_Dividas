@@ -1,12 +1,14 @@
 "use client";
 
 import { useState, useRef, useEffect, type FC } from "react";
-import { motion, AnimatePresence } from "motion/react";
+import { motion, AnimatePresence, useReducedMotion } from "motion/react";
 import { CalendarDays } from "lucide-react";
 
 export interface CalendarEvent {
   title: string;
   time: string;
+  id?: string;
+  action?: () => void;
 }
 
 export interface EventsData {
@@ -27,6 +29,8 @@ export interface CalendarWidgetProps {
   events: EventsData;
   initialSelectedDate: string;
   currentMonthYear: string;
+  selectedDate?: string;
+  onSelect?: (date: string) => void;
 }
 
 const daysOfWeek: string[] = ["D", "S", "T", "Q", "Q", "S", "S"];
@@ -35,10 +39,15 @@ export const CalendarWidget: FC<CalendarWidgetProps> = ({
   events,
   initialSelectedDate,
   currentMonthYear,
+  selectedDate: controlledDate,
+  onSelect,
 }) => {
-  const [selectedDate, setSelectedDate] = useState<string>(initialSelectedDate);
+  const [localDate, setSelectedDate] = useState<string>(initialSelectedDate);
 
+  const selectedDate = controlledDate ?? localDate;
   const scrollRef = useRef<HTMLDivElement | null>(null);
+  const centeredOnce = useRef(false);
+  const reduceMotion = useReducedMotion();
   const isDragging = useRef<boolean>(false);
   const startX = useRef<number>(0);
   const scrollLeftStart = useRef<number>(0);
@@ -86,19 +95,53 @@ export const CalendarWidget: FC<CalendarWidgetProps> = ({
     };
   }, []);
 
-  const dates: DateItem[] = Array.from({ length: 92 }, (_, i) => {
-    const initial = new Date(initialSelectedDate + "T12:00:00");
-    const date = new Date(initial.getFullYear(), initial.getMonth(), 1 + i, 12);
-    return {
-      day: date.getDate(),
-      fullDate: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`,
-      month: date.getMonth(),
-      year: date.getFullYear(),
-      dateObj: date,
-      dayOfWeek: date.getDay(),
-      dayName: daysOfWeek[date.getDay()],
-    };
-  });
+  useEffect(() => {
+    const element = scrollRef.current;
+    const day = element?.querySelector<HTMLElement>(
+      `[data-date="${selectedDate}"]`,
+    );
+    if (!element || !day) return;
+    const containerBounds = element.getBoundingClientRect();
+    const dayBounds = day.getBoundingClientRect();
+    const left = Math.max(
+      0,
+      element.scrollLeft +
+        dayBounds.left -
+        containerBounds.left -
+        (element.clientWidth - dayBounds.width) / 2,
+    );
+    if (!centeredOnce.current || reduceMotion) element.scrollLeft = left;
+    else element.scrollTo({ left, behavior: "smooth" });
+    centeredOnce.current = true;
+  }, [selectedDate, reduceMotion]);
+
+  const dates: DateItem[] = Array.from(
+    {
+      length: new Date(
+        Number(initialSelectedDate.slice(0, 4)),
+        Number(initialSelectedDate.slice(5, 7)),
+        0,
+      ).getDate(),
+    },
+    (_, i) => {
+      const initial = new Date(initialSelectedDate + "T12:00:00");
+      const date = new Date(
+        initial.getFullYear(),
+        initial.getMonth(),
+        1 + i,
+        12,
+      );
+      return {
+        day: date.getDate(),
+        fullDate: `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`,
+        month: date.getMonth(),
+        year: date.getFullYear(),
+        dateObj: date,
+        dayOfWeek: date.getDay(),
+        dayName: daysOfWeek[date.getDay()],
+      };
+    },
+  );
 
   return (
     <div className="flex w-[340px] flex-col rounded-[30px] border border-black/10 bg-[#F6F5FA] shadow-lg transition-colors duration-500 select-none dark:border-white/5 dark:bg-zinc-900">
@@ -125,6 +168,7 @@ export const CalendarWidget: FC<CalendarWidgetProps> = ({
               return (
                 <div
                   key={date.fullDate}
+                  data-date={date.fullDate}
                   className="relative flex min-w-10 flex-col items-center pt-4"
                 >
                   <div
@@ -137,10 +181,19 @@ export const CalendarWidget: FC<CalendarWidgetProps> = ({
                     {date.dayName}
                   </div>
 
-                  <motion.div
+                  <motion.button
+                    type="button"
+                    aria-label={date.dateObj.toLocaleDateString("pt-BR", {
+                      day: "numeric",
+                      month: "long",
+                    })}
+                    aria-pressed={isSelected}
                     className="relative flex cursor-pointer flex-col items-center"
                     whileTap={{ scale: 0.9 }}
-                    onClick={() => setSelectedDate(date.fullDate)}
+                    onClick={() => {
+                      setSelectedDate(date.fullDate);
+                      onSelect?.(date.fullDate);
+                    }}
                   >
                     <div className="relative flex h-10 w-10 items-center justify-center">
                       {isSelected && (
@@ -185,7 +238,7 @@ export const CalendarWidget: FC<CalendarWidgetProps> = ({
                         />
                       )}
                     </AnimatePresence>
-                  </motion.div>
+                  </motion.button>
                 </div>
               );
             })}
@@ -200,7 +253,19 @@ export const CalendarWidget: FC<CalendarWidgetProps> = ({
               <motion.div key="list" className="pb-8">
                 {events[selectedDate].map((event) => (
                   <motion.div
-                    key={event.title}
+                    key={event.id || event.title}
+                    role={event.action ? "button" : undefined}
+                    tabIndex={event.action ? 0 : undefined}
+                    onClick={event.action}
+                    onKeyDown={(e) => {
+                      if (
+                        event.action &&
+                        (e.key === "Enter" || e.key === " ")
+                      ) {
+                        e.preventDefault();
+                        event.action();
+                      }
+                    }}
                     initial={{ opacity: 0, y: 15, filter: "blur(4px)" }}
                     animate={{ opacity: 1, y: 0, filter: "blur(0px)" }}
                     exit={{ opacity: 0, y: 15, filter: "blur(4px)" }}
@@ -235,7 +300,7 @@ export const CalendarWidget: FC<CalendarWidgetProps> = ({
                   <CalendarDays className="size-8 text-zinc-500 dark:text-zinc-300" />
                 </div>
                 <p className="text-sm text-neutral-500 dark:text-zinc-500">
-                  No Events
+                  Nenhum compromisso neste dia
                 </p>
               </motion.div>
             )}

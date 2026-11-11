@@ -12,6 +12,12 @@ O projeto está preparado para GitHub Pages + Firebase Spark, sem faturamento. O
 
 Para compartilhar, abra uma seção no site, escolha **Compartilhar seção**, crie seu acesso de e-mail e senha e publique o link. O destinatário consulta o link sem criar conta. A configuração pública real já está incluída; não execute o configurador para criar outro projeto.
 
+## Interações nas telas reais
+
+Os 19 exemplos enviados estão integrados ou adaptados ao uso diário: filtros no extrato, seções fixáveis, agenda, metas e aportes, histórico, destaques, criação e ajuda. Consulte `COMPONENTES-EM-USO.md` para o mapa completo. A página Referência das interações é documentação secundária.
+
+O menu flutuante move o destaque, recolhe e então abre a opção. O controle único de aparência transforma sol em lua. Os indicadores têm espaço entre si e as linhas das seções têm contorno completo, sem o fundo das ações aparecendo nas bordas.
+
 ## Apple Liquid Glass
 
 No seletor **Tema do aplicativo**, escolha **Apple Claro**, **Apple Escuro** ou **Apple Sistema**. As mesmas opções aparecem em Menu → Personalização. Sistema acompanha a aparência do aparelho sem reiniciar a tela; a escolha é persistida. Os 15 estilos anteriores continuam disponíveis.

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, type FC } from "react";
+import { useEffect, useRef, useState, type FC } from "react";
 import { motion, AnimatePresence, MotionConfig } from "motion/react";
 import { FaBell, FaTasks } from "react-icons/fa";
 import { IoCalendar } from "react-icons/io5";
@@ -17,6 +17,7 @@ export interface FilterItem {
 
 interface FilterDisclosureProps {
   items?: FilterItem[];
+  label?: string;
   defaultActiveId?: string;
   onChange?: (id: string) => void;
 }
@@ -39,23 +40,80 @@ const DEFAULT_ITEMS: FilterItem[] = [
 
 export const FilterDisclosure: FC<FilterDisclosureProps> = ({
   items = DEFAULT_ITEMS,
+  label = "Filtrar movimentos",
   defaultActiveId = "reminders",
   onChange,
 }) => {
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(defaultActiveId);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const restoreFocus = useRef(false);
+
+  const cancelPendingClose = () => {
+    if (closeTimer.current !== null) {
+      clearTimeout(closeTimer.current);
+      closeTimer.current = null;
+    }
+  };
+
+  useEffect(() => () => cancelPendingClose(), []);
+  useEffect(() => {
+    if (!open) {
+      if (restoreFocus.current)
+        triggerRef.current?.focus({ preventScroll: true });
+      restoreFocus.current = false;
+      return;
+    }
+    containerRef.current
+      ?.querySelector<HTMLButtonElement>('button[aria-pressed="true"]')
+      ?.focus({ preventScroll: true });
+    const close = (shouldRestore: boolean) => {
+      cancelPendingClose();
+      restoreFocus.current = shouldRestore;
+      setOpen(false);
+    };
+    const outside = (event: PointerEvent) => {
+      if (!containerRef.current?.contains(event.target as Node)) {
+        const target = event.target instanceof Element ? event.target : null;
+        close(!target?.closest("button,a,input,textarea,select,[tabindex]"));
+      }
+    };
+    const keyboard = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        event.stopPropagation();
+        close(true);
+      }
+    };
+    document.addEventListener("pointerdown", outside);
+    document.addEventListener("keydown", keyboard, true);
+    return () => {
+      document.removeEventListener("pointerdown", outside);
+      document.removeEventListener("keydown", keyboard, true);
+    };
+  }, [open]);
 
   const activeItem = items.find((i) => i.id === active);
   const ActiveIcon = activeItem ? activeItem.icon : FaTasks;
 
   const handleSelect = (id: string) => {
+    cancelPendingClose();
     setActive(id);
     onChange?.(id);
-    setTimeout(() => setOpen(false), 220);
+    closeTimer.current = setTimeout(() => {
+      closeTimer.current = null;
+      restoreFocus.current = true;
+      setOpen(false);
+    }, 220);
   };
 
   return (
-    <div className="flex h-[70px] w-[300px] items-center justify-center">
+    <div
+      ref={containerRef}
+      className="filter-disclosure relative flex h-[70px] w-[300px] items-center justify-center"
+    >
       <MotionConfig
         transition={{
           type: "spring",
@@ -86,6 +144,8 @@ export const FilterDisclosure: FC<FilterDisclosureProps> = ({
                     key={item.id}
                     initial={{ opacity: 0, scale: 1.1, y: 40 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
+                    type="button"
+                    aria-pressed={selected}
                     onClick={() => handleSelect(item.id)}
                     whileTap={{ scale: 0.98 }}
                     transition={{ ...SPRING, delay: (3 + index) * 0.05 }}
@@ -125,6 +185,7 @@ export const FilterDisclosure: FC<FilterDisclosureProps> = ({
           ) : (
             <div key="close" className="flex items-center">
               <motion.button
+                ref={triggerRef}
                 layoutId="filter-disclosure"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -132,6 +193,9 @@ export const FilterDisclosure: FC<FilterDisclosureProps> = ({
                   opacity: 0,
                   transition: { duration: 0 },
                 }}
+                type="button"
+                aria-label={label}
+                aria-expanded={open}
                 onClick={() => setOpen(true)}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}

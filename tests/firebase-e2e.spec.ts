@@ -25,6 +25,10 @@ test("owner publishes one section, recipient sees payment updates, and revocatio
     .getByRole("navigation")
     .getByRole("button", { name: "Seções", exact: true })
     .click();
+  await expect(
+    f.getByRole("navigation", { name: "Navegação principal", exact: true }),
+  ).toHaveCount(0);
+  await expect(f.locator(".screen-heading h1")).toHaveText("Minhas seções");
   await f.getByText("Venda do videogame", { exact: true }).click();
   await f
     .getByRole("button", { name: "Compartilhar seção", exact: true })
@@ -67,6 +71,10 @@ test("owner publishes one section, recipient sees payment updates, and revocatio
     .getByRole("navigation")
     .getByRole("button", { name: "Seções", exact: true })
     .click();
+  await expect(
+    f.getByRole("navigation", { name: "Navegação principal", exact: true }),
+  ).toHaveCount(0);
+  await expect(f.locator(".screen-heading h1")).toHaveText("Minhas seções");
   await f.getByText("Venda do videogame", { exact: true }).click();
   await f
     .getByRole("button", { name: "Compartilhar seção", exact: true })

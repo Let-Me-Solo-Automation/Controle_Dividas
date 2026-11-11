@@ -19,12 +19,21 @@ async function menu(page: Page, name: string) {
     .click();
 }
 async function expandNavigation(page: Page) {
+  await page.locator(".sim-phone").scrollIntoViewIfNeeded();
   const f = app(page);
   const expand = f.getByRole("button", {
     name: "Expandir navegação",
     exact: true,
   });
-  if (await expand.count()) await expand.click();
+  if (
+    !(await f
+      .getByRole("navigation", { name: "Navegação principal", exact: true })
+      .count())
+  )
+    await expand.click();
+  await expect(
+    f.getByRole("navigation", { name: "Navegação principal", exact: true }),
+  ).toBeVisible();
 }
 async function navigate(page: Page, name: string) {
   await expandNavigation(page);
@@ -32,6 +41,21 @@ async function navigate(page: Page, name: string) {
     .getByRole("navigation")
     .getByRole("button", { name, exact: true })
     .click();
+  await expect(
+    app(page).getByRole("navigation", {
+      name: "Navegação principal",
+      exact: true,
+    }),
+  ).toHaveCount(0);
+  const headings: Record<string, string> = {
+    Início: "Visão geral",
+    Seções: "Minhas seções",
+    Entregas: "Entregas",
+    Metas: "Meus objetivos",
+  };
+  await expect(app(page).locator(".screen-heading h1")).toHaveText(
+    headings[name],
+  );
 }
 async function create(page: Page, name: string) {
   const f = app(page);
@@ -166,8 +190,8 @@ test("all 19 unique supplied components render in the lab", async ({
   await open(page);
   const f = app(page);
   await menu(page, "Personalização");
-  await f.getByRole("button", { name: "Testar todos os componentes" }).click();
-  const lab = f.getByRole("dialog", { name: "Laboratório de componentes" });
+  await f.getByRole("button", { name: "Referência das interações" }).click();
+  const lab = f.getByRole("dialog", { name: "Referência das interações" });
   await expect(lab.locator(".gallery-example")).toHaveCount(6);
   await lab.getByRole("button", { name: "Próximo slide" }).click();
   await expect(lab.locator(".gallery-slide")).toContainText(
@@ -366,15 +390,32 @@ test("screen entry and scrolling reveal content from blur to a clear final state
   await page.emulateMedia({ reducedMotion: "no-preference" });
   await open(page);
   const f = app(page);
+  await f.locator("html").evaluate(() => {
+    const state = window as any;
+    state.__entryBlur = [];
+    const capture = () => {
+      const screen = document.querySelector(".screen");
+      if (
+        screen &&
+        document.querySelector(".screen-heading h1")?.textContent ===
+          "Minhas seções"
+      )
+        state.__entryBlur.push(
+          parseFloat(
+            getComputedStyle(screen).filter.match(/blur\(([^)]+)px\)/)?.[1] ??
+              "0",
+          ),
+        );
+      if (state.__entryBlur.length < 80) requestAnimationFrame(capture);
+    };
+    requestAnimationFrame(capture);
+  });
   await navigate(page, "Seções");
   const screen = f.locator(".screen");
-  const blur = () =>
-    screen.evaluate((el) =>
-      parseFloat(
-        getComputedStyle(el).filter.match(/blur\(([^)]+)px\)/)?.[1] ?? "0",
-      ),
-    );
-  expect(await blur()).toBeGreaterThan(0.1);
+  const measured = await f
+    .locator("html")
+    .evaluate(() => (window as any).__entryBlur as number[]);
+  expect(Math.max(...measured)).toBeGreaterThan(0.1);
   await expect(screen).toHaveCSS("filter", "blur(0px)");
   await navigate(page, "Início");
   await expect(f.locator(".screen")).toHaveCSS("filter", "blur(0px)");

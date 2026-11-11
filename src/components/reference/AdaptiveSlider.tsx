@@ -6,6 +6,10 @@ import { cn } from "../../lib/utils";
 
 interface AdaptiveSliderProps {
   value?: number;
+  label?: string;
+  unit?: string;
+  formatValue?: (value: number) => string;
+  disabled?: boolean;
   min?: number;
   max?: number;
   step?: number;
@@ -29,7 +33,7 @@ const getColorSettings = (
   min: number,
   max: number,
 ): ColorSettings => {
-  const percentage = (value - min) / (max - min);
+  const percentage = (value - min) / Math.max(1, max - min);
 
   if (percentage < 0.5) {
     return {
@@ -54,6 +58,10 @@ const getColorSettings = (
 
 export const AdaptiveSlider: FC<AdaptiveSliderProps> = ({
   value,
+  label = "Valor",
+  unit = "",
+  formatValue = String,
+  disabled = false,
   min = DEFAULT_MIN,
   max = DEFAULT_MAX,
   step = DEFAULT_STEP,
@@ -69,7 +77,7 @@ export const AdaptiveSlider: FC<AdaptiveSliderProps> = ({
     [calories, min, max],
   );
 
-  const percentage = ((calories - min) / (max - min)) * 100;
+  const percentage = ((calories - min) / Math.max(1, max - min)) * 100;
 
   const dots = useMemo(
     () =>
@@ -92,19 +100,19 @@ export const AdaptiveSlider: FC<AdaptiveSliderProps> = ({
   return (
     <motion.div className="flex h-[60vh] w-xs flex-col items-center justify-center rounded-[36px] bg-[#FEFEFE] p-6 shadow-2xl shadow-black/5 transition-colors select-none sm:w-sm sm:p-12 dark:bg-neutral-900 dark:shadow-none">
       <span className="mb-2 text-xl font-bold text-[#878787] sm:text-2xl dark:text-neutral-500">
-        Calories
+        {label}
       </span>
 
       <div className="mb-8 flex items-baseline gap-2">
         <AnimatedText
-          value={calories.toString()}
+          value={formatValue(calories)}
           className="overflow-hidden text-5xl font-extrabold tracking-tight sm:text-6xl"
         />
         <motion.span
           layout
           className="text-4xl font-extrabold text-[#010101] transition-colors sm:text-5xl dark:text-neutral-100"
         >
-          kCal
+          {unit}
         </motion.span>
       </div>
 
@@ -123,7 +131,8 @@ export const AdaptiveSlider: FC<AdaptiveSliderProps> = ({
         />
 
         <input
-          aria-label="Valor de demonstração"
+          aria-label={label}
+          disabled={disabled}
           type="range"
           min={min}
           max={max}

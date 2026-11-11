@@ -98,3 +98,23 @@ A ativação em produção desta versão exige publicar as novas regras de `fire
 - Não foi realizada medição em um Mac/iPhone/Android físico; verificação automatizada usa Chromium em Linux.
 
 A verificação dos materiais também encontrou e corrigiu a ordem dos prefixos CSS: o minificador descartava `backdrop-filter` quando a propriedade prefixada vinha por último. Com a ordem corrigida, o teste confirma vidro ativo normalmente e superfícies opacas ao reduzir transparência, aumentar contraste ou ativar cores forçadas.
+
+## Componentes nas telas reais — 11/11/2026
+
+Os 19 exemplos foram ligados aos fluxos financeiros ou adaptados às suas ações reais; o mapeamento está em COMPONENTES-EM-USO.md. A área de demonstração foi renomeada para Referência das interações.
+
+Validação concluída com TypeScript, build e Chromium:
+
+- 23 casos de interface aprovados após os ajustes e a repetição das verificações afetadas. Incluem as telas existentes, os 18 temas, movimento reduzido, foco, busca, calendário e pagamentos.
+- Navegação flutuante: amostragem por quadros confirma deslocamento do destaque, contração da bandeja e abertura da tela nessa ordem; Escape cancela uma seleção pendente.
+- Um único botão de aparência no Studio e no menu. A máscara SVG passa por valores intermediários no morph sol/lua, persiste a escolha e mantém o menu aberto.
+- KPIs em visor pequeno com espaço mínimo de 10 px; borda contínua nos quatro lados dos contêineres; ações de deslizar escondidas até abrir.
+- Fixação e filtro de seções reais persistem sem alterar lançamentos. Valor, pessoa e progresso das seções continuam visíveis nas linhas, sem truncar o saldo.
+- Filtros de tipo e conta afetam os movimentos reais, incluindo no telefone, sem gravar modificações no extrato. Popovers abrem dentro da área disponível e acima dos cards.
+- Planejador de aporte sincroniza R$ 12,34 com 1.234 centavos no slider; a tecla de incremento produz R$ 12,35. Antes de confirmar não há gravação; depois, o aporte é registrado na meta/conta certas sem criar saldo ou lançamento fictício.
+- Avisos do Studio não interceptam toques na prévia; seleção de data rola somente a faixa horizontal do calendário.
+- Seis testes de regras e o fluxo Auth/Firestore emulados aprovados novamente: publicação, prévia dentro do app, sessão após recarregar, atualização de pagamento, revogação e novo link.
+- Modelo financeiro aprovado para centavos, transporte de saldo parcial, fim de mês e exclusão de dados privados da publicação.
+- Revisão visual de Entregas, Seções e Metas sem erros JavaScript.
+
+O teste de compartilhamento desta entrega usou emuladores, sem criar contas ou registros de teste no Firebase real. A publicação das regras de links sem vencimento continua sendo a etapa administrativa descrita na entrega anterior. Não foram realizados testes em aparelhos físicos.

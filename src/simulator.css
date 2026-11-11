@@ -986,3 +986,10 @@ html[data-theme-family="apple"] :is(button, a, select):focus-visible { outline-c
     border-color: CanvasText;
   }
 }
+
+/* Status messages must not intercept taps inside the embedded app. */
+.sim-notice { pointer-events: none; }
+.sim-notice > button { pointer-events: auto; }
+@media (max-width: 700px) {
+  .sim-notice { top: max(76px, env(safe-area-inset-top)); bottom: auto; }
+}

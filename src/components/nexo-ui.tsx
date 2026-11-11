@@ -4,6 +4,7 @@ import {
   useContext,
   useEffect,
   useId,
+  useLayoutEffect,
   useRef,
   useState,
   type ComponentType,
@@ -16,6 +17,7 @@ import {
   animate,
   motion,
   useReducedMotion,
+  useMotionValue,
   type HTMLMotionProps,
 } from "motion/react";
 import {
@@ -103,25 +105,61 @@ export function FluidNavigation({
   hidden?: boolean;
   settings?: Preferences;
 }) {
-  const id = useId();
   const controlsId = useId();
   const root = useRef<HTMLDivElement>(null);
   const toggle = useRef<HTMLButtonElement>(null);
+  const buttons = useRef(new Map<string, HTMLButtonElement>());
+  const generation = useRef(0);
+  const running = useRef<{ stop: () => void }[]>([]);
+  const afterClose = useRef<(() => void) | null>(null);
   const [expanded, setExpanded] = useState(false);
+  const [selected, setSelected] = useState(active);
+  const [phase, setPhase] = useState<"idle" | "selecting" | "closing">("idle");
   const preferences = useContext(MotionPreferences);
+  const reduce = useReducedMotion();
+  const instant = !!reduce || preferences.motion === false;
+  const x = useMotionValue(4),
+    y = useMotionValue(4);
+  const width = useMotionValue(37),
+    height = useMotionValue(37);
   const visible = !hidden && items.some(([key]) => key === active);
-  useEffect(() => {
+  function cancel() {
+    generation.current++;
+    running.current.forEach((control) => control.stop());
+    running.current = [];
+    afterClose.current = null;
+    setPhase("idle");
     setExpanded(false);
-  }, [active, hidden]);
+  }
   useEffect(() => {
-    if (!expanded || !visible) return;
+    cancel();
+    setSelected(active);
+  }, [active, hidden]);
+  useEffect(
+    () => () => {
+      generation.current++;
+      running.current.forEach((control) => control.stop());
+    },
+    [],
+  );
+  useLayoutEffect(() => {
+    if (!expanded) return;
+    const button = buttons.current.get(active);
+    if (!button) return;
+    x.jump(button.offsetLeft);
+    y.jump(button.offsetTop);
+    width.jump(button.offsetWidth);
+    height.jump(button.offsetHeight);
+  }, [expanded, active, x, y, width, height]);
+  useEffect(() => {
+    if ((!expanded && phase === "idle") || !visible) return;
     const pointer = (event: PointerEvent) => {
-      if (!root.current?.contains(event.target as Node)) setExpanded(false);
+      if (!root.current?.contains(event.target as Node)) cancel();
     };
     const keyboard = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         event.preventDefault();
-        setExpanded(false);
+        cancel();
         toggle.current?.focus();
       }
     };
@@ -131,91 +169,222 @@ export function FluidNavigation({
       document.removeEventListener("pointerdown", pointer);
       document.removeEventListener("keydown", keyboard);
     };
-  }, [expanded, visible]);
+  }, [expanded, visible, phase]);
+  async function select(key: string, action: () => void) {
+    if (phase !== "idle") return;
+    const button = buttons.current.get(key);
+    if (!button) return;
+    const sequence = ++generation.current;
+    setSelected(key);
+    setPhase("selecting");
+    const transition = instant
+      ? { duration: 0 }
+      : { ...spring, stiffness: 420, damping: 34 };
+    const controls = [
+      animate(x, button.offsetLeft, transition),
+      animate(y, button.offsetTop, transition),
+      animate(width, button.offsetWidth, transition),
+      animate(height, button.offsetHeight, transition),
+    ];
+    running.current = controls;
+    await Promise.all(controls);
+    if (sequence !== generation.current) return;
+    running.current = [];
+    afterClose.current = action;
+    setPhase("closing");
+    setExpanded(false);
+  }
   if (!visible) return null;
   return (
-    <LayoutGroup id={id}>
-      <div
-        ref={root}
-        className="nexo-mini-dock"
-        style={
-          {
-            "--nav-blur": `${preferences.blurStrength ?? 28}px`,
-          } as React.CSSProperties
-        }
+    <div
+      ref={root}
+      className="nexo-mini-dock"
+      data-phase={phase}
+      style={
+        {
+          "--nav-blur": `${preferences.blurStrength ?? 28}px`,
+        } as React.CSSProperties
+      }
+    >
+      <AnimatePresence
+        initial={false}
+        onExitComplete={() => {
+          const action = afterClose.current;
+          afterClose.current = null;
+          setPhase("idle");
+          if (action) {
+            toggle.current?.focus({ preventScroll: true });
+            action();
+          }
+        }}
       >
-        <AnimatePresence initial={false}>
-          {expanded && (
-            <motion.nav
-              id={controlsId}
-              aria-label="Navegação principal"
-              className="nexo-mini-panel"
-              initial={{ opacity: 0, scale: 0.82, x: 14 }}
-              animate={{ opacity: 1, scale: 1, x: 0 }}
-              exit={{ opacity: 0, scale: 0.86, x: 12 }}
-              transition={spring}
-            >
-              {items.map(([key, label, Icon]) => (
-                <motion.button
-                  type="button"
-                  key={key}
-                  aria-label={label}
-                  title={label}
-                  aria-current={active === key ? "page" : undefined}
-                  className={`nexo-mini-item ${active === key ? "is-active" : ""}`}
-                  onClick={() => {
-                    setExpanded(false);
-                    onNavigate(key);
-                  }}
-                  whileTap={{ scale: 0.88 }}
-                >
-                  {active === key && (
-                    <motion.span
-                      layoutId="navigation-pill"
-                      className="nav-selection"
-                      transition={spring}
-                    />
-                  )}
-                  <Icon size={19} strokeWidth={1.8} />
-                </motion.button>
-              ))}
-              <span className="nexo-mini-divider" aria-hidden="true" />
+        {expanded && (
+          <motion.nav
+            id={controlsId}
+            aria-label="Navegação principal"
+            aria-busy={phase !== "idle"}
+            className="nexo-mini-panel"
+            initial={instant ? false : { opacity: 0, scale: 0.82, x: 14 }}
+            animate={{ opacity: 1, scale: 1, x: 0 }}
+            exit={{
+              opacity: 0,
+              scale: 0.72,
+              x: 22,
+              transition: instant
+                ? { duration: 0 }
+                : { duration: 0.2, ease: [0.4, 0, 0.2, 1] },
+            }}
+            transition={instant ? { duration: 0 } : spring}
+          >
+            <motion.span
+              aria-hidden="true"
+              className="nav-selection nexo-moving-selection"
+              style={{ x, y, width, height }}
+            />
+            {items.map(([key, label, Icon]) => (
               <motion.button
                 type="button"
-                aria-label="Adicionar novo registro"
-                title="Adicionar novo registro"
-                className="nexo-mini-item nexo-mini-new"
-                onClick={() => {
-                  setExpanded(false);
-                  onCreate();
+                key={key}
+                ref={(element) => {
+                  if (element) buttons.current.set(key, element);
+                  else buttons.current.delete(key);
                 }}
-                whileTap={{ scale: 0.88 }}
+                aria-label={label}
+                title={label}
+                aria-current={active === key ? "page" : undefined}
+                aria-disabled={phase !== "idle"}
+                className={`nexo-mini-item ${selected === key ? "is-active" : ""}`}
+                onClick={() => void select(key, () => onNavigate(key))}
+                whileTap={instant ? undefined : { scale: 0.9 }}
               >
-                <Plus size={19} />
+                <Icon size={19} strokeWidth={1.8} />
               </motion.button>
-            </motion.nav>
-          )}
-        </AnimatePresence>
-        <motion.button
-          ref={toggle}
-          type="button"
-          className="nexo-glass-plus"
-          aria-label={expanded ? "Recolher navegação" : "Expandir navegação"}
-          aria-expanded={expanded}
-          aria-controls={expanded ? controlsId : undefined}
-          onClick={() => setExpanded((v) => !v)}
-          whileHover={{ scale: 1.04 }}
-          whileTap={{ scale: 0.9 }}
+            ))}
+            <span className="nexo-mini-divider" aria-hidden="true" />
+            <motion.button
+              type="button"
+              aria-label="Adicionar novo registro"
+              title="Adicionar novo registro"
+              ref={(element) => {
+                if (element) buttons.current.set("create", element);
+                else buttons.current.delete("create");
+              }}
+              aria-disabled={phase !== "idle"}
+              className={`nexo-mini-item nexo-mini-new ${selected === "create" ? "is-active" : ""}`}
+              onClick={() => void select("create", onCreate)}
+              whileTap={instant ? undefined : { scale: 0.9 }}
+            >
+              <Plus size={19} />
+            </motion.button>
+          </motion.nav>
+        )}
+      </AnimatePresence>
+      <motion.button
+        ref={toggle}
+        type="button"
+        className="nexo-glass-plus"
+        aria-label={expanded ? "Recolher navegação" : "Expandir navegação"}
+        aria-expanded={expanded}
+        aria-controls={expanded ? controlsId : undefined}
+        aria-disabled={phase !== "idle"}
+        onClick={() => {
+          if (phase !== "idle") return;
+          if (expanded) cancel();
+          else {
+            setSelected(active);
+            setExpanded(true);
+          }
+        }}
+        whileHover={instant ? undefined : { scale: 1.04 }}
+        whileTap={instant ? undefined : { scale: 0.9 }}
+      >
+        <motion.span
+          animate={{ rotate: expanded ? 45 : 0 }}
+          transition={instant ? { duration: 0 } : spring}
         >
-          <motion.span
-            animate={{ rotate: expanded ? 45 : 0 }}
-            transition={spring}
-          >
-            <Plus size={22} strokeWidth={1.65} />
-          </motion.span>
-        </motion.button>
-      </div>
-    </LayoutGroup>
+          <Plus size={22} strokeWidth={1.65} />
+        </motion.span>
+      </motion.button>
+    </div>
+  );
+}
+
+export function ThemeMorphToggle({
+  dark,
+  onToggle,
+  disabled = false,
+  className = "",
+}: {
+  dark: boolean;
+  onToggle: () => void;
+  disabled?: boolean;
+  className?: string;
+}) {
+  const maskId = useId().replace(/:/g, "");
+  const preferences = useContext(MotionPreferences);
+  const reduce = useReducedMotion();
+  const instant = !!reduce || preferences.motion === false;
+  const transition = instant
+    ? { duration: 0 }
+    : { type: "spring" as const, stiffness: 220, damping: 23 };
+  return (
+    <motion.button
+      type="button"
+      className={`theme-morph-toggle ${className}`}
+      aria-label={dark ? "Ativar tema claro" : "Ativar tema escuro"}
+      aria-pressed={dark}
+      disabled={disabled}
+      onClick={onToggle}
+      whileTap={instant ? undefined : { scale: 0.94 }}
+    >
+      <motion.svg
+        viewBox="0 0 24 24"
+        width="22"
+        height="22"
+        aria-hidden="true"
+        initial={false}
+        animate={{ rotate: dark ? -14 : 0 }}
+        transition={transition}
+      >
+        <defs>
+          <mask id={maskId}>
+            <rect width="24" height="24" fill="white" />
+            <motion.circle
+              fill="black"
+              r="7"
+              initial={false}
+              animate={{ cx: dark ? 16.5 : 26, cy: dark ? 7.5 : -3 }}
+              transition={transition}
+            />
+          </mask>
+        </defs>
+        <motion.circle
+          cx="12"
+          cy="12"
+          fill="currentColor"
+          mask={`url(#${maskId})`}
+          initial={false}
+          animate={{ r: dark ? 7.5 : 4.25 }}
+          transition={transition}
+        />
+        <motion.g
+          stroke="currentColor"
+          strokeWidth="1.7"
+          strokeLinecap="round"
+          initial={false}
+          animate={{
+            opacity: dark ? 0 : 1,
+            scale: dark ? 0.6 : 1,
+            rotate: dark ? 45 : 0,
+          }}
+          style={{ transformOrigin: "12px 12px" }}
+          transition={transition}
+        >
+          <path d="M12 2v2m0 16v2M2 12h2m16 0h2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
+        </motion.g>
+      </motion.svg>
+      <span>{dark ? "Escuro" : "Claro"}</span>
+    </motion.button>
   );
 }
 

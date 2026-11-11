@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, type FC } from "react";
+import React, { useState, useId, type FC } from "react";
 import { motion, MotionConfig, type Transition } from "motion/react";
 import { ChevronDown, Send } from "lucide-react";
 import { HiCursorArrowRipple } from "react-icons/hi2";
@@ -81,6 +81,7 @@ const AccordionItem: FC<AccordionItemProps> = ({
   openIndex,
 }) => {
   const [ref, bounds] = useMeasure();
+  const contentId = useId();
   const isOpen = index === openIndex;
 
   const isFirst = index === 0;
@@ -145,6 +146,9 @@ const AccordionItem: FC<AccordionItemProps> = ({
           }}
         >
           <button
+            type="button"
+            aria-expanded={isOpen}
+            aria-controls={contentId}
             onClick={() => setOpenId(isOpen ? null : item.id)}
             className="flex w-full cursor-pointer items-center justify-between px-[12px] py-[10px]"
           >
@@ -167,6 +171,8 @@ const AccordionItem: FC<AccordionItemProps> = ({
               height: isOpen ? bounds.height : 0,
               opacity: isOpen ? 1 : 0,
             }}
+            id={contentId}
+            aria-hidden={!isOpen}
             className="overflow-hidden will-change-transform"
           >
             <div ref={ref}>

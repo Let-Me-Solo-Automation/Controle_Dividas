@@ -42,6 +42,10 @@ test("Apple System follows the OS while preserving the current screen, iframe an
     .getByRole("navigation")
     .getByRole("button", { name: "Seções", exact: true })
     .click();
+  await expect(
+    f.getByRole("navigation", { name: "Navegação principal", exact: true }),
+  ).toHaveCount(0);
+  await expect(f.locator(".screen-heading h1")).toHaveText("Minhas seções");
   await f.getByText("Venda do videogame", { exact: true }).click();
   await page.locator("#theme-select").selectOption("apple-system");
   await expect(f.locator("html")).toHaveAttribute("data-theme", "apple-light");

@@ -1,11 +1,18 @@
 import { BrandIcon } from "./components/BrandIcon";
+import { ThemeMorphToggle } from "./components/nexo-ui";
 import {
   installBrandIcon,
   firebaseTutorialUrl,
   projectDownloadUrl,
   htmlDownloadUrl,
 } from "./brand";
-import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react";
 import { resolveAppleTheme, systemFontStack } from "./apple-themes.js";
 import { useSystemDark } from "./use-system-dark";
 import { createRoot } from "react-dom/client";
@@ -19,12 +26,10 @@ import {
   Expand,
   FolderDown,
   Monitor,
-  Moon,
   MoveUpRight,
   RotateCcw,
   ShieldCheck,
   Smartphone,
-  Sun,
   X,
 } from "lucide-react";
 import domain from "./legacy/domain";
@@ -59,7 +64,9 @@ function Simulator() {
     [controls, setControls] = useState(false),
     [clock, setClock] = useState("");
   const selectedTheme =
-    resolveAppleTheme(theme, systemDark) ?? domain.themes.find((x: any) => x.id === theme) ?? domain.themes[0];
+    resolveAppleTheme(theme, systemDark) ??
+    domain.themes.find((x: any) => x.id === theme) ??
+    domain.themes[0];
   const apple = selectedTheme.family === "apple";
   useLayoutEffect(() => {
     const html = document.documentElement;
@@ -67,16 +74,24 @@ function Simulator() {
     html.dataset.dark = String(apple && selectedTheme.dark);
     html.style.colorScheme = apple && selectedTheme.dark ? "dark" : "light";
     const tokens: Record<string, string> = {
-      bg: selectedTheme.bg, surface: selectedTheme.surface, text: selectedTheme.text,
-      muted: selectedTheme.muted, accent: selectedTheme.accent,
-      "accent-text": selectedTheme.accentText, line: selectedTheme.line,
-      positive: selectedTheme.positive, negative: selectedTheme.negative, font: systemFontStack,
+      bg: selectedTheme.bg,
+      surface: selectedTheme.surface,
+      text: selectedTheme.text,
+      muted: selectedTheme.muted,
+      accent: selectedTheme.accent,
+      "accent-text": selectedTheme.accentText,
+      line: selectedTheme.line,
+      positive: selectedTheme.positive,
+      negative: selectedTheme.negative,
+      font: systemFontStack,
     };
     for (const [key, value] of Object.entries(tokens)) {
       if (apple) html.style.setProperty(`--${key}`, value);
       else html.style.removeProperty(`--${key}`);
     }
-    const meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+    const meta = document.querySelector<HTMLMetaElement>(
+      'meta[name="theme-color"]',
+    );
     if (meta) meta.content = apple ? selectedTheme.bg : "#f8f9f6";
   }, [apple, selectedTheme]);
   function save(raw: string) {
@@ -178,7 +193,10 @@ function Simulator() {
     setTheme(id);
     // A file URL's location.origin is "file://", while its serialized origin
     // (and the inherited srcdoc origin) is opaque: window.origin === "null".
-    frame.current?.contentWindow?.postMessage({ type: "nexo-simulator-set-theme", id }, window.origin === "null" ? "*" : window.origin);
+    frame.current?.contentWindow?.postMessage(
+      { type: "nexo-simulator-set-theme", id },
+      window.origin === "null" ? "*" : window.origin,
+    );
   }
   function reset(kind: "demo" | "empty") {
     if (Object.keys(store.current.sharing.grants).length) {
@@ -318,25 +336,25 @@ function Simulator() {
                   <ChevronDown size={15} />
                 </div>
                 <div className="sim-appearance-options">
-                  <button
-                    type="button"
-                    onClick={() => changeTheme(apple ? "apple-light" : "porcelana")}
-                    aria-pressed={theme === (apple ? "apple-light" : "porcelana")}
-                  >
-                    <Sun size={15} />
-                    Claro
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => changeTheme(apple ? "apple-dark" : "obsidiana")}
-                    aria-pressed={theme === (apple ? "apple-dark" : "obsidiana")}
-                  >
-                    <Moon size={15} />
-                    Escuro
-                  </button>
-                  {apple && <button type="button" onClick={() => changeTheme("apple-system")} aria-pressed={theme === "apple-system"}>
-                    <Monitor size={15} /> Sistema
-                  </button>}
+                  <ThemeMorphToggle
+                    dark={selectedTheme.dark}
+                    onToggle={() =>
+                      changeTheme(
+                        apple
+                          ? selectedTheme.dark
+                            ? "apple-light"
+                            : "apple-dark"
+                          : selectedTheme.dark
+                            ? "porcelana"
+                            : "obsidiana",
+                      )
+                    }
+                  />
+                  {theme === "apple-system" && (
+                    <span className="sim-system-status">
+                      Seguindo o sistema
+                    </span>
+                  )}
                 </div>
               </div>
               <div className="sim-section">
@@ -560,8 +578,8 @@ function Simulator() {
               <span className="sim-note-number">03</span>
               <h3>Encontre o seu visual.</h3>
               <p>
-                Explore os 15 temas, a família Apple e o laboratório de componentes em{" "}
-                <strong>Menu → Personalização</strong>.
+                Explore os 15 temas, a família Apple e o laboratório de
+                componentes em <strong>Menu → Personalização</strong>.
               </p>
             </div>
             <a

@@ -9,6 +9,7 @@ export interface ActivityItemType {
   title: string;
   desc: string;
   time: string;
+  action?: () => void;
 }
 
 export interface ActivitiesCardProps {
@@ -18,13 +19,21 @@ export interface ActivitiesCardProps {
   activities: ActivityItemType[];
 }
 
-const ActivityItem: FC<ActivityItemType> = ({ icon, title, desc, time }) => {
+const ActivityItem: FC<ActivityItemType> = ({
+  icon,
+  title,
+  desc,
+  time,
+  action,
+}) => {
   return (
-    <motion.div
+    <motion.button
+      type="button"
+      onClick={action}
       layout
       initial={{ opacity: 0, x: -10 }}
       animate={{ opacity: 1, x: 0 }}
-      className="flex cursor-pointer items-center gap-3 px-3 py-3 transition-colors hover:bg-neutral-50 sm:gap-4 sm:px-5 dark:hover:bg-neutral-800/50"
+      className="flex w-full cursor-pointer items-center text-left gap-3 px-3 py-3 transition-colors hover:bg-neutral-50 sm:gap-4 sm:px-5 dark:hover:bg-neutral-800/50"
     >
       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-gray-100/50 bg-gradient-to-b from-[#f4f4f7]/90 to-[#E9EAF0]/90 text-gray-400 sm:h-12 sm:w-12 dark:border-neutral-700 dark:from-neutral-800 dark:to-neutral-900 dark:text-neutral-500">
         {icon}
@@ -42,7 +51,7 @@ const ActivityItem: FC<ActivityItemType> = ({ icon, title, desc, time }) => {
       <span className="pt-1 text-[11px] whitespace-nowrap text-[#9F9FA1] sm:text-[13px] dark:text-neutral-600">
         {time}
       </span>
-    </motion.div>
+    </motion.button>
   );
 };
 
@@ -69,6 +78,8 @@ export const ActivitiesCard: FC<ActivitiesCardProps> = ({
         className="w-xs overflow-hidden rounded-xl border-2 border-[#e7e6e6]/60 bg-[#FEFEFE] shadow-lg sm:w-sm sm:rounded-[20px] dark:border-neutral-800 dark:bg-neutral-900"
       >
         <motion.button
+          type="button"
+          aria-expanded={open}
           onClick={() => setOpen(!open)}
           className="flex w-full items-center justify-between gap-2 px-3 py-2 transition-colors sm:gap-3 sm:px-4 sm:py-3.5"
         >

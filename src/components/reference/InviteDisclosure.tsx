@@ -17,6 +17,7 @@ export interface InviteItem {
   description: string;
   icon: ReactNode;
   hasUpdate?: boolean;
+  action?: () => void;
 }
 
 interface InviteDisclosureProps {
@@ -76,7 +77,7 @@ export const InviteDisclosure: React.FC<InviteDisclosureProps> = ({
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="flex h-[500px] w-fit items-center justify-center">
+    <div className="flex min-h-[76px] w-fit items-center justify-center">
       <MotionConfig
         transition={isOpen ? springTransition : collapsedTransition}
       >
@@ -84,6 +85,8 @@ export const InviteDisclosure: React.FC<InviteDisclosureProps> = ({
           {!isOpen ? (
             <motion.button
               layoutId="disclosure"
+              type="button"
+              aria-expanded={false}
               onClick={() => setIsOpen(true)}
               style={{
                 borderRadius: 32,
@@ -120,7 +123,8 @@ export const InviteDisclosure: React.FC<InviteDisclosureProps> = ({
                 </motion.h2>
                 <motion.button
                   layoutId="badge"
-                  title="close"
+                  type="button"
+                  aria-label="Recolher links ativos"
                   onClick={() => setIsOpen(false)}
                   className="flex h-8 w-8 items-center justify-center rounded-full bg-[#fefefe] transition-colors duration-200 hover:bg-neutral-200 dark:bg-neutral-800 dark:hover:bg-neutral-700"
                 >
@@ -130,7 +134,9 @@ export const InviteDisclosure: React.FC<InviteDisclosureProps> = ({
 
               <div className="space-y-3 px-2 pb-4">
                 {invites.map((invite, index) => (
-                  <motion.div
+                  <motion.button
+                    type="button"
+                    onClick={invite.action}
                     key={invite.id}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -167,7 +173,7 @@ export const InviteDisclosure: React.FC<InviteDisclosureProps> = ({
                         {invite.description}
                       </p>
                     </div>
-                  </motion.div>
+                  </motion.button>
                 ))}
               </div>
             </motion.div>

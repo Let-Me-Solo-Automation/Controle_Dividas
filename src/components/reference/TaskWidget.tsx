@@ -11,6 +11,7 @@ export interface Subtask {
   id: string;
   title: string;
   completed: boolean;
+  action?: () => void;
 }
 
 export interface Assignee {
@@ -22,6 +23,7 @@ export interface Assignee {
 export interface TaskData {
   title: string;
   progress: number;
+  hideProgress?: boolean;
   completedCount: number;
   totalCount: number;
   priority: string;
@@ -32,10 +34,11 @@ export interface TaskData {
 
 interface Props {
   data: TaskData;
+  initialOpen?: boolean;
 }
 
-export const TaskWidget: React.FC<Props> = ({ data }) => {
-  const [isOpen, setIsOpen] = useState(false);
+export const TaskWidget: React.FC<Props> = ({ data, initialOpen = false }) => {
+  const [isOpen, setIsOpen] = useState(initialOpen);
 
   const Transition = {
     ease: [0.25, 0.1, 0.25, 1],
@@ -47,6 +50,8 @@ export const TaskWidget: React.FC<Props> = ({ data }) => {
       <motion.div
         layout
         initial={false}
+        role="group"
+        aria-label={data.title}
         onClick={() => setIsOpen(!isOpen)}
         transition={Transition}
         className={`relative w-full cursor-pointer overflow-hidden border-2 border-neutral-100 bg-white shadow-xl transition-colors select-none sm:w-[440px] dark:border-neutral-800 dark:bg-neutral-950 ${
@@ -57,6 +62,16 @@ export const TaskWidget: React.FC<Props> = ({ data }) => {
       >
         {/* --- Header Section --- */}
         <div className="relative z-10 flex items-center justify-between gap-2">
+          <button
+            type="button"
+            className="absolute inset-0 z-20 rounded-xl"
+            aria-label={`${isOpen ? "Recolher" : "Expandir"} ${data.title}`}
+            aria-expanded={isOpen}
+            onClick={(event) => {
+              event.stopPropagation();
+              setIsOpen(!isOpen);
+            }}
+          />
           <motion.div
             layout="position"
             transition={Transition}
@@ -106,7 +121,9 @@ export const TaskWidget: React.FC<Props> = ({ data }) => {
                   <motion.div
                     layoutId="progress-fill"
                     className="relative h-full overflow-hidden rounded-full bg-green-500"
-                    style={{ width: `${data.progress}%` }}
+                    style={{
+                      width: `${data.hideProgress ? "••" : `${data.progress}%`}`,
+                    }}
                   >
                     <motion.div
                       initial={{ x: "-100%" }}
@@ -128,11 +145,11 @@ export const TaskWidget: React.FC<Props> = ({ data }) => {
                   layoutId="progress-text"
                   className="text-xs font-medium text-neutral-500 transition-colors sm:text-base dark:text-neutral-400"
                 >
-                  {data.progress}%
+                  {data.hideProgress ? "••" : `${data.progress}%`}
                 </motion.span>
               </motion.div>
             ) : (
-              <motion.button
+              <motion.span
                 key="more-btn"
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -140,8 +157,8 @@ export const TaskWidget: React.FC<Props> = ({ data }) => {
                 transition={{ duration: 0.15 }}
                 className="rounded-md border-2 border-neutral-100 bg-white p-1.5 px-1.5 text-black transition-colors dark:border-neutral-800 dark:bg-neutral-950 dark:text-white"
               >
-                <MoreHorizontal size={22} />
-              </motion.button>
+                <ChevronDown size={22} className="rotate-180" />
+              </motion.span>
             )}
           </AnimatePresence>
         </div>
@@ -233,7 +250,7 @@ export const TaskWidget: React.FC<Props> = ({ data }) => {
                   <span className="text-neutral-400 dark:text-neutral-500">
                     {data.completedCount}
                   </span>{" "}
-                  of {data.totalCount}
+                  de {data.totalCount}
                 </span>
                 <motion.div
                   layoutId="progress-container"
@@ -242,7 +259,9 @@ export const TaskWidget: React.FC<Props> = ({ data }) => {
                   <motion.div
                     layoutId="progress-fill"
                     className="relative h-full overflow-hidden rounded-full bg-green-500"
-                    style={{ width: `${data.progress}%` }}
+                    style={{
+                      width: `${data.hideProgress ? "••" : `${data.progress}%`}`,
+                    }}
                   >
                     <motion.div
                       initial={{ x: "-100%" }}
@@ -264,7 +283,7 @@ export const TaskWidget: React.FC<Props> = ({ data }) => {
                   layoutId="progress-text"
                   className="text-sm font-semibold text-neutral-600 dark:text-neutral-200"
                 >
-                  {data.progress}%
+                  {data.hideProgress ? "••" : `${data.progress}%`}
                 </motion.span>
               </div>
 
@@ -276,7 +295,13 @@ export const TaskWidget: React.FC<Props> = ({ data }) => {
                   className="absolute top-0 bottom-4 left-0 w-[1.7px] origin-top bg-neutral-300 transition-colors dark:bg-neutral-700"
                 />
                 {data.subtasks.map((task, idx) => (
-                  <motion.div
+                  <motion.button
+                    type="button"
+                    disabled={!task.action}
+                    onClick={(event) => {
+                      event.stopPropagation();
+                      task.action?.();
+                    }}
                     key={task.id}
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
@@ -300,7 +325,7 @@ export const TaskWidget: React.FC<Props> = ({ data }) => {
                     >
                       {task.title}
                     </span>
-                  </motion.div>
+                  </motion.button>
                 ))}
               </div>
 
@@ -308,7 +333,7 @@ export const TaskWidget: React.FC<Props> = ({ data }) => {
               <div className="mb-6 space-y-4">
                 {[
                   {
-                    label: "Priority",
+                    label: "Prazos",
                     val: data.priority,
                     icon: (
                       <HugeiconsIcon
@@ -325,7 +350,7 @@ export const TaskWidget: React.FC<Props> = ({ data }) => {
                     layoutId: "priority",
                   },
                   {
-                    label: "Status",
+                    label: "Situação",
                     val: data.status,
                     icon: (
                       <BiSolidHourglassBottom

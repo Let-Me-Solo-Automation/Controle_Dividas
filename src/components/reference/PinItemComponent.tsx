@@ -15,12 +15,16 @@ import {
 } from "react-icons/fa6";
 
 export type PlaceItem = {
-  id: number;
+  id: number | string;
   name: string;
   type: string;
   status: string;
+  subtitle?: string;
+  amount?: string;
+  progress?: number;
   icon: React.ComponentType<{ size?: number }>;
   pinned?: boolean;
+  action?: () => void;
 };
 
 const INITIAL_PLACES: PlaceItem[] = [
@@ -74,16 +78,23 @@ const springConfig: Transition = {
 
 type PinItemComponentProps = {
   items?: PlaceItem[];
+  onPinChange?: (id: number | string, pinned: boolean) => void;
 };
 
 export const PinItemComponent = ({
   items = INITIAL_PLACES,
+  onPinChange,
 }: PinItemComponentProps) => {
-  const [places, setPlaces] = useState<PlaceItem[]>(
+  const [localPlaces, setPlaces] = useState<PlaceItem[]>(
     items.map((p) => ({ ...p, pinned: p.pinned ?? false })),
   );
 
-  const togglePin = (id: number) => {
+  const places = onPinChange ? items : localPlaces;
+  const togglePin = (id: number | string) => {
+    if (onPinChange) {
+      onPinChange(id, !places.find((place) => place.id === id)?.pinned);
+      return;
+    }
     setPlaces((prev) =>
       prev.map((place) =>
         place.id === id ? { ...place, pinned: !place.pinned } : place,
@@ -95,7 +106,7 @@ export const PinItemComponent = ({
   const unpinnedPlaces = places.filter((p) => !p.pinned);
 
   return (
-    <div className="w-full max-w-[355px] space-y-6">
+    <div className="pin-items w-full max-w-[355px] space-y-6">
       <MotionConfig transition={springConfig}>
         <AnimatePresence mode="popLayout" initial={false}>
           {pinnedPlaces.length > 0 && (
@@ -110,7 +121,7 @@ export const PinItemComponent = ({
                 layout
                 className="ml-1 text-[14px] font-semibold tracking-wider text-[#ADACB8] dark:text-neutral-500"
               >
-                Pinned Places
+                Fixadas
               </motion.h3>
               <div className="space-y-2">
                 {pinnedPlaces.map((place) => (
@@ -130,7 +141,7 @@ export const PinItemComponent = ({
             layout
             className="ml-1 text-[14px] font-semibold tracking-wider text-[#ADACB8] dark:text-neutral-500"
           >
-            All Places
+            {pinnedPlaces.length ? "Outras seções" : "Suas seções"}
           </motion.h3>
           <div className="space-y-3">
             {unpinnedPlaces.map((place) => (
@@ -148,7 +159,7 @@ const PlaceCard = ({
   onToggle,
 }: {
   place: PlaceItem;
-  onToggle: (id: number) => void;
+  onToggle: (id: number | string) => void;
 }) => {
   const Icon = place.icon;
 
@@ -156,33 +167,66 @@ const PlaceCard = ({
     <motion.div
       layoutId={`card-${place.id}`}
       transition={springConfig}
-      className="group relative flex cursor-default items-center justify-between gap-2.5 rounded-2xl border border-gray-100 bg-[#F6F5FA] p-2.5 shadow-xs transition-shadow hover:shadow-sm sm:p-3 dark:border-neutral-800 dark:bg-neutral-900"
+      className="pin-item group relative flex cursor-default items-center justify-between gap-2.5 rounded-2xl border border-gray-100 bg-[#F6F5FA] p-2.5 shadow-xs transition-shadow hover:shadow-sm sm:p-3 dark:border-neutral-800 dark:bg-neutral-900"
     >
-      <div className="flex items-center gap-3">
+      <button
+        type="button"
+        onClick={place.action}
+        className="pin-item-open flex min-w-0 flex-1 items-center gap-3 text-left"
+      >
         <motion.div
           layout
-          className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#FEFEFE] text-[#AEADB9] dark:bg-neutral-800 dark:text-neutral-400"
+          className="pin-item-icon flex h-10 w-10 items-center justify-center rounded-xl bg-[#FEFEFE] text-[#AEADB9] dark:bg-neutral-800 dark:text-neutral-400"
         >
           <Icon size={22} />
         </motion.div>
 
-        <motion.div layout>
-          <h4 className="text-base leading-tight font-bold text-[#27272B] dark:text-neutral-100">
-            {place.name}
-          </h4>
+        <motion.div layout className="pin-item-copy">
+          <div className="pin-item-heading">
+            <h4 className="text-base leading-tight font-bold text-[#27272B] dark:text-neutral-100">
+              {place.name}
+            </h4>
+            {place.amount !== undefined && (
+              <strong className="pin-item-amount">{place.amount}</strong>
+            )}
+          </div>
           <p className="mt-0.5 max-w-[180px] truncate text-[14px] font-semibold text-[#87868D] sm:max-w-none dark:text-neutral-400">
-            {place.type} • {place.status}
+            {place.type}
+            {place.subtitle
+              ? ` · ${place.subtitle}`
+              : place.amount === undefined
+                ? ` • ${place.status}`
+                : ""}
           </p>
+          {place.progress !== undefined && (
+            <div
+              className="pin-item-progress"
+              role="progressbar"
+              aria-label={`Quitação de ${place.name}`}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuenow={Math.round(place.progress * 100)}
+            >
+              <motion.span
+                initial={false}
+                animate={{ scaleX: Math.max(0, Math.min(1, place.progress)) }}
+                transition={springConfig}
+              />
+            </div>
+          )}
         </motion.div>
-      </div>
+      </button>
 
       <motion.button
         layout
+        type="button"
+        aria-label={`${place.pinned ? "Desafixar" : "Fixar"} ${place.name}`}
+        aria-pressed={!!place.pinned}
         onClick={() => onToggle(place.id)}
-        className={`relative z-10 flex h-8 w-8 items-center justify-center rounded-full transition-all duration-300 ${
+        className={`pin-item-toggle relative z-10 flex h-8 w-8 items-center justify-center rounded-full transition-all duration-300 ${
           place.pinned
             ? "bg-yellow-400 text-white opacity-100"
-            : "bg-[#CDCCD5] text-[#fefefe] opacity-0 group-hover:opacity-100 dark:bg-neutral-700 dark:text-neutral-400"
+            : "bg-[#CDCCD5] text-[#fefefe] opacity-70 group-hover:opacity-100 dark:bg-neutral-700 dark:text-neutral-400"
         }`}
       >
         <Pin size={16} className="fill-white" />

@@ -15,6 +15,9 @@ export interface Option {
 
 interface OptionPickerProps {
   options?: Option[];
+  value?: string;
+  onChange?: (id: string) => void;
+  label?: string;
 }
 
 const DEFAULT_OPTIONS: Option[] = [
@@ -22,30 +25,58 @@ const DEFAULT_OPTIONS: Option[] = [
   { id: "public", label: "Public", icon: Globe },
 ];
 
-export const OptionPicker: FC<OptionPickerProps> = ({ options }) => {
+export const OptionPicker: FC<OptionPickerProps> = ({
+  options,
+  value,
+  onChange,
+  label = "Escolher opção",
+}) => {
   const [isOpen, setIsOpen] = useState<boolean>(false);
-  const [selected, setSelected] = useState<Option>(
+  const [localSelected, setSelected] = useState<Option>(
     options?.[0] || DEFAULT_OPTIONS[0],
   );
+  const selected =
+    (options || DEFAULT_OPTIONS).find((option) => option.id === value) ||
+    localSelected;
   const containerRef = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
+    if (!isOpen) return;
+    containerRef.current
+      ?.querySelector<HTMLButtonElement>('button[aria-pressed="true"]')
+      ?.focus({ preventScroll: true });
+    const close = (restoreFocus: boolean) => {
+      setIsOpen(false);
+      if (restoreFocus) triggerRef.current?.focus({ preventScroll: true });
+    };
+    const outside = (event: PointerEvent) => {
+      if (!containerRef.current?.contains(event.target as Node)) {
+        const target = event.target instanceof Element ? event.target : null;
+        close(!target?.closest("button,a,input,textarea,select,[tabindex]"));
       }
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+    const keyboard = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        event.stopPropagation();
+        close(true);
+      }
+    };
+    document.addEventListener("pointerdown", outside);
+    document.addEventListener("keydown", keyboard, true);
+    return () => {
+      document.removeEventListener("pointerdown", outside);
+      document.removeEventListener("keydown", keyboard, true);
+    };
+  }, [isOpen]);
 
   const toggleOpen = () => setIsOpen((prev) => !prev);
   const handleSelect = (option: Option) => {
     setSelected(option);
+    onChange?.(option.id);
     setIsOpen(false);
+    triggerRef.current?.focus({ preventScroll: true });
   };
 
   const data = options || DEFAULT_OPTIONS;
@@ -84,7 +115,7 @@ export const OptionPicker: FC<OptionPickerProps> = ({ options }) => {
               }}
               className="absolute bottom-full left-1/2 z-50 mb-2 origin-bottom -translate-x-1/2 transform-3d"
               role="menu"
-              aria-label="Visibility options"
+              aria-label={label}
             >
               <div className="relative flex min-w-max gap-2 rounded-full border border-neutral-100 bg-[#F3F3F3] p-1.5 py-1 whitespace-nowrap dark:border-neutral-700 dark:bg-neutral-800">
                 {data.map((option, index) => {
@@ -101,11 +132,13 @@ export const OptionPicker: FC<OptionPickerProps> = ({ options }) => {
                   return (
                     <motion.button
                       key={option.id}
+                      type="button"
+                      aria-pressed={isActive}
                       onClick={() => handleSelect(option)}
                       whileTap={{ scale: 0.95 }}
                       whileHover={{ y: -1 }}
-                      title={`Set as ${option.label}`}
-                      aria-label={`Select ${option.label}`}
+                      title={`Selecionar ${option.label}`}
+                      aria-label={`Selecionar ${option.label}`}
                       className={`relative flex items-center gap-2 px-5 py-3 text-[15px] font-semibold transition-all duration-300 ${roundedClasses} bg-[#FEFEFE] dark:bg-neutral-700 ${isActive ? "text-[#010101] dark:text-white" : "text-[#6E6E6E] dark:text-neutral-400"}`}
                     >
                       <motion.span>
@@ -125,12 +158,14 @@ export const OptionPicker: FC<OptionPickerProps> = ({ options }) => {
         </AnimatePresence>
 
         <motion.button
+          ref={triggerRef}
+          type="button"
           layout="size"
+          aria-label={label}
+          aria-expanded={isOpen}
           onClick={toggleOpen}
           whileTap={{ scale: 0.97 }}
-          title="Change Visibility"
-          aria-label={`Visibility is currently ${selected.label}. Click to change.`}
-          aria-expanded={isOpen}
+          title={`${label}: ${selected.label}`}
           className={`flex items-center justify-center gap-2 rounded-full border border-transparent px-4 py-4 transition-all duration-300 select-none ${isOpen ? "bg-[#E5E5E5] dark:border-neutral-700 dark:bg-neutral-800" : "bg-[#F4F4F4] dark:bg-neutral-900"}`}
         >
           <AnimatePresence mode="popLayout" initial={false}>

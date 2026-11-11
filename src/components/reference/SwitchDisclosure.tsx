@@ -10,6 +10,8 @@ import { RiBubbleChartFill } from "react-icons/ri";
 
 interface SwitchDisclosureProps {
   title?: string;
+  enabled?: boolean;
+  subOptionChecked?: boolean;
   subOptionLabel?: string;
   defaultEnabled?: boolean;
   defaultSubOptionChecked?: boolean;
@@ -25,17 +27,21 @@ const springConfig: Transition = {
 };
 export const SwitchDisclosure: React.FC<SwitchDisclosureProps> = ({
   title = "Predictive Completion",
+  enabled,
+  subOptionChecked,
   subOptionLabel = "Enable Inline Suggestions",
   defaultEnabled = false,
   defaultSubOptionChecked = false,
   onToggleChange,
   onSubOptionChange,
 }) => {
-  const [isEnabled, setIsEnabled] = useState(defaultEnabled);
-  const [isSubOptionChecked, setIsSubOptionChecked] = useState(
+  const [localEnabled, setIsEnabled] = useState(defaultEnabled);
+  const [localSubOption, setIsSubOptionChecked] = useState(
     defaultSubOptionChecked,
   );
 
+  const isEnabled = enabled ?? localEnabled;
+  const isSubOptionChecked = subOptionChecked ?? localSubOption;
   const handleToggle = () => {
     const next = !isEnabled;
     setIsEnabled(next);
@@ -63,7 +69,11 @@ export const SwitchDisclosure: React.FC<SwitchDisclosureProps> = ({
         }}
       >
         <div className="flex flex-col">
-          <motion.div
+          <motion.button
+            type="button"
+            role="switch"
+            aria-checked={isEnabled}
+            aria-label={title}
             layout
             className="dark:bg-nuetral-800 flex cursor-pointer items-center justify-between rounded-[35px] bg-[#F6F5FA]  dark:bg-neutral-800 p-3 shadow-sm"
             onClick={handleToggle}
@@ -90,12 +100,16 @@ export const SwitchDisclosure: React.FC<SwitchDisclosureProps> = ({
                 animate={{ x: isEnabled ? 20 : 0 }}
               />
             </div>
-          </motion.div>
+          </motion.button>
 
           <AnimatePresence mode="popLayout" initial={false}>
             {isEnabled && (
               <motion.div className="flex gap-4" layout>
-                <motion.div
+                <motion.button
+                  type="button"
+                  role="checkbox"
+                  aria-checked={isSubOptionChecked}
+                  aria-label={subOptionLabel}
                   initial={{ y: 10, opacity: 0, scale: 1.1 }}
                   animate={{ y: 0, opacity: 1, scale: 1 }}
                   className="group flex cursor-pointer items-center gap-3 p-4"
@@ -137,7 +151,7 @@ export const SwitchDisclosure: React.FC<SwitchDisclosureProps> = ({
                   <span className="text-[17px] font-semibold text-[#6C6B72] transition-colors group-hover:text-gray-800 dark:text-neutral-400 dark:group-hover:text-neutral-200">
                     {subOptionLabel}
                   </span>
-                </motion.div>
+                </motion.button>
               </motion.div>
             )}
           </AnimatePresence>

@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "./components/production-interactions.css";
 @source "./**/*.{tsx,jsx,ts}";
 @custom-variant dark (&:where(.dark, .dark *, [data-dark="true"], [data-dark="true"] *));
 @theme {
@@ -1153,4 +1154,96 @@ html body .brand-large > .marks-brand-icon {
   font-size: 12px;
   text-decoration: underline;
   text-underline-offset: 3px;
+}
+
+/* One continuous selection travels before the dock contracts. */
+.nexo-mini-panel { position: relative; }
+.nexo-mini-panel > .nexo-moving-selection {
+  position: absolute;
+  inset: auto;
+  top: 0;
+  left: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 18%, var(--line));
+}
+.nexo-mini-item { z-index: 1; }
+.nexo-mini-dock[data-phase="selecting"] .nexo-mini-panel,
+.nexo-mini-dock[data-phase="closing"] .nexo-mini-panel { pointer-events: none; }
+.theme-morph-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-width: 112px;
+  min-height: 44px;
+  padding: 8px 15px;
+  border: 1px solid var(--line, #cbd1cb);
+  border-radius: 24px;
+  background: var(--surface, #fff);
+  color: var(--text, #202b29);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.theme-morph-toggle > svg { flex: none; overflow: visible; }
+.sim-appearance-options .theme-morph-toggle { flex: none; width: auto; padding: 8px 15px; background: var(--surface, #fff); border-color: var(--line, #cbd1cb); color: var(--text, #202b29); }
+.sim-system-status { font-size: 11px; color: var(--muted, #596756); line-height: 1.5; }
+
+/* KPI cards use a real gutter; each swipe row owns one complete outline. */
+html body .kpi-grid { gap: 12px; margin: 0 0 16px; }
+html body .kpi-grid .kpi { min-width: 0; padding: 16px 14px; }
+html body .kpi-grid .kpi-label { line-height: 1.5; }
+html body .section-item {
+  width: 100%;
+  min-width: 0;
+  min-height: 86px;
+  margin: 0 0 12px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--surface);
+}
+html body .section-item .grow { min-width: 0; }
+html body .section-item > span:last-child { flex-shrink: 0; min-width: 72px; }
+html body .swipe-card {
+  margin: 0 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--surface);
+  box-shadow: 0 3px 12px #00000004;
+}
+html body .swipe-card:last-child { margin-bottom: 0; }
+html body .swipe-content { background: var(--surface); }
+html body .swipe-content > :is(.section-item, .goal-item),
+html body .card .swipe-content > :is(.section-item, .goal-item) {
+  width: 100%;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  background: var(--surface);
+  padding: 16px 52px 16px 14px;
+  box-shadow: none;
+}
+html body .swipe-card .section-item > span:last-child > svg { display: none; }
+html body .swipe-actions {
+  visibility: hidden;
+  pointer-events: none;
+  opacity: 0;
+  border-radius: 0;
+  transition: opacity 0.16s ease;
+}
+html body .swipe-open .swipe-actions { visibility: visible; pointer-events: auto; opacity: 1; }
+html body .swipe-handle {
+  right: 5px;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+}
+html body .swipe-open .swipe-handle { right: 117px; background: var(--surface); }
+@media (max-width: 360px) {
+  html body .kpi-grid { gap: 10px; }
+  html body .kpi-grid .kpi { padding: 14px 11px; }
 }

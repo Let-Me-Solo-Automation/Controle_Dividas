@@ -8,7 +8,8 @@ import { publishSection as publishFirebaseSection, revokeShare as revokeFirebase
 import * as React from 'react';
 import * as ReactDOM from 'react-dom/client';
 import { motion, AnimatePresence, MotionConfig } from 'motion/react';
-import { FluidNavigation, ContinuousTabs, AnimatedMoney, MotionProgress, MotionToggle, CommandPalette, CreateGrid, ScreenTransition, AppModal, MotionCard, BlurSlider, DashboardTools, MotionAppRoot } from '../components/nexo-ui';
+import { FluidNavigation, ContinuousTabs, AnimatedMoney, MotionProgress, MotionToggle, CommandPalette, CreateGrid, CreateNewDisclosure, ScreenTransition, AppModal, MotionCard, BlurSlider, DashboardTools, MotionAppRoot, ThemeMorphToggle } from '../components/nexo-ui';
+import { EntryFilters, RecentActivity, GoalProgress, SectionOrganizer, FinanceAgenda, FinanceHighlights, FinanceShortcuts, FocusDisclosure, BalanceMap, FinanceHelp, ContributionPlanner } from '../components/ProductionInteractions';
 import { ComponentGallery } from '../components/ComponentGallery';
 const ReactCompat = { ...React, default: React };
   var ca = ReactCompat;
@@ -1222,7 +1223,7 @@ function cn(props){return React.createElement(FluidNavigation,props);}
               "aria-expanded": u,
               onClick: () => i((c) => !c),
             },
-            Ue.default.createElement($a, { size: 15 }),
+            Ue.default.createElement(et, { size: 15 }),
           ),
         )
       : o;
@@ -1718,6 +1719,8 @@ function Hg(props){return React.createElement(AppModal,props);}
     ];
   function iv() {
     const systemDark = useSystemDark();
+    const [entryKind, setEntryKind] = React.useState("all");
+    const [entryAccount, setEntryAccount] = React.useState("all");
     let [e, a] = (0, r.useState)($i || du()),
       [t, l] = (0, r.useState)("dashboard"),
       [o, u] = (0, r.useState)($i ? null : { type: "loadError" }),
@@ -3029,37 +3032,32 @@ function Hg(props){return React.createElement(AppModal,props);}
           ),
         ),
         agenda: Ks(),
-        activity: r.default.createElement(
-          J,
-          {
-            title: "\xDAltimos movimentos",
-            action: "Ver todos",
-            onAction: () => ke("entries"),
-          },
-          [...e.entries]
-            .sort((f, L) => L.date.localeCompare(f.date))
-            .slice(0, 4)
-            .map((f) =>
-              r.default.createElement(Ri, {
-                key: f.id,
-                entry: f,
-                visible: s,
-                onClick: () => U("entryDetail", { entry: f }),
-              }),
-            ),
-          !e.entries.length &&
-            r.default.createElement(
-              "p",
-              { className: "muted" },
-              "Seus lan\xE7amentos aparecer\xE3o aqui.",
-            ),
-        ),
+        activity: React.createElement(RecentActivity, {
+          onOpenAll: () => ke("entries"),
+          activities: [...e.entries].sort((a, b) => b.date.localeCompare(a.date)).slice(0, 6).map(entry => ({
+            title: entry.title,
+            desc: (entry.type === "income" ? "Receita" : entry.type === "expense" ? "Despesa" : "Transferência") + " · " + (e.accounts.find(account => account.id === entry.accountId)?.title || "Conta") + " · " + (s ? ye(entry.amount) : "••••"),
+            time: fa(entry.date),
+            icon: React.createElement(entry.type === "income" ? dl : entry.type === "expense" ? Da : pl, { size: 20 }),
+            action: () => U("entryDetail", { entry }),
+          })),
+        }),
       };
       return r.default.createElement(
         r.default.Fragment,
         null,
         ln(),
         Qg(),
+        React.createElement(FinanceShortcuts, {
+          onNavigate: ke,
+          onCreate: () => { Ma() || U("entry"); },
+          onSearch: query => { ke("entries"); me(query); },
+        }),
+        React.createElement(FinanceHighlights, { items: [
+          { id: "free", eyebrow: "ESPAÇO PARA SEUS PLANOS", title: s ? ye(Te.balance - Te.reserved - Te.goals) : "••••", detail: "Disponível depois de separar suas metas e reserva.", actionLabel: "Organizar minhas contas", action: () => ke("accounts") },
+          { id: "agenda", eyebrow: "SEU PRÓXIMO PASSO", title: Yo()[0]?.title || "Sua agenda está em dia", detail: Yo()[0] ? fa(Yo()[0].date) + " · " + (s ? ye(Yo()[0].amount) : "••••") : "Compromissos, recorrências e metas aparecem juntos aqui.", actionLabel: "Revisar agenda", action: () => ke("agenda") },
+          { id: "goals", eyebrow: "CADA APORTE CONTA", title: e.goals.length ? (s ? ye(Xo) : "••••") + " reservados" : "O que você quer conquistar?", detail: e.goals.length ? e.goals.length + " metas · " + e.goals.filter(goal => za(goal) >= goal.target).length + " concluídas" : "Dê um destino ao dinheiro que você quer guardar.", actionLabel: e.goals.length ? "Acompanhar metas" : "Criar uma meta", action: () => e.goals.length ? ke("goals") : U("goal") },
+        ] }),
         r.default.createElement(
           "div",
           { className: "overview-grid" },
@@ -3125,14 +3123,20 @@ function Hg(props){return React.createElement(AppModal,props);}
             onChange: (y) => me(y.target.value),
             placeholder: "T\xEDtulo ou pessoa",
           }),
-          [...e.sections]
-            .sort((y, v) => +!!v.pinned - +!!y.pinned)
-            .filter((y) =>
-              (y.title + " " + y.person)
-                .toLowerCase()
-                .includes(z.toLowerCase()),
-            )
-            .map(Qs),
+          e.sections.length > 0 && React.createElement(SectionOrganizer, {
+            items: e.sections.filter(section => (section.title + " " + section.person).toLowerCase().includes(z.toLowerCase())).map(section => ({
+              id: section.id, name: section.title, pinned: !!section.pinned, icon: ta,
+              type: section.kind === "receive" ? "A receber" : section.kind === "pay" ? "A pagar" : "Lançamentos livres",
+              status: section.kind === "ledger" ? e.entries.filter(entry => entry.sectionId === section.id).length + " registros" : (s ? ye(Ba(section).remaining) : "••••") + " restantes",
+              subtitle: section.person || "Controle pessoal",
+              amount: section.kind === "ledger" ? e.entries.filter(entry => entry.sectionId === section.id).length + " registros" : (s ? ye(Ba(section).remaining) : "••••"),
+              progress: section.kind === "ledger" ? undefined : Ba(section).progress,
+              action: () => _l("sections", section.id),
+            })),
+            grants: e.sections.filter(section => !!e.sharing.grants[section.id]).map(section => ({ id: section.id, title: section.title, description: e.sharing.grants[section.id].error || "Link de leitura ativo · gerenciar acesso", error: !!e.sharing.grants[section.id].error })),
+            onPin: (id, pinned) => le(data => { const section = data.sections.find(section => section.id === id); if (section) section.pinned = pinned; }, pinned ? "Seção fixada." : "Seção desafixada."),
+            onShare: id => U("share", { id }),
+          }),
           !e.sections.length &&
             r.default.createElement(
               St,
@@ -3423,26 +3427,13 @@ function Hg(props){return React.createElement(AppModal,props);}
               r.default.createElement(be, null),
             ),
           ),
-          r.default.createElement(
-            "div",
-            { className: "goal-summary" },
-            r.default.createElement(Pl, {
-              progress: jo ? Xo / jo : 0,
-              size: 110,
-            }),
-            r.default.createElement(
-              "div",
-              null,
-              r.default.createElement("small", null, "Guardado nos objetivos"),
-              r.default.createElement("div", { className: "big-value" }, P(Xo)),
-              r.default.createElement(
-                "small",
-                null,
-                e.goals.length,
-                " metas no seu ritmo",
-              ),
-            ),
-          ),
+          e.goals.length > 0 && React.createElement(GoalProgress, { data: {
+            title: "Metas e aportes", progress: jo ? Math.min(100, Math.round(Xo / jo * 100)) : 0, hideProgress: !s,
+            completedCount: e.goals.filter(goal => za(goal) >= goal.target).length, totalCount: e.goals.length,
+            priority: e.goals.some(goal => goal.due < Ve() && za(goal) < goal.target) ? "Há prazos vencidos" : "No seu ritmo",
+            status: e.goals.filter(goal => za(goal) < goal.target).length + " em andamento", assignees: [],
+            subtasks: e.goals.map(goal => ({ id: goal.id, title: goal.title + " · " + (s ? ye(za(goal)) + " de " + ye(goal.target) : "••••") + (za(goal) < goal.target ? " · Organizar aporte" : " · Concluída"), completed: za(goal) >= goal.target, action: () => { if (za(goal) >= goal.target) _l("goals", goal.id); else Ma() || U("contribution", { id: goal.id }); } })),
+          } }),
           e.goals.map(Ys),
           !e.goals.length &&
             r.default.createElement(
@@ -3803,6 +3794,10 @@ function Hg(props){return React.createElement(AppModal,props);}
             P(Te.goals),
           ),
         ),
+        React.createElement(BalanceMap, {
+          format: value => s ? ye(value) : "••••",
+          accounts: e.accounts.map(account => ({ id: account.id, title: account.title, balance: Sr(e, account.id), free: Cr(e, account.id), reserved: e.reserve.filter(item => item.accountId === account.id).reduce((sum, item) => sum + item.amount, 0), goals: e.goals.reduce((sum, goal) => sum + goal.contributions.filter(item => item.accountId === account.id).reduce((total, item) => total + item.amount, 0), 0), action: () => U("reserve", { accountId: account.id }) })),
+        }),
         e.accounts.map((n) =>
           r.default.createElement(
             J,
@@ -3879,6 +3874,12 @@ function Hg(props){return React.createElement(AppModal,props);}
       );
     }
     function $g() {
+      const selectedAccount = e.accounts.some(account => account.id === entryAccount) ? entryAccount : "all";
+      const visibleEntries = e.entries.filter(entry => nu(entry.date, Vo) &&
+        (entryKind === "all" || entry.type === entryKind) &&
+        (selectedAccount === "all" || entry.accountId === selectedAccount || entry.toAccountId === selectedAccount) &&
+        [entry.title, entry.category, e.accounts.find(account => account.id === entry.accountId)?.title, e.accounts.find(account => account.id === entry.toAccountId)?.title].filter(Boolean).join(" ").toLowerCase().includes(z.toLowerCase())
+      ).sort((a, b) => b.date.localeCompare(a.date));
       return r.default.createElement(
         r.default.Fragment,
         null,
@@ -3909,24 +3910,11 @@ function Hg(props){return React.createElement(AppModal,props);}
           onChange: (n) => me(n.target.value),
           placeholder: "T\xEDtulo, categoria ou conta",
         }),
+        React.createElement(EntryFilters, { accounts: e.accounts, kind: entryKind, account: e.accounts.some(account => account.id === entryAccount) ? entryAccount : "all", onKind: setEntryKind, onAccount: setEntryAccount }),
         r.default.createElement(
           J,
           null,
-          [...e.entries]
-            .filter(
-              (n) =>
-                nu(n.date, Vo) &&
-                (
-                  n.title +
-                  " " +
-                  n.category +
-                  " " +
-                  e.accounts.find((f) => f.id === n.accountId)?.title
-                )
-                  .toLowerCase()
-                  .includes(z.toLowerCase()),
-            )
-            .sort((n, f) => f.date.localeCompare(n.date))
+          visibleEntries
             .map((n) =>
               r.default.createElement(Ri, {
                 key: n.id,
@@ -3935,18 +3923,18 @@ function Hg(props){return React.createElement(AppModal,props);}
                 onClick: () => U("entryDetail", { entry: n }),
               }),
             ),
-          !e.entries.some((n) => nu(n.date, Vo)) &&
+          !visibleEntries.length &&
             r.default.createElement(
               St,
               {
                 icon: cl,
-                title: "Sem lan\xE7amentos neste per\xEDodo",
+                title: "Nenhum lançamento encontrado",
                 action: "Novo lan\xE7amento",
                 onAction: () => {
                   Ma() || U("entry");
                 },
               },
-              "Receitas, despesas e transfer\xEAncias aparecem aqui.",
+              "Ajuste o período, a conta, o tipo ou a busca para encontrar seus movimentos.",
             ),
         ),
       );
@@ -4094,105 +4082,9 @@ function Hg(props){return React.createElement(AppModal,props);}
       );
     }
     function th() {
-      let n = Number(m.slice(0, 4)),
-        f = Number(m.slice(5, 7)),
-        L = new Date(n, f, 0).getDate(),
-        y = (new Date(n, f - 1, 1).getDay() + 6) % 7,
-        v = Yo();
-      return r.default.createElement(
-        r.default.Fragment,
-        null,
-        r.default.createElement(
-          J,
-          { className: "calendar-card" },
-          r.default.createElement(
-            "div",
-            { className: "card-heading" },
-            r.default.createElement(
-              pe,
-              { label: "M\xEAs anterior", onClick: () => b(gl(m, -1)) },
-              r.default.createElement($a, null),
-            ),
-            r.default.createElement(
-              "h2",
-              null,
-              new Date(m + "T12:00:00").toLocaleDateString("pt-BR", {
-                month: "long",
-                year: "numeric",
-              }),
-            ),
-            r.default.createElement(
-              pe,
-              { label: "Pr\xF3ximo m\xEAs", onClick: () => b(gl(m, 1)) },
-              r.default.createElement(Pe, null),
-            ),
-          ),
-          r.default.createElement(
-            "div",
-            { className: "calendar-grid" },
-            ["S", "T", "Q", "Q", "S", "S", "D"].map((S, k) =>
-              r.default.createElement("small", { key: k }, S),
-            ),
-            Array.from({ length: y }, (S, k) =>
-              r.default.createElement("span", { key: "blank" + k }),
-            ),
-            Array.from({ length: L }, (S, k) => {
-              let q = m.slice(0, 7) + "-" + String(k + 1).padStart(2, "0"),
-                ne = v.filter(($) => $.date === q).length;
-              return r.default.createElement(
-                "button",
-                {
-                  className:
-                    (q === m ? "selected " : "") +
-                    (q === Ve() ? "is-today" : ""),
-                  key: q,
-                  "aria-label": `${k + 1}, ${ne} compromissos`,
-                  "aria-pressed": q === m,
-                  onClick: () => b(q),
-                },
-                k + 1,
-                ne > 0 && r.default.createElement("i", null),
-              );
-            }),
-          ),
-        ),
-        r.default.createElement("h2", { className: "section-title" }, fa(m)),
-        r.default.createElement(
-          "div",
-          { className: "timeline" },
-          v
-            .filter((S) => S.date === m)
-            .map((S) =>
-              r.default.createElement(
-                "button",
-                { key: S.id, className: "timeline-item", onClick: S.open },
-                r.default.createElement("span", { className: "timeline-dot" }),
-                r.default.createElement(
-                  "div",
-                  { className: "grow" },
-                  r.default.createElement("strong", null, S.title),
-                  r.default.createElement(
-                    "small",
-                    null,
-                    S.type === "goal"
-                      ? "Prazo da meta"
-                      : S.type === "receive" || S.type === "income"
-                        ? "A receber"
-                        : "A pagar",
-                  ),
-                ),
-                P(S.amount),
-              ),
-            ),
-        ),
-        !v.some((S) => S.date === m) &&
-          r.default.createElement(
-            "p",
-            { className: "muted" },
-            "Nenhum compromisso previsto neste dia.",
-          ),
-        Ks(),
-      );
+      return React.createElement(FinanceAgenda, {
+        items: Yo(), selected: m, onSelect: b, onMonth: offset => b(gl(m, offset)), format: value => s ? ye(value) : "••••",
+      });
     }
     function lh() {
       return r.default.createElement(
@@ -4344,7 +4236,7 @@ function Hg(props){return React.createElement(AppModal,props);}
             F,
             { variant: "secondary full", onClick: () => U("catalog") },
             r.default.createElement(tu, { size: 18 }),
-            "Testar todos os componentes",
+            "Referência das interações",
           ),
         ),
         r.default.createElement(
@@ -4396,15 +4288,7 @@ function Hg(props){return React.createElement(AppModal,props);}
                 f.swipeActions = n;
               }),
           }),
-          r.default.createElement(Ye, {
-            label: "Modo foco",
-            description: "No painel, priorizar entregas, acordos e agenda",
-            checked: O.focusMode,
-            onChange: (n) =>
-              ge((f) => {
-                f.focusMode = n;
-              }),
-          }),
+          React.createElement(FocusDisclosure, { enabled: O.focusMode, agenda: O.components.agenda !== false, onToggle: enabled => ge(settings => { settings.focusMode = enabled; }), onAgenda: enabled => ge(settings => { settings.components.agenda = enabled; }) }),
           r.default.createElement(
             F,
             {
@@ -4641,74 +4525,14 @@ function Hg(props){return React.createElement(AppModal,props);}
           r.default.createElement("h1", null, "Marks"),
           r.default.createElement("p", null, "Seu dinheiro, com clareza."),
         ),
+        React.createElement(FinanceHelp),
         r.default.createElement(
           J,
-          { title: "Feito para o seu celular" },
+          { title: "Backups e continuidade" },
           r.default.createElement(
             "p",
             null,
-            "Aplicativo pessoal offline. Seus dados ficam no aparelho, com arquivo protegido pela chave do Android. O modo de pr\xE9via no navegador usa armazenamento local do navegador.",
-          ),
-          r.default.createElement(
-            "p",
-            null,
-            "O olho oculta valores na interface. Ative o bloqueio por credencial para proteger a abertura do aplicativo.",
-          ),
-        ),
-        r.default.createElement(
-          J,
-          { title: "Como as parcelas funcionam" },
-          r.default.createElement(
-            "p",
-            null,
-            "R$ 1.000 em 10 parcelas: R$ 100 cada. Ao registrar R$ 80 na primeira, a segunda passa a R$ 120 e mostra o motivo do ajuste. O total continua R$ 1.000.",
-          ),
-          r.default.createElement(
-            "p",
-            null,
-            "Ao fechar a \xFAltima com saldo restante, aparece uma parcela extra. Ela \xE9 destacada e identificada por texto. O processo segue at\xE9 a quita\xE7\xE3o.",
-          ),
-        ),
-        r.default.createElement(
-          J,
-          { title: "Compartilhar uma se\xE7\xE3o" },
-          r.default.createElement(
-            "p",
-            null,
-            "O servidor opcional recebe apenas t\xEDtulo, valores, datas e pagamentos da se\xE7\xE3o escolhida. Bancos, metas, reserva, anota\xE7\xF5es privadas e endere\xE7os ficam fora do link.",
-          ),
-          r.default.createElement(
-            "p",
-            null,
-            "O link \xE9 de leitura. Quem o recebe pode encaminh\xE1-lo: trate-o como uma chave. O link fica ativo at\xE9 voc\xEA revogar o acesso. Novos pagamentos s\xE3o sincronizados quando houver conex\xE3o.",
-          ),
-          r.default.createElement(
-            "p",
-            null,
-            "Um link na internet exige um servidor HTTPS publicado. O aplicativo funciona offline sem esse servi\xE7o.",
-          ),
-        ),
-        r.default.createElement(
-          J,
-          { title: "Contas, metas e entregas" },
-          r.default.createElement(
-            "p",
-            null,
-            "Metas e reserva s\xE3o partes do saldo das suas contas. Adicionar um aporte n\xE3o aumenta o patrim\xF4nio. Registre uma receita antes de reservar dinheiro novo.",
-          ),
-          r.default.createElement(
-            "p",
-            null,
-            "Ganhos por km usam a dist\xE2ncia informada. O bruto \xE9 a receita; o l\xEDquido desconta os custos registrados na entrega. O resultado do painel tamb\xE9m considera suas outras entradas e sa\xEDdas.",
-          ),
-        ),
-        r.default.createElement(
-          J,
-          { title: "Instala\xE7\xE3o e atualiza\xE7\xF5es" },
-          r.default.createElement(
-            "p",
-            null,
-            "Vers\xE3o 1.0.0. Instala\xE7\xE3o por APK, sem Play Store. Preserve o backup e a chave de assinatura do projeto para futuras atualiza\xE7\xF5es. Nenhum an\xFAncio, rastreador ou conex\xE3o banc\xE1ria autom\xE1tica.",
+            "Exporte um backup antes de trocar de navegador ou aparelho. Você pode restaurar seus registros em Dados e compartilhamento, na Personalização. O backup é exportado por você. Os links de seções que você publicar seguem as regras de compartilhamento descritas acima.",
           ),
         ),
       );
@@ -5049,16 +4873,7 @@ function Hg(props){return React.createElement(AppModal,props);}
             r.default.createElement(
               r.default.Fragment,
               null,
-              r.default.createElement(X, {
-                label: "Opera\xE7\xE3o",
-                name: "direction",
-                options: [
-                  { value: "add", label: "Separar dinheiro para a meta" },
-                  { value: "remove", label: "Resgatar para saldo livre" },
-                ],
-              }),
-              Wa(),
-              Vl(),
+              React.createElement(ContributionPlanner, { parse: Rl, format: ye, accounts: e.accounts.map(account => ({ id: account.id, title: account.title, available: Cr(e, account.id), allocated: L?.contributions.filter(item => item.accountId === account.id).reduce((sum, item) => sum + item.amount, 0) || 0 })) }),
               nl(),
               r.default.createElement(
                 ve,
@@ -5205,7 +5020,7 @@ function Hg(props){return React.createElement(AppModal,props);}
             n.type === "payment" ? "Registrar pagamento" : "Salvar",
           ),
         );
-      if(n.type === 'create') return React.createElement(CreateGrid,{onSelect:(id)=>{(['entry','delivery','recurring'].includes(id)&&Ma())||U(id)}});
+      if(n.type === 'create') return React.createElement(CreateNewDisclosure,{initialOpen:true,onSelect:(id)=>{(['entry','delivery','recurring'].includes(id)&&Ma())||U(id)}});
       if (n.type === "info")
         return r.default.createElement("p", { className: "info-copy" }, n.text);
       if (n.type === "delete")
@@ -5612,7 +5427,7 @@ function Hg(props){return React.createElement(AppModal,props);}
         recurringConfirm: "Confirmar recorr\xEAncia",
         demo: "Dados demonstrativos",
         importConfirm: "Restaurar backup",
-        catalog: "Laborat\xF3rio de componentes",
+        catalog: "Referência das interações",
         loadError: "Recuperar seus dados",
       },
       ih = {
@@ -5711,39 +5526,13 @@ function Hg(props){return React.createElement(AppModal,props);}
             r.default.createElement(
               "div",
               { className: "menu-footer" },
-              r.default.createElement(
-                pe,
-                {
-                  label: "Tema claro",
-                  onClick: () => {
-                    (le((n) => {
-                      n.settings.theme = O.theme.startsWith("apple-") ? "apple-light" : "porcelana";
-                    }),
-                      x(null));
-                  },
+              React.createElement(ThemeMorphToggle, {
+                dark: we.dark,
+                onToggle: () => {
+                  le((n) => { n.settings.theme = O.theme.startsWith("apple-") ? (we.dark ? "apple-light" : "apple-dark") : (we.dark ? "porcelana" : "obsidiana"); });
+                  x(null);
                 },
-                r.default.createElement(lu, null),
-              ),
-              r.default.createElement(
-                pe,
-                {
-                  label: "Tema escuro",
-                  onClick: () => {
-                    (le((n) => {
-                      n.settings.theme = O.theme.startsWith("apple-") ? "apple-dark" : "obsidiana";
-                    }),
-                      x(null));
-                  },
-                },
-                r.default.createElement($o, null),
-              ),
-              O.theme.startsWith("apple-") && r.default.createElement(
-                pe,
-                { label: "Seguir aparência do sistema", onClick: () => {
-                  le((n) => { n.settings.theme = "apple-system"; }); x(null);
-                } },
-                "Sistema",
-              ),
+              }),
               r.default.createElement(
                 pe,
                 {
