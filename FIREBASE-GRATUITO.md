@@ -1,4 +1,4 @@
-# Nexo: GitHub Pages + Firebase, sem faturamento
+# Marks: GitHub Pages + Firebase, sem faturamento
 
 O site e o código usam um repositório público no GitHub Pages. Os acordos compartilhados ficam no Firestore, protegidos por regras; não são gravados no repositório. O proprietário entra por e-mail e senha do Firebase Authentication, sem compartilhar as credenciais com o destinatário.
 
@@ -13,10 +13,10 @@ A criação real do projeto exige que você aceite os termos da sua conta Google
 
 ## Usar o compartilhamento
 
-- Abra a versão online do Nexo, entre em uma seção e toque no botão de acompanhamento.
+- Abra a versão online do Marks, entre em uma seção e toque no botão de acompanhamento.
 - Crie seu acesso gratuito com e-mail e senha. Use o mesmo acesso em outro navegador/aparelho para gerenciar seus links. Esse acesso é separado da conta Google usada para configurar o projeto.
 - Publique a seção e copie o link. Quem tiver o link consulta apenas esse acordo, sem alterar dados.
-- Novos pagamentos sincronizam quando o Nexo está aberto, há internet e o proprietário continua conectado. Alterações offline ficam pendentes para a próxima conexão.
+- Novos pagamentos sincronizam quando o Marks está aberto, há internet e o proprietário continua conectado. Alterações offline ficam pendentes para a próxima conexão.
 - O destinatário acompanha atualizações enquanto a página está visível. A assinatura é suspensa com a aba oculta para economizar leituras.
 - Revogue o link para interromper novas consultas. Links expiram em 30 dias; atualizar a publicação renova o prazo. A expiração é aplicada pelas regras, sem TTL pago.
 

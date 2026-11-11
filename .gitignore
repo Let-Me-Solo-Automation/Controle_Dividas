@@ -15,3 +15,7 @@ dist/
 *.log
 
 Nexo-backup*.json
+
+Marks-backup*.json
+
+/node_modules

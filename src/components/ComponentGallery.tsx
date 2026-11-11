@@ -88,7 +88,7 @@ export function ComponentGallery({ notify }: { notify?: (s: string) => void }) {
           >
             <div className="w-full">
               <div className="gallery-slide mb-4 rounded-3xl p-5">
-                <span className="eyebrow">NEXO · {slide + 1} / 4</span>
+                <span className="eyebrow">MARKS · {slide + 1} / 4</span>
                 <h3 className="mt-3">
                   {
                     [
@@ -120,7 +120,7 @@ export function ComponentGallery({ notify }: { notify?: (s: string) => void }) {
           </Example>
           <Example
             name="FluidTabs"
-            description="Menu flutuante usado na navegação principal do Nexo."
+            description="Menu flutuante usado na navegação principal do Marks."
           >
             <FluidTabs
               tabs={[

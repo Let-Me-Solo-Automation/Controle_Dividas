@@ -1,4 +1,4 @@
-# Nexo — simulador interativo
+# Marks — simulador interativo
 
 Reformulação do `Nexo-Simulador_1.html` enviado, com React, Tailwind CSS 4 e Motion (`motion/react`, evolução do Framer Motion). As regras financeiras, valores em centavos, demonstração, backup e validação de dados foram preservados.
 
@@ -14,14 +14,14 @@ A conexão Firebase depende da autorização Google do proprietário e da public
 
 ## Abrir a prévia agora
 
-Abra **`dist/Nexo-Simulador_1.html`** no navegador. É um único HTML com JavaScript, CSS, ícones e fontes incorporados. A navegação e os registros funcionam offline; não precisa instalar nada para validar a interface.
+Abra **`dist/Marks-Simulador.html`** no navegador. É um único HTML com JavaScript, CSS, ícones e fontes incorporados. A navegação e os registros funcionam offline; não precisa instalar nada para validar a interface.
 
 Os dados ficam no navegador que abriu o arquivo. Exporte um backup antes de mudar de navegador, mover o arquivo ou limpar dados de navegação. Quando o navegador impedir armazenamento local, a interface informa “Sessão em memória”.
 
 ## Instalar a pasta na Mesa do Mac
 
 1. Extraia o ZIP.
-2. Execute **`Instalar-na-Mesa.command`**. Ele copia o projeto para `~/Desktop/Nexo-Simulador`, instala as dependências e abre a prévia de desenvolvimento.
+2. Execute **`Instalar-na-Mesa.command`**. Ele copia o projeto para `~/Desktop/Marks`, instala as dependências e abre a prévia de desenvolvimento.
 3. Em próximos acessos, execute `Iniciar.command` nessa pasta.
 
 O instalador preserva pastas já existentes, criando uma pasta com data e hora. Se não houver uma versão compatível do Node, baixa o **Node.js 24 LTS oficial para Intel ou Apple Silicon**, confere SHA-256 e o instala dentro de `.runtime/` no próprio projeto. Não usa `sudo`, não exige Homebrew nem altera a instalação global do Node.
@@ -41,11 +41,11 @@ npm ci
 npm run dev
 ```
 
-A entrada continua sendo **`Nexo-Simulador_1.html`**, na raiz. Edite a interface em `src/`; ao salvar, o servidor atualiza a prévia. `src/generated/` é recriada automaticamente e não deve ser editada.
+A entrada principal é **`Marks-Simulador.html`**, na raiz. O nome anterior `Nexo-Simulador_1.html` permanece como compatibilidade. Edite a interface em `src/`; ao salvar, o servidor atualiza a prévia. `src/generated/` é recriada automaticamente e não deve ser editada.
 
 ```bash
 npm run check  # TypeScript dos componentes novos e dos exemplos
-npm run build  # gera dist/Nexo-Simulador_1.html, autossuficiente
+npm run build  # gera dist/Marks-Simulador.html, autossuficiente
 npm exec playwright install chromium
 npm test       # testes de fluxos financeiros e interface
 npm run test:model     # privacidade da projeção e cálculo das parcelas
@@ -87,7 +87,7 @@ O servidor de desenvolvimento atende somente em `127.0.0.1`. Para interrompê-lo
 
 ## Referência de design e limites do protótipo
 
-Foi possível consultar o arquivo Figma fornecido: página **Materials**, material Regular Light (`510:82535`) e **Tab Bars**, barra com três abas (`10508:1091`). Transparência, contornos, espaçamento e seleção foram adaptados ao conteúdo e aos ícones do Nexo. É uma interpretação para web, sem afirmar equivalência com a renderização nativa do Liquid Glass.
+Foi possível consultar o arquivo Figma fornecido: página **Materials**, material Regular Light (`510:82535`) e **Tab Bars**, barra com três abas (`10508:1091`). Transparência, contornos, espaçamento e seleção foram adaptados ao conteúdo e aos ícones do Marks. É uma interpretação para web, sem afirmar equivalência com a renderização nativa do Liquid Glass.
 
 Os anexos foram tratados como código de referência. O accordion duplicado foi unificado. Corrigimos os fundos inválidos do CarouselNavigator, o ciclo de navegação, rótulos dos novos botões, isolamento de `layoutId`, datas fixas de 2024 no CalendarWidget e o mapa externo da demonstração.
 
@@ -100,3 +100,12 @@ Este projeto valida a interface web. Ele não gera APK. Biometria/bloqueio, vibr
 ## Dependências e licenças
 
 As dependências e versões exatas estão em `package-lock.json`. React, Motion, Lucide, React Icons, Hugeicons e react-use-measure seguem suas respectivas licenças, incluídas nos pacotes npm. A compilação mantém os avisos legais dos bundles. Os exemplos e as fontes incorporadas foram fornecidos no material original.
+
+## Downloads pelo site
+
+Use os botões **Baixar projeto** e **Baixar HTML** no cabeçalho, sem depender de artefatos desta conversa. Os endereços públicos são:
+
+- https://let-me-solo-automation.github.io/Controle_Dividas/downloads/Marks-projeto.zip
+- https://let-me-solo-automation.github.io/Controle_Dividas/Marks-Simulador.html
+
+A compilação gera o ZIP completo, incluindo o configurador Firebase para Mac, os fontes e o HTML offline. Dados de navegação, backups pessoais, credenciais, node_modules e pastas de execução não entram no pacote. O ícone da marca foi aproximado a partir da imagem fornecida. As chaves de armazenamento anteriores são mantidas para preservar seus registros locais.

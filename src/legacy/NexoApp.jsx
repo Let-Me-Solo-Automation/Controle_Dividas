@@ -1,3 +1,4 @@
+import { BrandIcon } from '../components/BrandIcon';
 import { FirebaseConnection, FirebaseSectionShare } from '../components/FirebaseSharing';
 import { publishSection as publishFirebaseSection, revokeShare as revokeFirebaseShare } from '../sharing/firebase';
 // Recovered from the supplied simulator. Financial rules, cents, validation and data schema are preserved.
@@ -1682,7 +1683,7 @@ function cn(props){return React.createElement(FluidNavigation,props);}
     let t = URL.createObjectURL(new Blob([a], { type: "application/json" })),
       l = document.createElement("a");
     ((l.href = t),
-      (l.download = "Nexo-backup.json"),
+      (l.download = "Marks-backup.json"),
       l.click(),
       setTimeout(() => URL.revokeObjectURL(t), 1e3));
   }
@@ -2127,7 +2128,7 @@ function Hg(props){return React.createElement(AppModal,props);}
       recurring: "Recorr\xEAncias",
       agenda: "Minha agenda",
       settings: "Seu jeito de usar",
-      help: "Sobre o Nexo",
+      help: "Sobre o Marks",
     },
     Fg = [
       "Alimenta\xE7\xE3o",
@@ -5046,8 +5047,8 @@ function Hg(props){return React.createElement(AppModal,props);}
         r.default.createElement(
           "div",
           { className: "brand-large" },
-          r.default.createElement("span", null, "N"),
-          r.default.createElement("h1", null, "Nexo"),
+          React.createElement(BrandIcon,{className:'brand-about-icon'}),
+          r.default.createElement("h1", null, "Marks"),
           r.default.createElement("p", null, "Seu dinheiro, com clareza."),
         ),
         r.default.createElement(
@@ -6047,15 +6048,10 @@ function Hg(props){return React.createElement(AppModal,props);}
           {
             className: "brand",
             onClick: () => ke("dashboard"),
-            "aria-label": "Nexo in\xEDcio",
+            "aria-label": "Marks in\xEDcio",
           },
-          r.default.createElement(
-            "span",
-            { className: "brand-icon" },
-            "n",
-            r.default.createElement("span", null),
-          ),
-          r.default.createElement("span", null, "nexo"),
+          React.createElement(BrandIcon,{className:'brand-icon'}),
+          r.default.createElement("span", null, "Marks"),
         ),
         r.default.createElement(
           "div",
@@ -6240,7 +6236,7 @@ function Hg(props){return React.createElement(AppModal,props);}
           Hg,
           {
             key: o.type,
-            title: o.type === "info" ? o.title : rh[o.type] || "Nexo",
+            title: o.type === "info" ? o.title : rh[o.type] || "Marks",
             onClose: () => Aa(),
           },
           uh(),

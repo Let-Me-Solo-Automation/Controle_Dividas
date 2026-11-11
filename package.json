@@ -1,5 +1,5 @@
 {
-  "name": "nexo-simulador",
+  "name": "marks-simulador",
   "private": true,
   "version": "2.0.0",
   "type": "module",
@@ -15,6 +15,7 @@
   "dependencies": {
     "@hugeicons/core-free-icons": "^4.4.0",
     "@hugeicons/react": "^1.1.10",
+    "fflate": "^0.8.3",
     "firebase": "^13.2.0",
     "lucide-react": "^1.72.0",
     "motion": "^14.12.0",

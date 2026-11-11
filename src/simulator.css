@@ -871,3 +871,33 @@ select:focus-visible {
     width: 100%;
   }
 }
+
+.sim-header-right {
+  gap: 10px;
+}
+.sim-header-label {
+  white-space: nowrap;
+}
+.sim-wordmark {
+  letter-spacing: -1px;
+}
+.sim-small-button {
+  white-space: nowrap;
+}
+.sim-small-button[download] {
+  text-decoration: none;
+}
+@media (max-width: 700px) {
+  .sim-header-right {
+    gap: 7px;
+  }
+  .sim-small-button {
+    width: 36px;
+    height: 38px;
+    padding: 0;
+    justify-content: center;
+  }
+  .sim-small-button > span {
+    display: none;
+  }
+}

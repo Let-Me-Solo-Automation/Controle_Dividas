@@ -1,3 +1,5 @@
+import { BrandIcon } from "../components/BrandIcon";
+import { installBrandIcon } from "../brand";
 import { useEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import {
@@ -12,6 +14,7 @@ import {
 import { watchShare, userError } from "./firebase";
 import { schedule, type SharedSection } from "./model";
 import "./viewer.css";
+installBrandIcon();
 const currency = (value: number) =>
   (value / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 const formatDate = (value: string) =>
@@ -96,11 +99,9 @@ function Viewer() {
   return (
     <div className="viewer-page">
       <header className="viewer-header">
-        <a href="./" aria-label="Nexo início">
-          <span className="viewer-logo">
-            n<span />
-          </span>
-          <strong>nexo</strong>
+        <a href="./" aria-label="Marks início">
+          <BrandIcon className="viewer-logo" />
+          <strong>Marks</strong>
         </a>
         <span>
           <ShieldCheck size={15} />
@@ -234,7 +235,7 @@ function Viewer() {
         )}
       </main>
       <footer className="viewer-footer">
-        NEXO · SEU DINHEIRO, COM CLAREZA
+        MARKS · SEU DINHEIRO, COM CLAREZA
       </footer>
     </div>
   );

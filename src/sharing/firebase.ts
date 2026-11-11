@@ -38,7 +38,7 @@ function baseUrl() {
   const base = new URL(deployment?.baseUrl ?? window.location.href);
   if (!["https:", "http:"].includes(base.protocol))
     throw Error(
-      "Para compartilhar, abra a versão online do Nexo. Seus registros locais continuam disponíveis offline.",
+      "Para compartilhar, abra a versão online do Marks. Seus registros locais continuam disponíveis offline.",
     );
   return new URL("./", base);
 }

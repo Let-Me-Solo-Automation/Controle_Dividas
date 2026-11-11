@@ -19,7 +19,7 @@ test("owner publishes one section, recipient sees payment updates, and revocatio
 }) => {
   await configure(context);
   await page.goto("http://127.0.0.1:4180/");
-  const f = page.frameLocator('iframe[title="Nexo — aplicativo interativo"]');
+  const f = page.frameLocator('iframe[title="Marks — aplicativo interativo"]');
   await f.getByRole("button", { name: "Expandir navegação" }).click();
   await f
     .getByRole("navigation")

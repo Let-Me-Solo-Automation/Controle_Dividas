@@ -1,3 +1,5 @@
+import { BrandIcon } from "./components/BrandIcon";
+import { installBrandIcon, projectDownloadUrl, htmlDownloadUrl } from "./brand";
 import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { createRoot } from "react-dom/client";
 import { AnimatePresence, MotionConfig, motion } from "motion/react";
@@ -22,6 +24,7 @@ import domain from "./legacy/domain";
 import appDocument from "./generated/app.html?raw";
 import "./generated/simulator.css";
 
+installBrandIcon();
 const KEY = "nexo-simulator-v1";
 function initialData() {
   try {
@@ -175,7 +178,7 @@ function Simulator() {
     const url = URL.createObjectURL(blob),
       a = document.createElement("a");
     a.href = url;
-    a.download = "Nexo-backup.json";
+    a.download = "Marks-backup.json";
     a.click();
     setTimeout(() => URL.revokeObjectURL(url), 500);
   }
@@ -191,11 +194,9 @@ function Simulator() {
               setVersion((x) => x + 1);
             }}
           >
-            <span className="sim-logo">
-              n<span />
-            </span>
+            <BrandIcon className="sim-logo" />
             <span className="sim-wordmark">
-              nexo
+              Marks
               <span className="sim-wordmark-divider" />
               <span className="sim-header-label">Design Studio</span>
             </span>
@@ -205,7 +206,33 @@ function Simulator() {
               <span />
               Protótipo interativo
             </span>
-            <button type="button" className="sim-small-button" onClick={backup}>
+            <a
+              href={projectDownloadUrl}
+              download="Marks-projeto.zip"
+              className="sim-small-button"
+              aria-label="Baixar projeto Marks"
+              title="Baixar projeto completo"
+            >
+              <FolderDown size={16} />
+              <span>Baixar projeto</span>
+            </a>
+            <a
+              href={htmlDownloadUrl}
+              download="Marks-Simulador.html"
+              className="sim-small-button"
+              aria-label="Baixar HTML Marks"
+              title="Baixar HTML offline"
+            >
+              <ArrowUpRight size={16} />
+              <span>Baixar HTML</span>
+            </a>
+            <button
+              type="button"
+              className="sim-small-button"
+              onClick={backup}
+              aria-label="Exportar dados"
+              title="Exportar dados"
+            >
               <FolderDown size={16} />
               <span>Exportar dados</span>
             </button>
@@ -220,7 +247,7 @@ function Simulator() {
             <h1>
               Uma nova forma
               <br />
-              de sentir o Nexo<span>.</span>
+              de sentir o Marks<span>.</span>
             </h1>
             <p className="sim-intro">
               Explore os detalhes.
@@ -446,7 +473,7 @@ function Simulator() {
                     <iframe
                       ref={frame}
                       key={version}
-                      title="Nexo — aplicativo interativo"
+                      title="Marks — aplicativo interativo"
                       srcDoc={appDocument}
                       allow="clipboard-write"
                     />
@@ -518,7 +545,7 @@ function Simulator() {
           </aside>
         </div>
         <footer className="sim-footer">
-          <span>NEXO · SEU DINHEIRO, COM CLAREZA</span>
+          <span>MARKS · SEU DINHEIRO, COM CLAREZA</span>
           <span>React · Tailwind CSS · Motion</span>
         </footer>
         <AnimatePresence>

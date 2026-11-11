@@ -2,7 +2,7 @@
 set -e
 NEXO_PROJECT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd -P)"
 cd "$NEXO_PROJECT"
-printf '\nNexo · preparando o ambiente de desenvolvimento\n\n'
+printf '\nMarks · preparando o ambiente de desenvolvimento\n\n'
 NEXO_USE_LOCAL=1
 if command -v node >/dev/null 2>&1; then
   if node -e 'const [major,minor]=process.versions.node.split(".").map(Number); process.exit(major>22||(major===22&&minor>=12)?0:1)'; then

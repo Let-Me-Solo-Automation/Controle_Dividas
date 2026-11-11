@@ -27,14 +27,14 @@ function firebase(args, json = false) {
   }
 }
 console.log(
-  "\nNexo · configurar Firebase no plano gratuito Spark\nNão vincularemos cartão, faturamento, Cloud Functions ou Storage.\n",
+  "\nMarks · configurar Firebase no plano gratuito Spark\nNão vincularemos cartão, faturamento, Cloud Functions ou Storage.\n",
 );
 firebase(["login", "--reauth"]);
 let state;
 try {
   state = JSON.parse(await readFile(".nexo-setup.json", "utf8"));
 } catch {
-  state = { projectId: "nexo-simulador-" + randomBytes(4).toString("hex") };
+  state = { projectId: "marks-simulador-" + randomBytes(4).toString("hex") };
   await writeFile(".nexo-setup.json", JSON.stringify(state, null, 2));
 }
 const projectId = state.projectId;
@@ -44,7 +44,7 @@ if (!state.created) {
       "projects:create",
       projectId,
       "--display-name",
-      "Nexo Simulador",
+      "Marks Simulador",
       "--non-interactive",
     ],
     true,
@@ -132,10 +132,10 @@ if (!(databases.databases ?? []).some((d) => d.name.endsWith("/(default)")))
   ]);
 const firebaseBase = `https://firebase.googleapis.com/v1beta1/projects/${projectId}`;
 const apps = await request(firebaseBase + "/webApps");
-let app = apps.apps?.find((a) => a.displayName === "Nexo Web");
+let app = apps.apps?.find((a) => ["Marks Web","Nexo Web"].includes(a.displayName));
 if (!app) {
   const creation = await request(firebaseBase + "/webApps", "POST", {
-    displayName: "Nexo Web",
+    displayName: "Marks Web",
   });
   app = creation.done
     ? creation.response

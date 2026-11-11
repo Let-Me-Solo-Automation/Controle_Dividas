@@ -12,7 +12,7 @@ const vite = spawn(
     "--host",
     "127.0.0.1",
     "--open",
-    "/Nexo-Simulador_1.html",
+    "/Marks-Simulador.html",
   ],
   { stdio: "inherit" },
 );

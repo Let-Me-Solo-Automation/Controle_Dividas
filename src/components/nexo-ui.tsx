@@ -738,7 +738,7 @@ export function CommandPalette({
       <motion.button
         className="icon-button"
         type="button"
-        aria-label="Buscar no Nexo"
+        aria-label="Buscar no Marks"
         title="Buscar (⌘K)"
         onClick={() => setOpen(true)}
         whileTap={{ scale: 0.9 }}
@@ -747,7 +747,7 @@ export function CommandPalette({
       </motion.button>
       <AnimatePresence>
         {open && (
-          <AppModal title="Buscar no Nexo" onClose={() => setOpen(false)}>
+          <AppModal title="Buscar no Marks" onClose={() => setOpen(false)}>
             <div className="command-search flex items-center gap-3 rounded-2xl p-3">
               <Search size={20} />
               <input

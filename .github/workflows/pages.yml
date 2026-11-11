@@ -1,4 +1,4 @@
-name: Publicar Nexo no GitHub Pages
+name: Publicar Marks no GitHub Pages
 on:
   push:
     branches: [main]

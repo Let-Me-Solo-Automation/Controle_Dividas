@@ -2,7 +2,7 @@ import { test, expect, type Page } from "@playwright/test";
 import { pathToFileURL } from "node:url";
 const url = pathToFileURL(process.cwd() + "/dist/Nexo-Simulador_1.html").href;
 const app = (page: Page) =>
-  page.frameLocator('iframe[title="Nexo — aplicativo interativo"]');
+  page.frameLocator('iframe[title="Marks — aplicativo interativo"]');
 async function open(page: Page) {
   await page.goto(url);
   await expect(
@@ -134,7 +134,7 @@ test("search works by keyboard and all themes render without runtime errors", as
   page.on("pageerror", (e) => errors.push(e.message));
   await open(page);
   const f = app(page);
-  await f.getByRole("button", { name: "Buscar no Nexo", exact: true }).click();
+  await f.getByRole("button", { name: "Buscar no Marks", exact: true }).click();
   await f.getByRole("combobox").fill("Contas e reserva");
   await f.getByRole("combobox").press("Enter");
   await expect(
@@ -339,7 +339,7 @@ test("search typing has no green rectangle around the input", async ({
 }) => {
   await open(page);
   const f = app(page);
-  await f.getByRole("button", { name: "Buscar no Nexo", exact: true }).click();
+  await f.getByRole("button", { name: "Buscar no Marks", exact: true }).click();
   const input = f.getByRole("combobox");
   await input.fill("meta");
   await expect(f.locator(".nexo-mini-dock")).toBeHidden();
