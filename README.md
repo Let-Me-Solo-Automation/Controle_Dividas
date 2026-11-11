@@ -4,13 +4,13 @@ Reformulação do `Nexo-Simulador_1.html` enviado, com React, Tailwind CSS 4 e M
 
 ## Ativação na sua conta
 
-O site está publicado em https://let-me-solo-automation.github.io/Controle_Dividas/ . Falta autorizar e ativar o Firebase conforme `CONFIGURAR-ONLINE.md`. O repositório usado é `Let-Me-Solo-Automation/Controle_Dividas`.
+O site está publicado em https://let-me-solo-automation.github.io/Controle_Dividas/ e conectado ao Firebase `marks-79823`. Authentication e Firestore estão ativos; publicação, atualização e revogação foram validadas no site real. O repositório usado é `Let-Me-Solo-Automation/Controle_Dividas`.
 
 ## Site e compartilhamento gratuito
 
 O projeto está preparado para GitHub Pages + Firebase Spark, sem faturamento. O site e o código ficam no GitHub; somente os acordos escolhidos são enviados ao Firestore. O arquivo `FIREBASE-GRATUITO.md` descreve a ativação pelo `Configurar-Firebase.command` e as cotas gratuitas.
 
-A conexão Firebase depende da autorização Google do proprietário e da publicação da configuração pública real. Até essa etapa, o app informa que o compartilhamento ainda não foi ativado.
+Para compartilhar, abra uma seção no site, escolha **Compartilhar seção**, crie seu acesso de e-mail e senha e publique o link. O destinatário consulta o link sem criar conta. A configuração pública real já está incluída; não execute o configurador para criar outro projeto.
 
 ## Abrir a prévia agora
 
@@ -95,7 +95,7 @@ A `ContextualAIBar` está disponível no laboratório como barra de busca demons
 
 A arquitetura proposta para compartilhar seções pelo Google Drive está em `GOOGLE-DRIVE.md`. Essa integração ainda não está conectada.
 
-Este projeto valida a interface web. Ele não gera APK. Biometria/bloqueio, vibração e notificações dependem da ponte nativa Android. O compartilhamento usa o Firebase, após ativação. Os dados da seção são enviados ao publicar e sincronizados após alterações; dados locais sem compartilhamento não são enviados. O restante do aplicativo continua local.
+Este projeto valida a interface web. Ele não gera APK. Biometria/bloqueio, vibração e notificações dependem da ponte nativa Android. O compartilhamento usa o Firebase `marks-79823`. Os dados da seção são enviados ao publicar e sincronizados após alterações; dados locais sem compartilhamento não são enviados. O restante do aplicativo continua local.
 
 ## Dependências e licenças
 

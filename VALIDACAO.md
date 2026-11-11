@@ -34,16 +34,16 @@ Os 11 testes foram executados e aprovados após a implementação desses comport
 - Firestore Rules no emulador: quatro testes aprovados para publicação do proprietário, leitura por link, bloqueio de listagem, bloqueio de outros usuários, prazo e revogação.
 - Teste completo em navegador com Auth + Firestore emulados: proprietário cria acesso, publica seção, destinatário consulta, pagamento parcial atualiza o saldo e revogação remove o acesso. Aprovado.
 - Projeção da seção testada para excluir contas bancárias, comprovantes, pessoa, anotações privadas e outras seções. Cálculos de parcelas, centavos e fim do mês aprovados.
-- Firebase de produção não provisionado neste ambiente: depende do login Google do proprietário. O configurador foi revisado e validado sintaticamente; suas chamadas administrativas ainda não foram executadas na conta do proprietário.
+- Firebase de produção `marks-79823` provisionado pelo proprietário no console e conectado ao site. O configurador foi revisado sintaticamente; suas chamadas administrativas não foram executadas nesta conta.
 
-- GitHub: código enviado ao repositório público Controle_Dividas, preservando o README anterior em original/GitHub-README-original.md. Compilação no GitHub Actions aprovada; o deploy aguarda habilitar Pages como GitHub Actions. A API de ativação retornou 403 para a integração, sem alterar o acesso do repositório.
+- GitHub: código enviado ao repositório público Controle_Dividas, preservando o README anterior em original/GitHub-README-original.md. Compilação e publicação no GitHub Actions aprovadas após o proprietário habilitar Pages como GitHub Actions.
 - Uma execução do teste mobile expirou durante a execução simultânea com emuladores; a repetição isolada passou. Os outros dez testes de interface passaram nessa execução.
 
 - Persistência de acesso Firebase após recarregar validada no teste de ponta a ponta; a ponte do simulador intercepta somente a chave financeira e preserva o armazenamento do SDK de autenticação.
 
 ## Publicação do GitHub Pages
 
-Em 11/11/2026, depois da ativação do Pages pelo proprietário, o workflow 43019912928 concluiu a publicação com sucesso. HTTPS habilitado. O Firebase de produção continua sem configuração até a autorização Google do proprietário.
+Em 11/11/2026, depois da ativação do Pages pelo proprietário, o workflow 43019912928 concluiu a publicação com sucesso. HTTPS habilitado. O Firebase `marks-79823` foi conectado posteriormente e validado conforme os resultados abaixo.
 
 ## Identidade Marks e downloads
 
@@ -58,3 +58,18 @@ Na atualização Marks: TypeScript e build aprovados; cinco testes de interface 
 O efeito de entrada foi restaurado com blur de 10 px, opacidade e deslocamento; cartões revelam com blur de 7 px ao entrar na área visível. A intensidade configurada é respeitada, assim como movimento reduzido e a desativação de animações. Testes de revelação, estado final nítido, rolagem, preferência reduzida, retorno do calendário e busca aprovados.
 
 Tutorial pelo navegador disponível em tutorial-firebase.html e TUTORIAL-FIREBASE.md. A compilação incorpora as regras reais do Firestore na página, para copiar sem divergência do arquivo fonte, e inclui o tutorial no ZIP.
+
+## Firebase de produção — 11/11/2026
+
+Teste com Chromium no endereço público do GitHub Pages e configuração real `marks-79823`, sem emuladores:
+
+- Criação de acesso por e-mail/senha: aprovada.
+- Publicação da seção de demonstração: aprovada.
+- Sessão do proprietário preservada após recarregar: aprovada.
+- Destinatário sem login visualiza somente a seção escolhida: aprovado.
+- Registro de pagamento de R$ 50,00 atualiza o saldo acompanhado de R$ 920,00 para R$ 870,00: aprovado.
+- Revogação bloqueia o link e remove os dados da tela do destinatário: aprovada.
+- Nenhum erro JavaScript observado durante o fluxo.
+- Domínio `let-me-solo-automation.github.io` presente nos autorizados.
+
+A revogação removeu o documento do teste. A limpeza posterior da conta temporária falhou; excluir no console Authentication o usuário com e-mail `marks-validation-…@example.invalid`. Nenhuma senha ou token do teste foi incluído no repositório, no pacote ou nos logs. O plano de faturamento não foi consultado com credenciais administrativas; manter Spark conforme a configuração solicitada ao proprietário.

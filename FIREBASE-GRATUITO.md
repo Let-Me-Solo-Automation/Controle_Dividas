@@ -6,7 +6,11 @@ O site e o código usam um repositório público no GitHub Pages. Os acordos com
 
 Para configurar pelo console do Firebase, sem Terminal nem instalação, siga `TUTORIAL-FIREBASE.md` ou abra https://let-me-solo-automation.github.io/Controle_Dividas/tutorial-firebase.html . Esse guia inclui as regras prontas para copiar.
 
-## Ativar a conta Firebase pelo configurador do Mac
+## Ambiente atual
+
+O site está conectado ao projeto `marks-79823`. O proprietário ativou Authentication, Firestore, regras e domínio autorizado pelo console. O teste no site real aprovou publicação, atualização e revogação. Para usar, abra uma seção no site e escolha Compartilhar seção. Não execute o configurador para criar outro projeto.
+
+## Alternativa: criar outro ambiente pelo configurador do Mac
 
 1. Extraia o ZIP.
 2. Execute `Configurar-Firebase.command`. Ele prepara o Node e as dependências automaticamente. Autorize o login Google no navegador que será aberto.
@@ -39,7 +43,7 @@ A configuração pública do Firebase pode estar no site/repositório; a seguran
 
 ## Limites desta entrega
 
-O Firebase de produção só estará ativo após a autorização Google e a publicação da configuração real. Até lá, o app informa que a conexão ainda não foi ativada e continua funcionando localmente. Os testes com emuladores não substituem o teste final na conta de produção.
+O Firebase de produção `marks-79823` já está conectado e foi validado no site real. O configurador administrativo do Mac foi revisado, mas não foi utilizado para provisionar esse projeto: o proprietário fez a configuração pelo console.
 
 A implementação é web. O APK Android e o armazenamento nativo de credenciais precisam ser implementados na etapa do aplicativo.
 
