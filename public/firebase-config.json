@@ -1,1 +1,9 @@
-{"configured":false}
+{
+  "configured": true,
+  "apiKey": "AIzaSyBFglCV_3ZDVunqTvGkAelfECO0_RISeCs",
+  "authDomain": "marks-79823.firebaseapp.com",
+  "projectId": "marks-79823",
+  "storageBucket": "marks-79823.firebasestorage.app",
+  "messagingSenderId": "789207068697",
+  "appId": "1:789207068697:web:f42c1c44b73998b5fcba88"
+}

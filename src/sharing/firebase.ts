@@ -191,6 +191,8 @@ export function userError(error: unknown) {
     return "Acesso recusado. Entre na conta que publicou esta seção.";
   if (code === "resource-exhausted")
     return "O limite gratuito foi atingido. Tente novamente quando a cota for renovada.";
+  if (code === "auth/configuration-not-found")
+    return "Ative o Authentication e o método E-mail/senha no console do seu projeto Firebase.";
   if (code === "auth/operation-not-allowed")
     return "O proprietário ainda precisa ativar o acesso por e-mail no Firebase.";
   return error instanceof Error

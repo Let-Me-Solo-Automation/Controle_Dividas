@@ -22,7 +22,8 @@ export function FirebaseConnection({
     [busy, setBusy] = useState(false),
     [checking, setChecking] = useState(true),
     [message, setMessage] = useState(""),
-    [unavailable, setUnavailable] = useState(false);
+    [unavailable, setUnavailable] = useState(false),
+    [needsSetup, setNeedsSetup] = useState(false);
   useEffect(() => {
     let alive = true;
     ownerStatus()
@@ -53,10 +54,16 @@ export function FirebaseConnection({
         throw Error("Use uma senha com pelo menos 8 caracteres.");
       const email = await login(address, password, register);
       setEmail(email);
+      setNeedsSetup(false);
       setPassword("");
       onReady?.(email);
     } catch (e) {
       setMessage(userError(e));
+      setNeedsSetup(
+        ["auth/configuration-not-found", "auth/operation-not-allowed"].includes(
+          (e as { code?: string })?.code ?? "",
+        ),
+      );
     } finally {
       setBusy(false);
     }
@@ -180,7 +187,7 @@ export function FirebaseConnection({
           )}
         </form>
       ) : null}
-      {unavailable && (
+      {(unavailable || needsSetup) && (
         <a
           href={firebaseTutorialUrl}
           target="_blank"
