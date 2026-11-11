@@ -73,3 +73,28 @@ Teste com Chromium no endereço público do GitHub Pages e configuração real `
 - Domínio `let-me-solo-automation.github.io` presente nos autorizados.
 
 A revogação removeu o documento do teste. A limpeza posterior da conta temporária falhou; excluir no console Authentication o usuário com e-mail `marks-validation-…@example.invalid`. Nenhuma senha ou token do teste foi incluído no repositório, no pacote ou nos logs. O plano de faturamento não foi consultado com credenciais administrativas; manter Spark conforme a configuração solicitada ao proprietário.
+
+## Links sem vencimento e prévia no app
+
+Implementação validada em Auth + Firestore emulados, com seis testes de regras e um fluxo completo em Chromium:
+
+- Novos links e publicações atualizadas usam `expiresAt: null`. Links legados permanecem compatíveis até serem atualizados.
+- A tela de compartilhamento mostra o endereço e abre a prévia dentro do app sob demanda.
+- Revogação é uma ação discreta e remove os dados publicados, mantendo um pequeno marcador de bloqueio. Regras impedem que uma aba antiga ou backup reative o mesmo endereço.
+- Compartilhar novamente gera outro token; o link revogado continua bloqueado.
+- O destinatário não vê dados em cache sem confirmação do servidor. Ao ficar offline, a tela remove os dados e solicita conexão; ao reconectar, o acesso é revalidado.
+- Proprietários diferentes e visitantes não podem modificar ou revogar a publicação; a listagem continua bloqueada.
+
+A ativação em produção desta versão exige publicar as novas regras de `firebase/firestore.rules` no console do projeto `marks-79823`. A configuração pública do SDK não concede permissão administrativa para alterar regras. O tutorial publicado incorpora o arquivo exato e oferece o botão Copiar regras. Esta atualização não foi testada em produção antes dessa publicação pelo proprietário.
+
+## Família Apple e acessibilidade
+
+- TypeScript e compilação aprovados.
+- Catálogo único para app e Studio: os 15 estilos originais mais Apple Claro, Escuro e Sistema.
+- Dois novos testes aprovados para seguir mudanças do SO sem reiniciar iframe/tela, persistir escolha e preservar seções, lançamentos, contas, entregas e metas; escolha manual permanece independente do SO.
+- Teste de cores semânticas aprovou pelo menos 4,5:1 para texto principal/secundário sobre fundo/superfície e texto sobre a ação preenchida em ambas as aparências. Não substitui uma auditoria de todos os fundos e estados renderizados.
+- Os 17 testes de interface passaram: 13 na execução completa, três testes de tema na repetição após corrigir a origem herdada de mensagens no iframe srcdoc, e um teste adicional de materiais e acessibilidade.
+- A família Apple mantém a revelação com blur e oferece fallback opaco, redução de transparência, contraste aumentado, forced-colors e alvos de toque de 44 px.
+- Não foi realizada medição em um Mac/iPhone/Android físico; verificação automatizada usa Chromium em Linux.
+
+A verificação dos materiais também encontrou e corrigiu a ordem dos prefixos CSS: o minificador descartava `backdrop-filter` quando a propriedade prefixada vinha por último. Com a ordem corrigida, o teste confirma vidro ativo normalmente e superfícies opacas ao reduzir transparência, aumentar contraste ou ativar cores forçadas.

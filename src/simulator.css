@@ -919,3 +919,70 @@ select:focus-visible {
     padding: 9px 0;
   }
 }
+
+/* The Studio follows the selected Apple appearance, outside the preview too. */
+html[data-theme-family="apple"] { --control-line: #767680; --scrim: #00000038; }
+html[data-theme-family="apple"][data-dark="true"] { --control-line: #8e8e93; --scrim: #00000080; }
+html[data-theme-family="apple"] .simulator { background: var(--bg); color: var(--text); }
+html[data-theme-family="apple"] .sim-header {
+  background: var(--surface);
+  border-color: var(--line);
+}
+html[data-theme-family="apple"] :is(.sim-small-button, .sim-select-wrap, .sim-confirm, .sim-notice) {
+  background: var(--surface);
+  color: var(--text);
+  border-color: var(--control-line);
+}
+html[data-theme-family="apple"] :is(.sim-section, .sim-guidelines, .sim-phone) { border-color: var(--line); }
+html[data-theme-family="apple"] :is(.sim-header-label, .sim-prototype-badge, .sim-panel-title, .sim-intro, .sim-select-label, .sim-select-wrap > svg, .sim-appearance-options button, .sim-view-options button, .sim-inline-actions button, .sim-empty-button, .sim-storage, .sim-local-note, .sim-stage-label, .sim-stage-size, .sim-stage-bottom, .sim-notes-heading, .sim-notes-heading svg, .sim-note-number, .sim-note p, .sim-note strong, .sim-guidelines > span, .sim-preview-note, .sim-footer, .sim-confirm p) {
+  color: var(--muted);
+}
+html[data-theme-family="apple"] :is(.sim-controls h1 > span, .sim-guidelines strong, .sim-firebase-tutorial) { color: var(--accent); }
+html[data-theme-family="apple"] .sim-select-wrap select { color: var(--text); }
+html[data-theme-family="apple"] :is(.sim-version, .sim-mini-tabs, .sim-confirm button) {
+  background: var(--bg);
+  color: var(--text);
+  border-color: var(--line);
+}
+html[data-theme-family="apple"] :is(.sim-appearance-options button[aria-pressed="true"], .sim-view-options button[aria-pressed="true"]) {
+  background: var(--surface);
+  color: var(--accent);
+  border-color: var(--control-line);
+}
+html[data-theme-family="apple"] :is(.sim-demo-button, .sim-confirm button:last-child) {
+  background: var(--accent);
+  color: var(--accent-text);
+  border-color: var(--accent);
+}
+html[data-theme-family="apple"] .sim-stage {
+  background-color: var(--surface);
+  background-image: radial-gradient(var(--line) 1px, transparent 1px);
+  border-color: var(--line);
+}
+html[data-theme-family="apple"] .sim-phone {
+  background: linear-gradient(110deg, #252527, #8e8e93 40%, #29292c);
+  border-color: #636366;
+  box-shadow: 0 20px 35px #00000024, 0 3px 8px #00000025;
+}
+html[data-theme-family="apple"] .sim-camera {
+  background: #111113;
+  box-shadow: inset 0 0 0 2px #3a3a3c;
+}
+html[data-theme-family="apple"] :is(.sim-stage-label > span, .sim-live-dot, .sim-prototype-badge > span, .sim-storage > span) { background: var(--positive); }
+html[data-theme-family="apple"] :is(.sim-wordmark-divider, .sim-mini-tabs span:nth-child(2), .sim-mini-tabs span:nth-child(3)) { background: var(--line); }
+html[data-theme-family="apple"] .sim-mini-tabs span:first-child { background: var(--surface); }
+html[data-theme-family="apple"] .sim-confirm-backdrop { background: var(--scrim); backdrop-filter: none; }
+html[data-theme-family="apple"] :is(.sim-small-button, .sim-appearance-options button, .sim-view-options button, .sim-inline-actions button, .sim-empty-button, .sim-demo-button, .sim-firebase-tutorial, .sim-notice > button) { min-height: 44px; }
+html[data-theme-family="apple"] .sim-notice > button { min-width: 44px; }
+html[data-theme-family="apple"] .sim-appearance-options { flex-wrap: wrap; }
+html[data-theme-family="apple"] .sim-appearance-options button { gap: 4px; padding: 5px; }
+html[data-theme-family="apple"] :is(.sim-intro, .sim-note p, .sim-local-note p, .sim-preview-note p) { font-size: 12px; }
+html[data-theme-family="apple"] :is(.sim-select-label, .sim-panel-title, .sim-footer, .sim-storage, .sim-stage-label, .sim-stage-size, .sim-stage-bottom, .sim-firebase-tutorial) { font-size: 10px; }
+html[data-theme-family="apple"] :is(button, a, select):focus-visible { outline-color: var(--accent); }
+@media (forced-colors: active) {
+  html[data-theme-family="apple"] :is(.sim-header, .sim-stage, .sim-confirm, .sim-notice, .simulator) {
+    background: Canvas;
+    color: CanvasText;
+    border-color: CanvasText;
+  }
+}

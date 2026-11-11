@@ -349,3 +349,73 @@ html body .brand-large > .marks-brand-icon {
   padding: 0;
   font-size: 0;
 }
+
+/* Public links follow the visitor's device; owner preferences are never shared. */
+:root {
+  color-scheme: light;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --viewer-bg: #f2f2f7;
+  --viewer-surface: #ffffff;
+  --viewer-text: #1c1c1e;
+  --viewer-muted: #54545c;
+  --viewer-accent: #0066cc;
+  --viewer-accent-text: #ffffff;
+  --viewer-line: #d1d1d6;
+  --viewer-control: #767680;
+  --viewer-positive: #18703c;
+  color: var(--viewer-text);
+  background: var(--viewer-bg);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --viewer-bg: #000000;
+    --viewer-surface: #1c1c1e;
+    --viewer-text: #f5f5f7;
+    --viewer-muted: #b8b8c0;
+    --viewer-accent: #409cff;
+    --viewer-accent-text: #001d3d;
+    --viewer-line: #48484a;
+    --viewer-control: #8e8e93;
+    --viewer-positive: #73d49a;
+  }
+}
+.viewer-page { background: var(--viewer-bg); color: var(--viewer-text); }
+.viewer-header { border-color: var(--viewer-line); }
+:is(.viewer-summary, .viewer-card) {
+  background: var(--viewer-surface);
+  color: var(--viewer-text);
+  border: 1px solid var(--viewer-line);
+  box-shadow: 0 4px 18px #00000008;
+}
+:is(.viewer-header > span, .viewer-title > span, .viewer-title p, .viewer-summary > span, .viewer-summary > p, .viewer-card h2 > small, .viewer-installment small, .viewer-updated, .viewer-note, .viewer-footer, .viewer-state p) {
+  color: var(--viewer-muted);
+}
+.viewer-number { background: var(--viewer-bg); color: var(--viewer-muted); }
+.viewer-number.paid { background: var(--viewer-surface); color: var(--viewer-positive); border: 1px solid currentColor; }
+.viewer-installment { border-color: var(--viewer-line); }
+.viewer-progress { background: var(--viewer-line); }
+.viewer-progress span { background: var(--viewer-accent); }
+.viewer-updated button {
+  background: var(--viewer-surface);
+  color: var(--viewer-accent);
+  border-color: var(--viewer-control);
+  min-width: 44px;
+  min-height: 44px;
+}
+.viewer-button { background: var(--viewer-accent); color: var(--viewer-accent-text); min-height: 44px; }
+.viewer-state > svg { color: var(--viewer-accent); }
+:is(button, a):focus-visible { outline-color: var(--viewer-accent); }
+:is(.viewer-title p, .viewer-card h2 > small, .viewer-installment small, .viewer-updated, .viewer-note) { font-size: 12px; }
+:is(.viewer-footer, .viewer-title > span) { font-size: 11px; }
+@media (prefers-contrast: more) {
+  :root { --viewer-muted: var(--viewer-text); --viewer-line: var(--viewer-control); }
+}
+@media (forced-colors: active) {
+  :is(.viewer-page, .viewer-header, .viewer-summary, .viewer-card, .viewer-number, .viewer-updated button, .viewer-button) {
+    background: Canvas;
+    color: CanvasText;
+    border-color: CanvasText;
+    box-shadow: none;
+  }
+}

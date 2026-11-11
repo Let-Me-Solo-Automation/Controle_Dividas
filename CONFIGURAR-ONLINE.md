@@ -10,7 +10,7 @@ Authentication por e-mail/senha, Firestore e domínio autorizado foram configura
 
 1. Abra o site, entre em **Seções** e escolha um acordo.
 2. Toque em **Compartilhar seção** e crie seu acesso de e-mail e senha, ou entre na conta que já criou no Marks.
-3. Escolha **Criar link por 30 dias** e envie o link ao destinatário.
+3. Escolha **Criar link sem vencimento** e envie o link ao destinatário.
 4. Registre os pagamentos no Marks: o acompanhamento é atualizado enquanto você estiver conectado e online.
 5. Use **Revogar acesso** para encerrar a consulta daquele link.
 
@@ -25,3 +25,9 @@ Em 11/11/2026, o teste no site real confirmou criação de acesso, publicação,
 Mantenha o projeto no plano **Spark**. A implementação usa Authentication por e-mail/senha e Firestore, sem Cloud Functions ou Cloud Storage. Dentro das cotas gratuitas, não exige faturamento; atingir as cotas pode interromper operações até a renovação.
 
 O tutorial https://let-me-solo-automation.github.io/Controle_Dividas/tutorial-firebase.html permanece disponível como referência, incluindo as regras de acesso. O configurador do Mac é uma alternativa para criar outro ambiente, não uma etapa necessária para o site já conectado.
+
+## Atualização para links sem vencimento
+
+Publique as regras atuais de `firebase/firestore.rules` na aba Regras do Firestore. O botão Copiar regras em https://let-me-solo-automation.github.io/Controle_Dividas/tutorial-firebase.html#regras contém a versão atualizada. Essa mudança exige acesso administrativo ao console do proprietário; o site não pode alterar regras usando a configuração pública do SDK.
+
+Depois de publicar, recarregue o Marks. Para links anteriores, use Atualizar publicação: o mesmo endereço passa a não vencer. O aplicativo identifica links antigos até a atualização concluir. Visualizar link abre uma prévia dentro do app; Revogar acesso bloqueia o endereço definitivamente. Um novo compartilhamento usa um novo link. O acompanhamento consulta o servidor e não mostra cópias locais sem confirmar o acesso.

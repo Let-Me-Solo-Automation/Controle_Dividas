@@ -22,6 +22,7 @@ export type FirebaseGrant = {
   writeKey: string;
   syncedAt: string;
   error: string;
+  persistent?: boolean;
 };
 export type SourceData = {
   sections: any[];

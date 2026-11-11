@@ -15,9 +15,9 @@ import {
   connectFirestoreEmulator,
   doc,
   setDoc,
-  deleteDoc,
+  updateDoc,
+  deleteField,
   serverTimestamp,
-  Timestamp,
   onSnapshot,
   type Firestore,
 } from "firebase/firestore";
@@ -124,7 +124,8 @@ export async function publishSection(
     ownerUid: auth.currentUser.uid,
     section: projectSection(data, id),
     updatedAt: serverTimestamp(),
-    expiresAt: Timestamp.fromMillis(Date.now() + 30 * 86400000),
+    expiresAt: null,
+    revoked: false,
   });
   const url = new URL("compartilhar.html", base);
   url.hash = "s=" + token;
@@ -136,17 +137,25 @@ export async function publishSection(
     writeKey: "",
     syncedAt: new Date().toISOString(),
     error: "",
+    persistent: true,
   };
 }
 export async function revokeShare(grant: FirebaseGrant) {
   const { db, auth } = await connectFirebase();
   if (!auth.currentUser)
     throw Error("Entre na conta que publicou a seção para revogar o acesso.");
-  await deleteDoc(doc(db, "shares", grant.id));
+  // Keep a small tombstone so a stale tab or restored backup cannot recreate
+  // this URL. The rules permanently block republishing a revoked token.
+  await updateDoc(doc(db, "shares", grant.id), {
+    revoked: true,
+    section: deleteField(),
+    expiresAt: null,
+    updatedAt: serverTimestamp(),
+  });
 }
 export async function watchShare(
   token: string,
-  onData: (section: SharedSection, expiresAt: number) => void,
+  onData: (section: SharedSection, expiresAt: number | null) => void,
   onError: (e: Error) => void,
 ) {
   if (!/^[a-f0-9]{48}$/.test(token))
@@ -154,14 +163,32 @@ export async function watchShare(
   const { db } = await connectFirebase();
   return onSnapshot(
     doc(db, "shares", token),
+    { includeMetadataChanges: true },
     (snapshot) => {
+      if (snapshot.metadata.fromCache) {
+        onError(
+          Error("Conecte-se à internet para confirmar o acesso a este link."),
+        );
+        return;
+      }
       if (!snapshot.exists()) {
         onError(Error("Este link foi revogado ou não existe."));
         return;
       }
       const value = snapshot.data();
-      const expires = value.expiresAt?.toMillis?.() ?? 0;
-      if (expires <= Date.now()) {
+      if (value.revoked === true || !value.section) {
+        onError(
+          Error(
+            "Este link foi revogado. Solicite um novo link ao proprietário.",
+          ),
+        );
+        return;
+      }
+      // Old links keep their deadline until the owner updates the publication.
+      // New and updated links explicitly store null to mean no expiry.
+      const expires =
+        value.expiresAt === null ? null : (value.expiresAt?.toMillis?.() ?? 0);
+      if (expires !== null && expires <= Date.now()) {
         onError(
           Error("Este link expirou. Solicite um novo link ao proprietário."),
         );

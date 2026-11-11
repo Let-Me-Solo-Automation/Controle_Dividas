@@ -26,7 +26,7 @@ A criação real do projeto exige que você aceite os termos da sua conta Google
 - Publique a seção e copie o link. Quem tiver o link consulta apenas esse acordo, sem alterar dados.
 - Novos pagamentos sincronizam quando o Marks está aberto, há internet e o proprietário continua conectado. Alterações offline ficam pendentes para a próxima conexão.
 - O destinatário acompanha atualizações enquanto a página está visível. A assinatura é suspensa com a aba oculta para economizar leituras.
-- Revogue o link para interromper novas consultas. Links expiram em 30 dias; atualizar a publicação renova o prazo. A expiração é aplicada pelas regras, sem TTL pago.
+- Revogue o link para interromper novas consultas. Links novos não vencem: continuam ativos até você revogar. A revogação remove os dados publicados e mantém somente o identificador bloqueado, para uma aba antiga não reativar o link. Compartilhar novamente cria outro endereço.
 
 Não publicamos contas bancárias, comprovantes, anotações privadas nem dados de outras seções. O link é uma credencial de leitura: pode ser encaminhado. Revogar não apaga cópias ou capturas já feitas pelo destinatário.
 

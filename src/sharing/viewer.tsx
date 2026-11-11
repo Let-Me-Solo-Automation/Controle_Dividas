@@ -27,8 +27,9 @@ function Viewer() {
   const token = new URLSearchParams(location.hash.slice(1)).get("s") ?? "";
   const [section, setSection] = useState<SharedSection | null>(null),
     [error, setError] = useState(""),
-    [expires, setExpires] = useState(0),
+    [expires, setExpires] = useState<number | null>(null),
     [active, setActive] = useState(!document.hidden),
+    [online, setOnline] = useState(navigator.onLine),
     [retry, setRetry] = useState(0);
   useEffect(() => {
     const visibility = () => setActive(!document.hidden);
@@ -36,7 +37,22 @@ function Viewer() {
     return () => document.removeEventListener("visibilitychange", visibility);
   }, []);
   useEffect(() => {
-    if (!active) return;
+    const connected = () => setOnline(true);
+    const disconnected = () => {
+      setOnline(false);
+      setSection(null);
+      setError("Conecte-se à internet para confirmar o acesso a este link.");
+    };
+    window.addEventListener("online", connected);
+    window.addEventListener("offline", disconnected);
+    if (!navigator.onLine) disconnected();
+    return () => {
+      window.removeEventListener("online", connected);
+      window.removeEventListener("offline", disconnected);
+    };
+  }, []);
+  useEffect(() => {
+    if (!active || !online) return;
     let cancelled = false;
     let stop: (() => void) | undefined;
     setSection(null);
@@ -68,7 +84,7 @@ function Viewer() {
       cancelled = true;
       stop?.();
     };
-  }, [token, active, retry]);
+  }, [token, active, online, retry]);
   useEffect(() => {
     if (!expires) return;
     const check = () => {
@@ -229,7 +245,10 @@ function Viewer() {
               <LockKeyhole size={16} />
               Esta página permite apenas consultar a seção. Os outros dados
               financeiros do proprietário permanecem privados. Quem tiver este
-              link poderá abri-lo até ele expirar ou ser revogado.
+              link poderá abri-lo{" "}
+              {expires
+                ? "até o prazo informado pelo proprietário ou a revogação."
+                : "até o proprietário revogar o acesso."}
             </p>
           </>
         )}

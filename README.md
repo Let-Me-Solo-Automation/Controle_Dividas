@@ -12,6 +12,16 @@ O projeto está preparado para GitHub Pages + Firebase Spark, sem faturamento. O
 
 Para compartilhar, abra uma seção no site, escolha **Compartilhar seção**, crie seu acesso de e-mail e senha e publique o link. O destinatário consulta o link sem criar conta. A configuração pública real já está incluída; não execute o configurador para criar outro projeto.
 
+## Apple Liquid Glass
+
+No seletor **Tema do aplicativo**, escolha **Apple Claro**, **Apple Escuro** ou **Apple Sistema**. As mesmas opções aparecem em Menu → Personalização. Sistema acompanha a aparência do aparelho sem reiniciar a tela; a escolha é persistida. Os 15 estilos anteriores continuam disponíveis.
+
+A implementação web usa superfícies sólidas para saldos/extratos e vidro nos controles, fontes do sistema, cores por aparência e alternativas opacas para reduzir transparência ou aumentar contraste. A moldura do simulador acompanha o tema; o destinatário do link vê a aparência de seu próprio aparelho. A entrada com blur foi preservada. Leia `APPLE-LIQUID-GLASS.md` para as referências Apple, decisões e limites da aproximação em CSS.
+
+## Links sem vencimento
+
+Publique as regras atualizadas do tutorial, conforme `CONFIGURAR-ONLINE.md`. Os links novos ficam ativos até Revogar acesso. A tela mostra o endereço, uma prévia dentro do app e a ação discreta de revogação. Compartilhar novamente cria um endereço diferente; o antigo permanece bloqueado, inclusive contra tentativas de atualização por abas antigas.
+
 ## Abrir a prévia agora
 
 Abra **`dist/Marks-Simulador.html`** no navegador. É um único HTML com JavaScript, CSS, ícones e fontes incorporados. A navegação e os registros funcionam offline; não precisa instalar nada para validar a interface.

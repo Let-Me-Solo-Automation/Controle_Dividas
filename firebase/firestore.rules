@@ -2,13 +2,17 @@ rules_version = '2';
 service cloud.firestore {
  match /databases/{database}/documents {
   function owner() { return request.auth != null && request.auth.uid == resource.data.ownerUid; }
+  function revoked() { return resource.data.get('revoked', false) == true; }
+  function readable() {
+   return !revoked() && (resource.data.expiresAt == null || request.time < resource.data.expiresAt);
+  }
   function validShare() {
    let d = request.resource.data;
    let s = d.section;
-   return d.keys().hasOnly(['ownerUid','section','updatedAt','expiresAt'])
+   return d.keys().hasOnly(['ownerUid','section','updatedAt','expiresAt','revoked'])
     && d.ownerUid == request.auth.uid
     && d.updatedAt == request.time
-    && d.expiresAt is timestamp && d.expiresAt > request.time && d.expiresAt <= request.time + duration.value(31,'d')
+    && d.expiresAt == null && d.revoked == false
     && s is map && s.keys().hasOnly(['version','title','kind','total','count','start','updatedAt','payments','entries'])
     && s.version == 1 && s.title is string && s.title.size() > 0 && s.title.size() <= 120
     && s.kind in ['receive','pay','ledger'] && s.total is int && s.total >= 0 && s.total <= 1000000000000
@@ -16,12 +20,19 @@ service cloud.firestore {
     && s.start is string && s.updatedAt is string
     && s.payments is list && s.payments.size() <= 1200 && s.entries is list && s.entries.size() <= 1000;
   }
+  function validRevocation() {
+   let d = request.resource.data;
+   return d.keys().hasOnly(['ownerUid','updatedAt','expiresAt','revoked'])
+    && d.ownerUid == request.auth.uid && d.updatedAt == request.time
+    && d.expiresAt == null && d.revoked == true;
+  }
   match /shares/{token} {
-   allow get: if owner() || (request.time < resource.data.expiresAt);
+   allow get: if owner() || readable();
    allow list: if false;
    allow create: if request.auth != null && token.matches('^[a-f0-9]{48}$') && validShare();
-   allow update: if owner() && validShare();
-   allow delete: if owner();
+   allow update: if owner() && (validRevocation() || (!revoked() && validShare()));
+   // A revoked token is permanent. A new share must use a new random token.
+   allow delete: if false;
   }
   match /{document=**} { allow read,write: if false; }
  }

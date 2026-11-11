@@ -5,7 +5,9 @@ import {
   projectDownloadUrl,
   htmlDownloadUrl,
 } from "./brand";
-import { useEffect, useRef, useState, type CSSProperties } from "react";
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from "react";
+import { resolveAppleTheme, systemFontStack } from "./apple-themes.js";
+import { useSystemDark } from "./use-system-dark";
 import { createRoot } from "react-dom/client";
 import { AnimatePresence, MotionConfig, motion } from "motion/react";
 import {
@@ -42,6 +44,7 @@ function initialData() {
 }
 (window as any).NexoDeployment = { baseUrl: window.location.href };
 function Simulator() {
+  const systemDark = useSystemDark();
   const [initial] = useState(initialData);
   const store = useRef(initial);
   const frame = useRef<HTMLIFrameElement>(null),
@@ -56,7 +59,26 @@ function Simulator() {
     [controls, setControls] = useState(false),
     [clock, setClock] = useState("");
   const selectedTheme =
-    domain.themes.find((x: any) => x.id === theme) ?? domain.themes[0];
+    resolveAppleTheme(theme, systemDark) ?? domain.themes.find((x: any) => x.id === theme) ?? domain.themes[0];
+  const apple = selectedTheme.family === "apple";
+  useLayoutEffect(() => {
+    const html = document.documentElement;
+    html.dataset.themeFamily = apple ? "apple" : "custom";
+    html.dataset.dark = String(apple && selectedTheme.dark);
+    html.style.colorScheme = apple && selectedTheme.dark ? "dark" : "light";
+    const tokens: Record<string, string> = {
+      bg: selectedTheme.bg, surface: selectedTheme.surface, text: selectedTheme.text,
+      muted: selectedTheme.muted, accent: selectedTheme.accent,
+      "accent-text": selectedTheme.accentText, line: selectedTheme.line,
+      positive: selectedTheme.positive, negative: selectedTheme.negative, font: systemFontStack,
+    };
+    for (const [key, value] of Object.entries(tokens)) {
+      if (apple) html.style.setProperty(`--${key}`, value);
+      else html.style.removeProperty(`--${key}`);
+    }
+    const meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+    if (meta) meta.content = apple ? selectedTheme.bg : "#f8f9f6";
+  }, [apple, selectedTheme]);
   function save(raw: string) {
     try {
       store.current = domain.validateData(JSON.parse(raw));
@@ -150,10 +172,13 @@ function Simulator() {
     return () => window.removeEventListener("message", report);
   }, []);
   function changeTheme(id: string) {
+    if (!domain.themes.some((item: any) => item.id === id)) return;
     store.current.settings.theme = id;
     save(JSON.stringify(store.current));
     setTheme(id);
-    setVersion((x) => x + 1);
+    // A file URL's location.origin is "file://", while its serialized origin
+    // (and the inherited srcdoc origin) is opaque: window.origin === "null".
+    frame.current?.contentWindow?.postMessage({ type: "nexo-simulator-set-theme", id }, window.origin === "null" ? "*" : window.origin);
   }
   function reset(kind: "demo" | "empty") {
     if (Object.keys(store.current.sharing.grants).length) {
@@ -295,20 +320,23 @@ function Simulator() {
                 <div className="sim-appearance-options">
                   <button
                     type="button"
-                    onClick={() => changeTheme("porcelana")}
-                    aria-pressed={theme === "porcelana"}
+                    onClick={() => changeTheme(apple ? "apple-light" : "porcelana")}
+                    aria-pressed={theme === (apple ? "apple-light" : "porcelana")}
                   >
                     <Sun size={15} />
                     Claro
                   </button>
                   <button
                     type="button"
-                    onClick={() => changeTheme("obsidiana")}
-                    aria-pressed={theme === "obsidiana"}
+                    onClick={() => changeTheme(apple ? "apple-dark" : "obsidiana")}
+                    aria-pressed={theme === (apple ? "apple-dark" : "obsidiana")}
                   >
                     <Moon size={15} />
                     Escuro
                   </button>
+                  {apple && <button type="button" onClick={() => changeTheme("apple-system")} aria-pressed={theme === "apple-system"}>
+                    <Monitor size={15} /> Sistema
+                  </button>}
                 </div>
               </div>
               <div className="sim-section">
@@ -532,7 +560,7 @@ function Simulator() {
               <span className="sim-note-number">03</span>
               <h3>Encontre o seu visual.</h3>
               <p>
-                Explore os 15 temas e o laboratório de componentes em{" "}
+                Explore os 15 temas, a família Apple e o laboratório de componentes em{" "}
                 <strong>Menu → Personalização</strong>.
               </p>
             </div>

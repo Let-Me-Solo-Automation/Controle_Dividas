@@ -47,8 +47,8 @@ html body .app-header {
   top: 0;
   padding: 16px 22px 12px;
   background: color-mix(in srgb, var(--bg) 80%, transparent);
-  backdrop-filter: blur(22px);
   -webkit-backdrop-filter: blur(22px);
+  backdrop-filter: blur(22px);
   border-bottom: 1px solid color-mix(in srgb, var(--line) 45%, transparent);
 }
 html body .brand {
@@ -366,8 +366,8 @@ html body .profile-menu {
   border: 1px solid color-mix(in srgb, var(--line) 70%, #fff);
   border-radius: 27px;
   background: color-mix(in srgb, var(--surface) 88%, transparent);
-  backdrop-filter: blur(32px);
   -webkit-backdrop-filter: blur(32px);
+  backdrop-filter: blur(32px);
   box-shadow:
     0 18px 60px #142a2228,
     inset 0 1px #ffffff80;
@@ -432,8 +432,8 @@ html body .menu-scrim {
 }
 .glass {
   background: color-mix(in srgb, var(--surface) 78%, transparent);
-  backdrop-filter: blur(var(--nav-blur, 28px)) saturate(1.35);
   -webkit-backdrop-filter: blur(var(--nav-blur, 28px)) saturate(1.35);
+  backdrop-filter: blur(var(--nav-blur, 28px)) saturate(1.35);
   border: 1px solid color-mix(in srgb, var(--surface) 92%, transparent);
   box-shadow:
     0 5px 20px #152f2520,
@@ -530,8 +530,8 @@ html body .toggle-row small {
 html body .modal-backdrop {
   padding: 20px 12px;
   background: #172a2350;
-  backdrop-filter: blur(7px);
   -webkit-backdrop-filter: blur(7px);
+  backdrop-filter: blur(7px);
   animation: none;
   z-index: 100;
 }
@@ -762,8 +762,8 @@ html[data-motion="off"] *::after {
 }
 html[data-glass="off"] .glass {
   background: var(--surface);
-  backdrop-filter: none;
   -webkit-backdrop-filter: none;
+  backdrop-filter: none;
 }
 .nav-style-selector .nexo-tabs {
   max-width: 100%;
@@ -791,8 +791,8 @@ html[data-glass="off"] .glass {
     color-mix(in srgb, var(--surface) 43%, transparent)
   );
   border: 1px solid color-mix(in srgb, var(--surface) 82%, var(--line));
-  backdrop-filter: blur(var(--nav-blur, 22px)) saturate(1.5);
   -webkit-backdrop-filter: blur(var(--nav-blur, 22px)) saturate(1.5);
+  backdrop-filter: blur(var(--nav-blur, 22px)) saturate(1.5);
   box-shadow:
     inset 0 1px 1px #ffffffa8,
     inset 0 -1px 1px #1c35250a,
@@ -873,15 +873,15 @@ html body .command-search input:focus-visible {
 html[data-glass="off"] .nexo-mini-panel,
 html[data-glass="off"] .nexo-glass-plus {
   background: var(--surface);
-  backdrop-filter: none;
   -webkit-backdrop-filter: none;
+  backdrop-filter: none;
 }
 @media (prefers-reduced-transparency: reduce) {
   .nexo-mini-panel,
   .nexo-glass-plus {
     background: var(--surface);
-    backdrop-filter: none;
     -webkit-backdrop-filter: none;
+    backdrop-filter: none;
   }
 }
 @media (max-width: 360px) {
@@ -939,6 +939,186 @@ body:has(.modal-backdrop) .nexo-mini-dock {
 .firebase-connection .text-button {
   margin-right: 15px;
 }
+.share-link-card {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  min-width: 0;
+}
+.share-link-status, .share-link-actions, .share-link-footer {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.share-link-status { color: var(--positive); font-size: 12px; font-weight: 600; }
+.share-link-status > span { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+.share-link-card > small { color: var(--muted); font-size: 11px; line-height: 1.7; }
+
+/* Apple is an optional family. Content stays solid; glass belongs to controls. */
+html[data-theme-family="apple"] {
+  --radius: 26px;
+  --shadow: 0 4px 18px #00000008;
+  --control-line: #767680;
+  --material-fill: color-mix(in srgb, var(--surface) 96%, transparent);
+  --material-edge: #ffffffb3;
+  --material-shadow: 0 8px 28px #00000012, inset 0 1px 0 #ffffffb3;
+  --scrim: #00000038;
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+}
+html[data-theme-family="apple"][data-dark="true"] {
+  --control-line: #8e8e93;
+  --material-fill: color-mix(in srgb, var(--surface) 96%, transparent);
+  --material-edge: #ffffff26;
+  --material-shadow: 0 8px 28px #00000055, inset 0 1px 0 #ffffff18;
+  --scrim: #00000080;
+}
+html[data-theme-family="apple"] body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+}
+html[data-theme-family="apple"] body :is(.card, .kpi, .modal, .goal-card, .section-item) {
+  background: var(--surface);
+  border-color: var(--line);
+  box-shadow: var(--shadow);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+html[data-theme-family="apple"] body .overview-grid {
+  background: none;
+  border: 0;
+}
+html[data-theme-family="apple"] body .hero {
+  background: var(--surface) !important;
+  color: var(--text);
+  border-color: var(--line);
+  box-shadow: var(--shadow);
+}
+html[data-theme-family="apple"] body .hero::before { display: none; }
+html[data-theme-family="apple"] body :is(.hero-top, .hero-main p, .hero-bottom > span) {
+  color: var(--muted);
+  opacity: 1;
+}
+html[data-theme-family="apple"] body :is(.hero-amount, .hero-bottom b) { color: var(--text); }
+html[data-theme-family="apple"] body .hero-bottom {
+  border-color: var(--line);
+  background: var(--surface);
+}
+html[data-theme-family="apple"] body .hero-bottom button {
+  color: var(--accent);
+  background: var(--surface);
+  border-color: var(--control-line);
+  min-height: 44px;
+}
+html[data-theme-family="apple"] body .hero .ring-track { stroke: var(--line); }
+html[data-theme-family="apple"] body .hero .ring-value { stroke: var(--accent); }
+html[data-theme-family="apple"] body .hero .status-dot { background: var(--accent); }
+html[data-theme-family="apple"] body .kpi:nth-child(4) .money { color: var(--text); }
+html[data-theme-family="apple"] body .button.danger { background: var(--negative); color: var(--surface); }
+html[data-theme-family="apple"] body .icon-button {
+  color: var(--text);
+  background: var(--surface);
+  border-color: var(--line);
+  width: 44px;
+  min-width: 44px;
+  height: 44px;
+}
+html[data-theme-family="apple"] :is(button, input, select, textarea, a, [role="button"]):focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+html[data-theme-family="apple"] body :is(.field input:not([type="checkbox"]):not([type="range"]), .field select, .field textarea) {
+  color: var(--text);
+  background: var(--surface);
+  border-color: var(--control-line);
+}
+html[data-theme-family="apple"] :is(input, textarea)::placeholder { color: var(--muted); opacity: 1; }
+html[data-theme-family="apple"] body :is(.hero-main p, .kpi-label, .transaction small, .card-heading p, .toggle-row small) { font-size: 12px; }
+html[data-theme-family="apple"] :is(.eyebrow, .screen-heading p) { font-size: 11px; }
+html[data-theme-family="apple"] .nexo-mini-panel {
+  max-width: calc(100vw - 86px);
+  overflow-x: auto;
+}
+html[data-theme-family="apple"] .nexo-mini-item {
+  width: 44px;
+  min-width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+}
+html[data-theme-family="apple"] .nav-selection {
+  background: var(--surface);
+  box-shadow: inset 0 0 0 1px var(--control-line);
+}
+html[data-theme-family="apple"] body :is(.app-header, .profile-menu, .glass, .nexo-glass-plus, .nexo-mini-panel) {
+  background: var(--surface);
+  border-color: var(--material-edge);
+  box-shadow: var(--material-shadow);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+html[data-theme-family="apple"] body .app-header { box-shadow: 0 1px 0 var(--line); }
+html[data-theme-family="apple"] body :is(.menu-scrim, .modal-backdrop) {
+  background: var(--scrim);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+@supports ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  html[data-theme-family="apple"] body :is(.app-header, .profile-menu, .glass, .nexo-glass-plus, .nexo-mini-panel) {
+    background: var(--material-fill);
+    -webkit-backdrop-filter: blur(18px) saturate(1.15);
+    backdrop-filter: blur(18px) saturate(1.15);
+  }
+  html[data-theme-family="apple"] body :is(.glass, .nexo-glass-plus, .nexo-mini-panel) {
+    -webkit-backdrop-filter: blur(var(--nav-blur, 16px)) saturate(1.15);
+    backdrop-filter: blur(var(--nav-blur, 16px)) saturate(1.15);
+  }
+}
+/* Preferences apply to every blur surface, including older themes. */
+html[data-glass="off"] body :is(.app-header, .profile-menu, .glass, .nexo-glass-plus, .nexo-mini-panel) {
+  background: var(--surface);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+html[data-glass="off"] body :is(.menu-scrim, .modal-backdrop) {
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  html body :is(.app-header, .profile-menu, .glass, .nexo-glass-plus, .nexo-mini-panel) {
+    background: var(--surface) !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+  html body :is(.menu-scrim, .modal-backdrop, .sim-confirm-backdrop) {
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+}
+@media (prefers-contrast: more) {
+  html[data-theme-family="apple"] { --line: var(--control-line) !important; --muted: var(--text) !important; }
+  html[data-theme-family="apple"] body :is(.card, .kpi, .hero, .icon-button, .nexo-mini-panel, .nexo-glass-plus) { border-color: var(--control-line); }
+}
+@media (forced-colors: active) {
+  html body :is(.app-header, .profile-menu, .glass, .nexo-glass-plus, .nexo-mini-panel, .card, .hero, .modal) {
+    background: Canvas !important;
+    color: CanvasText !important;
+    border: 1px solid CanvasText !important;
+    box-shadow: none !important;
+    -webkit-backdrop-filter: none !important;
+    backdrop-filter: none !important;
+  }
+  html body :is(.nav-selection, button[aria-pressed="true"]) { outline: 2px solid Highlight; outline-offset: -2px; }
+}
+.share-link-card input { min-width: 0; font-size: 12px; }
+.share-link-actions, .share-link-footer { justify-content: space-between; flex-wrap: wrap; }
+.share-link-card .text-button { min-height: 44px; font-size: 12px; gap: 6px; }
+.share-link-card .share-revoke { color: var(--negative); }
+.share-link-preview { border: 1px solid var(--line); border-radius: 16px; overflow: hidden; }
+.share-link-preview iframe { display: block; width: 100%; height: 410px; border: 0; background: var(--surface); }
 
 .marks-brand-icon {
   display: inline-block;

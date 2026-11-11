@@ -144,11 +144,16 @@ test("search works by keyboard and all themes render without runtime errors", as
   const options = await page
     .locator("#theme-select option")
     .evaluateAll((opts) => opts.map((o) => (o as HTMLOptionElement).value));
-  expect(options).toHaveLength(15);
+  expect(options).toHaveLength(18);
   for (const id of options) {
     await page.locator("#theme-select").selectOption(id);
-    await expect(f.locator("html")).toHaveAttribute("data-theme", id);
-    await expect(f.locator(".hero")).toBeVisible();
+    await expect(f.locator("html")).toHaveAttribute(
+      "data-theme",
+      id === "apple-system" ? /^apple-(light|dark)$/ : id,
+    );
+    await expect(
+      f.getByRole("heading", { name: "Contas e reserva", exact: true }),
+    ).toBeVisible();
   }
   expect(errors).toEqual([]);
 });

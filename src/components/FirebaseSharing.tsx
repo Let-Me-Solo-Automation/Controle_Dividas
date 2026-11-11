@@ -1,6 +1,15 @@
 import { firebaseTutorialUrl } from "../brand";
-import { useEffect, useState } from "react";
-import { Check, Cloud, Link, Lock, LogOut, RefreshCw } from "lucide-react";
+import { useEffect, useId, useState } from "react";
+import {
+  Check,
+  Cloud,
+  Eye,
+  ExternalLink,
+  Link,
+  Lock,
+  LogOut,
+  RefreshCw,
+} from "lucide-react";
 import {
   login,
   logout,
@@ -204,7 +213,7 @@ export function FirebaseConnection({
       )}
       <small>
         O destinatário abre o link sem criar conta. Quem tiver o link poderá
-        consultá-lo até você revogar ou ele expirar.
+        consultá-lo até você revogar o acesso.
       </small>
     </section>
   );
@@ -225,6 +234,13 @@ export function FirebaseSectionShare({
   onSend: (url: string) => void;
 }) {
   const [email, setEmail] = useState<string | null>(null);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const previewId = useId();
+  const previewUrl = new URL(
+    "compartilhar.html",
+    (window as any).NexoDeployment?.baseUrl ?? window.location.href,
+  );
+  previewUrl.hash = "s=" + grant?.id;
   return (
     <div>
       <div className="notice">
@@ -238,7 +254,7 @@ export function FirebaseSectionShare({
         </div>
       </div>
       <FirebaseConnection onReady={setEmail} />
-      {email && (
+      {email && !grant && (
         <button
           className="button full"
           type="button"
@@ -246,15 +262,25 @@ export function FirebaseSectionShare({
           onClick={onPublish}
         >
           <Cloud size={18} />
-          {busy
-            ? "Publicando…"
-            : grant
-              ? "Atualizar publicação"
-              : "Criar link por 30 dias"}
+          {busy ? "Publicando…" : "Criar link sem vencimento"}
         </button>
       )}
       {grant?.provider === "firebase" && (
-        <>
+        <section
+          className="share-link-card"
+          aria-label="Gerenciar link compartilhado"
+        >
+          <div className="share-link-status">
+            <span aria-hidden="true" />
+            {grant.persistent
+              ? "Ativo · sem vencimento"
+              : "Link publicado · atualizar prazo"}
+          </div>
+          {!grant.persistent && (
+            <p className="muted">
+              Atualize a publicação para remover o vencimento deste link.
+            </p>
+          )}
           <label className="field">
             <span>Link de acompanhamento</span>
             <input
@@ -264,6 +290,37 @@ export function FirebaseSectionShare({
               onFocus={(e) => e.target.select()}
             />
           </label>
+          <div className="share-link-actions">
+            <button
+              type="button"
+              className="text-button"
+              aria-expanded={previewOpen}
+              aria-controls={previewId}
+              onClick={() => setPreviewOpen((value) => !value)}
+            >
+              <Eye size={16} />
+              {previewOpen ? "Ocultar prévia" : "Visualizar link"}
+            </button>
+            <a
+              className="text-button"
+              href={previewUrl.href}
+              target="_blank"
+              rel="noreferrer"
+              aria-label="Abrir link compartilhado em nova aba"
+            >
+              <ExternalLink size={16} />
+            </a>
+          </div>
+          {previewOpen && (
+            <div id={previewId} className="share-link-preview">
+              <iframe
+                title="Prévia do link compartilhado"
+                src={previewUrl.href}
+                loading="lazy"
+                referrerPolicy="no-referrer"
+              />
+            </div>
+          )}
           <small>
             Última sincronização:{" "}
             {new Date(grant.syncedAt).toLocaleString("pt-BR")}. Novos pagamentos
@@ -284,17 +341,28 @@ export function FirebaseSectionShare({
             Copiar ou enviar link
           </button>
           {email && (
-            <button
-              type="button"
-              className="button danger full"
-              disabled={busy}
-              onClick={onRevoke}
-            >
-              <Lock size={17} />
-              Revogar acesso
-            </button>
+            <div className="share-link-footer">
+              <button
+                type="button"
+                className="text-button"
+                disabled={busy}
+                onClick={onPublish}
+              >
+                <RefreshCw size={14} />
+                Atualizar publicação
+              </button>
+              <button
+                type="button"
+                className="text-button share-revoke"
+                disabled={busy}
+                onClick={onRevoke}
+              >
+                <Lock size={14} />
+                Revogar acesso
+              </button>
+            </div>
           )}
-        </>
+        </section>
       )}
     </div>
   );

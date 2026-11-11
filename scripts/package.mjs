@@ -30,6 +30,7 @@ const files = [
   "CONFIGURAR-ONLINE.md",
   "GOOGLE-DRIVE.md",
   "VALIDACAO.md",
+  "APPLE-LIQUID-GLASS.md",
 ];
 export async function createProjectArchive(root = process.cwd()) {
   const contents = {};

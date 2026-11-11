@@ -1,3 +1,6 @@
+import themeDomain from './domain.js';
+import { resolveAppleTheme, systemFontStack } from '../apple-themes.js';
+import { useSystemDark } from '../use-system-dark';
 import { BrandIcon } from '../components/BrandIcon';
 import { FirebaseConnection, FirebaseSectionShare } from '../components/FirebaseSharing';
 import { publishSection as publishFirebaseSection, revokeShare as revokeFirebaseShare } from '../sharing/firebase';
@@ -1226,437 +1229,8 @@ function cn(props){return React.createElement(FluidNavigation,props);}
   }
   var r = ReactCompat,
     Pg = ReactDOM;
-  var Go = [
-      {
-        id: "porcelana",
-        name: "Porcelana",
-        description: "Relevo suave, balan\xE7o amplo e cart\xF5es em pares.",
-        bg: "#f4f5f2",
-        surface: "#ffffff",
-        text: "#202b29",
-        muted: "#687570",
-        accent: "#087f6d",
-        accentText: "#ffffff",
-        line: "#e2e7e2",
-        positive: "#087c59",
-        negative: "#c54c52",
-        dark: !1,
-        font: "DM Sans",
-        layout: "soft",
-        hero: "balance",
-        chart: "area",
-        order: [
-          "trend",
-          "goals",
-          "sections",
-          "platforms",
-          "reserve",
-          "agenda",
-          "activity",
-        ],
-      },
-      {
-        id: "aurora",
-        name: "Aurora",
-        description: "Vidro frio, metas orbitais e um horizonte colorido.",
-        bg: "#e8f2f5",
-        surface: "#f8fcff",
-        text: "#173441",
-        muted: "#4b6876",
-        accent: "#176f7b",
-        accentText: "#ffffff",
-        line: "#c2d8df",
-        positive: "#176c4f",
-        negative: "#af354c",
-        dark: !1,
-        font: "Manrope",
-        layout: "glass",
-        hero: "goal",
-        chart: "area",
-        order: [
-          "goals",
-          "trend",
-          "platforms",
-          "sections",
-          "reserve",
-          "activity",
-          "agenda",
-        ],
-      },
-      {
-        id: "obsidiana",
-        name: "Obsidiana",
-        description: "Preto OLED, n\xFAmeros amplos e sinais de luz.",
-        bg: "#080a0e",
-        surface: "#171b22",
-        text: "#f0f3fa",
-        muted: "#a5b0c2",
-        accent: "#a9e9c6",
-        accentText: "#10271b",
-        line: "#343c49",
-        positive: "#91e4b8",
-        negative: "#ff9cac",
-        dark: !0,
-        font: "Space Grotesk",
-        layout: "oled",
-        hero: "cashflow",
-        chart: "bars",
-        order: [
-          "platforms",
-          "trend",
-          "sections",
-          "activity",
-          "goals",
-          "reserve",
-          "agenda",
-        ],
-      },
-      {
-        id: "editorial",
-        name: "Editorial",
-        description:
-          "Leitura de jornal, t\xEDtulos serifados e extrato primeiro.",
-        bg: "#f5f2ef",
-        surface: "#fffdfa",
-        text: "#252329",
-        muted: "#635d67",
-        accent: "#713c54",
-        accentText: "#ffffff",
-        line: "#d8ced1",
-        positive: "#276345",
-        negative: "#ad3145",
-        dark: !1,
-        font: "Lora",
-        layout: "paper",
-        hero: "balance",
-        chart: "line",
-        order: [
-          "activity",
-          "sections",
-          "trend",
-          "agenda",
-          "goals",
-          "reserve",
-          "platforms",
-        ],
-      },
-      {
-        id: "oceano",
-        name: "Oceano",
-        description: "Azul profundo, rotas e desempenho das entregas.",
-        bg: "#092635",
-        surface: "#113a4c",
-        text: "#eef9ff",
-        muted: "#aac8d5",
-        accent: "#77d8fa",
-        accentText: "#073042",
-        line: "#356073",
-        positive: "#89e3c2",
-        negative: "#ffadb5",
-        dark: !0,
-        font: "Manrope",
-        layout: "marine",
-        hero: "delivery",
-        chart: "line",
-        order: [
-          "platforms",
-          "trend",
-          "activity",
-          "goals",
-          "sections",
-          "agenda",
-          "reserve",
-        ],
-      },
-      {
-        id: "jardim",
-        name: "Jardim",
-        description:
-          "Metas em crescimento, verdes naturais e cart\xF5es org\xE2nicos.",
-        bg: "#edf2ea",
-        surface: "#fafcf7",
-        text: "#263b2b",
-        muted: "#546650",
-        accent: "#426c38",
-        accentText: "#ffffff",
-        line: "#cfdcc8",
-        positive: "#326330",
-        negative: "#ac3e44",
-        dark: !1,
-        font: "DM Sans",
-        layout: "organic",
-        hero: "goal",
-        chart: "bars",
-        order: [
-          "goals",
-          "reserve",
-          "agenda",
-          "trend",
-          "sections",
-          "platforms",
-          "activity",
-        ],
-      },
-      {
-        id: "cobalto",
-        name: "Cobalto",
-        description:
-          "Agenda \xE0 frente, blocos gr\xE1ficos e a\xE7\xF5es diretas.",
-        bg: "#eff3fc",
-        surface: "#ffffff",
-        text: "#172c52",
-        muted: "#526583",
-        accent: "#235bc7",
-        accentText: "#ffffff",
-        line: "#cdd9ef",
-        positive: "#166a52",
-        negative: "#b63247",
-        dark: !1,
-        font: "Manrope",
-        layout: "blocks",
-        hero: "agenda",
-        chart: "bars",
-        order: [
-          "agenda",
-          "sections",
-          "activity",
-          "trend",
-          "platforms",
-          "goals",
-          "reserve",
-        ],
-      },
-      {
-        id: "lavanda",
-        name: "Lavanda",
-        description: "Planejamento calmo, an\xE9is e curvas delicadas.",
-        bg: "#f0edf7",
-        surface: "#fdfbff",
-        text: "#382d4e",
-        muted: "#6a5c7f",
-        accent: "#7651ab",
-        accentText: "#ffffff",
-        line: "#d9cee7",
-        positive: "#356c56",
-        negative: "#ad385a",
-        dark: !1,
-        font: "DM Sans",
-        layout: "petal",
-        hero: "goal",
-        chart: "area",
-        order: [
-          "goals",
-          "agenda",
-          "sections",
-          "reserve",
-          "trend",
-          "activity",
-          "platforms",
-        ],
-      },
-      {
-        id: "ambar",
-        name: "\xC2mbar",
-        description:
-          "Or\xE7amento vis\xEDvel, luz quente e despesas em destaque.",
-        bg: "#fbf0e4",
-        surface: "#fffaf3",
-        text: "#4b3021",
-        muted: "#795b46",
-        accent: "#a34b16",
-        accentText: "#ffffff",
-        line: "#e8d1b9",
-        positive: "#346b42",
-        negative: "#ad3545",
-        dark: !1,
-        font: "Manrope",
-        layout: "warm",
-        hero: "expense",
-        chart: "bars",
-        order: [
-          "activity",
-          "agenda",
-          "trend",
-          "sections",
-          "goals",
-          "platforms",
-          "reserve",
-        ],
-      },
-      {
-        id: "grafite",
-        name: "Grafite",
-        description: "Faixas de dados, precis\xE3o e densidade controlada.",
-        bg: "#191c22",
-        surface: "#252a33",
-        text: "#f1f3f7",
-        muted: "#b2bdcf",
-        accent: "#c2d1ff",
-        accentText: "#202e51",
-        line: "#495261",
-        positive: "#a2e5bc",
-        negative: "#ffb0b8",
-        dark: !0,
-        font: "IBM Plex Mono",
-        layout: "data",
-        hero: "cashflow",
-        chart: "bars",
-        order: [
-          "trend",
-          "platforms",
-          "sections",
-          "activity",
-          "reserve",
-          "agenda",
-          "goals",
-        ],
-      },
-      {
-        id: "origami",
-        name: "Origami",
-        description:
-          "Dobras geom\xE9tricas, se\xE7\xF5es grandes e contraste gr\xE1fico.",
-        bg: "#f2f1eb",
-        surface: "#ffffff",
-        text: "#283439",
-        muted: "#5e6b6b",
-        accent: "#176873",
-        accentText: "#ffffff",
-        line: "#d0d9d7",
-        positive: "#286b4b",
-        negative: "#b33c48",
-        dark: !1,
-        font: "Space Grotesk",
-        layout: "fold",
-        hero: "sections",
-        chart: "line",
-        order: [
-          "sections",
-          "goals",
-          "trend",
-          "platforms",
-          "activity",
-          "agenda",
-          "reserve",
-        ],
-      },
-      {
-        id: "cosmos",
-        name: "Cosmos",
-        description:
-          "Vidro noturno violeta, \xF3rbitas e objetivos em destaque.",
-        bg: "#141126",
-        surface: "#24203b",
-        text: "#f5f0ff",
-        muted: "#c0b2db",
-        accent: "#cab3ff",
-        accentText: "#302044",
-        line: "#504463",
-        positive: "#9de4cb",
-        negative: "#ffb0cc",
-        dark: !0,
-        font: "Space Grotesk",
-        layout: "orbital",
-        hero: "goal",
-        chart: "area",
-        order: [
-          "goals",
-          "trend",
-          "reserve",
-          "sections",
-          "platforms",
-          "agenda",
-          "activity",
-        ],
-      },
-      {
-        id: "areia",
-        name: "Areia",
-        description:
-          "Fluxo em p\xE1ginas, tons minerais e espa\xE7o para respirar.",
-        bg: "#f0ebe3",
-        surface: "#faf7f2",
-        text: "#3e3830",
-        muted: "#70665a",
-        accent: "#6e5c3d",
-        accentText: "#ffffff",
-        line: "#d6cbbb",
-        positive: "#346344",
-        negative: "#a73d42",
-        dark: !1,
-        font: "Lora",
-        layout: "journal",
-        hero: "cashflow",
-        chart: "line",
-        order: [
-          "trend",
-          "activity",
-          "goals",
-          "reserve",
-          "sections",
-          "agenda",
-          "platforms",
-        ],
-      },
-      {
-        id: "rubi",
-        name: "Rubi",
-        description: "Bord\xF4 profundo, compromissos e agenda de pagamentos.",
-        bg: "#24151c",
-        surface: "#39222d",
-        text: "#fff0f4",
-        muted: "#d6b4c3",
-        accent: "#ffb3c6",
-        accentText: "#492333",
-        line: "#684352",
-        positive: "#a3e4bb",
-        negative: "#ffb7a4",
-        dark: !0,
-        font: "Manrope",
-        layout: "velvet",
-        hero: "agenda",
-        chart: "area",
-        order: [
-          "agenda",
-          "sections",
-          "trend",
-          "activity",
-          "goals",
-          "reserve",
-          "platforms",
-        ],
-      },
-      {
-        id: "menta",
-        name: "Menta",
-        description:
-          "Trilha semanal, metas r\xE1pidas e controles arredondados.",
-        bg: "#eaf5f1",
-        surface: "#fcfffe",
-        text: "#1c3d36",
-        muted: "#4c6f66",
-        accent: "#16745e",
-        accentText: "#ffffff",
-        line: "#c5dfd5",
-        positive: "#14674c",
-        negative: "#b2354b",
-        dark: !1,
-        font: "DM Sans",
-        layout: "fresh",
-        hero: "delivery",
-        chart: "bars",
-        order: [
-          "platforms",
-          "goals",
-          "agenda",
-          "trend",
-          "activity",
-          "sections",
-          "reserve",
-        ],
-      },
-    ],
-    qg = (e) => Go.find((a) => a.id === e) || Go[0];
+  var Go = themeDomain.themes,
+    qg = (id, systemDark) => resolveAppleTheme(id, systemDark) || Go.find((theme) => theme.id === id) || Go[0];
   function Ug() {
     try {
       let e = window.NexoNative
@@ -2143,6 +1717,7 @@ function Hg(props){return React.createElement(AppModal,props);}
       "Outros",
     ];
   function iv() {
+    const systemDark = useSystemDark();
     let [e, a] = (0, r.useState)($i || du()),
       [t, l] = (0, r.useState)("dashboard"),
       [o, u] = (0, r.useState)($i ? null : { type: "loadError" }),
@@ -2166,7 +1741,7 @@ function Hg(props){return React.createElement(AppModal,props);}
     Ja.current = e;
     let Vs = (0, r.useRef)(),
       O = p || e.settings,
-      we = qg(O.theme),
+      we = qg(O.theme, systemDark),
       Vo = yr(h, m),
       Te = vf(e, Vo),
       P = (n) => r.default.createElement(Hs, { value: n, visible: s }),
@@ -2256,6 +1831,17 @@ function Hg(props){return React.createElement(AppModal,props);}
             }
         });
     }
+    (0, r.useEffect)(() => {
+      const receiveTheme = (event) => {
+        // srcdoc location.origin is "null" even when its inherited origin is HTTPS.
+        if (window.parent === window || event.source !== window.parent || event.origin !== window.origin || event.data?.type !== 'nexo-simulator-set-theme') return;
+        if (!Go.some((theme) => theme.id === event.data.id)) return;
+        le((data) => { data.settings.theme = event.data.id; });
+        x(null);
+      };
+      window.addEventListener('message', receiveTheme);
+      return () => window.removeEventListener('message', receiveTheme);
+    }, []);
     ((0, r.useEffect)(() => {
       let n = () => {
         if (!document.hidden)
@@ -2271,10 +1857,13 @@ function Hg(props){return React.createElement(AppModal,props);}
         }
       );
     }, []),
-      (0, r.useEffect)(() => {
+      (0, r.useLayoutEffect)(() => {
         ((document.documentElement.dataset.theme = we.id),
+          (document.documentElement.dataset.themeFamily = we.family || "custom"),
+          (document.documentElement.dataset.themeChoice = O.theme),
+          (document.documentElement.style.colorScheme = we.dark ? "dark" : "light"),
           (document.documentElement.dataset.dark = String(we.dark)),
-          window.parent.postMessage({type:'nexo-simulator-theme',id:we.id},'*'),
+          window.parent.postMessage({type:'nexo-simulator-theme',id:O.theme},'*'),
           (document.documentElement.dataset.layout = we.layout),
           (document.documentElement.dataset.motion = O.motion ? "on" : "off"),
           (document.documentElement.dataset.glass = O.glass ? "on" : "off"),
@@ -2314,7 +1903,7 @@ function Hg(props){return React.createElement(AppModal,props);}
             line: we.line,
             positive: we.positive,
             negative: we.negative,
-            font: `'${we.font}',sans-serif`,
+            font: we.family === 'apple' ? systemFontStack : `'${we.font}',sans-serif`,
           }).forEach(([n, f]) =>
             document.documentElement.style.setProperty("--" + n, f),
           ),
@@ -2422,6 +2011,7 @@ function Hg(props){return React.createElement(AppModal,props);}
       }
     }
     async function Vg(n) {
+      if (N) return;
       let f = e.sharing.grants[n];
       if (f) {
         B(!0);
@@ -4611,7 +4201,7 @@ function Hg(props){return React.createElement(AppModal,props);}
         r.default.createElement(
           "p",
           { className: "page-description" },
-          "Quinze experi\xEAncias. Um lugar para deixar tudo com a sua cara.",
+          "Escolha seu estilo. Apple acompanha a aparência do aparelho ou fica sempre claro ou escuro.",
         ),
         r.default.createElement(
           "div",
@@ -4650,7 +4240,7 @@ function Hg(props){return React.createElement(AppModal,props);}
           "div",
           { className: "section-label" },
           r.default.createElement("h2", null, "Escolha sua experi\xEAncia"),
-          r.default.createElement("span", { className: "badge" }, "15 estilos"),
+          r.default.createElement("span", { className: "badge" }, "15 estilos + Apple"),
         ),
         r.default.createElement(
           "div",
@@ -5090,7 +4680,7 @@ function Hg(props){return React.createElement(AppModal,props);}
           r.default.createElement(
             "p",
             null,
-            "O link \xE9 de leitura. Quem o recebe pode encaminh\xE1-lo: trate-o como uma chave. H\xE1 revoga\xE7\xE3o e validade de 30 dias. Atualize a publica\xE7\xE3o ao registrar um pagamento.",
+            "O link \xE9 de leitura. Quem o recebe pode encaminh\xE1-lo: trate-o como uma chave. O link fica ativo at\xE9 voc\xEA revogar o acesso. Novos pagamentos s\xE3o sincronizados quando houver conex\xE3o.",
           ),
           r.default.createElement(
             "p",
@@ -6127,7 +5717,7 @@ function Hg(props){return React.createElement(AppModal,props);}
                   label: "Tema claro",
                   onClick: () => {
                     (le((n) => {
-                      n.settings.theme = "porcelana";
+                      n.settings.theme = O.theme.startsWith("apple-") ? "apple-light" : "porcelana";
                     }),
                       x(null));
                   },
@@ -6140,12 +5730,19 @@ function Hg(props){return React.createElement(AppModal,props);}
                   label: "Tema escuro",
                   onClick: () => {
                     (le((n) => {
-                      n.settings.theme = "obsidiana";
+                      n.settings.theme = O.theme.startsWith("apple-") ? "apple-dark" : "obsidiana";
                     }),
                       x(null));
                   },
                 },
                 r.default.createElement($o, null),
+              ),
+              O.theme.startsWith("apple-") && r.default.createElement(
+                pe,
+                { label: "Seguir aparência do sistema", onClick: () => {
+                  le((n) => { n.settings.theme = "apple-system"; }); x(null);
+                } },
+                "Sistema",
               ),
               r.default.createElement(
                 pe,
