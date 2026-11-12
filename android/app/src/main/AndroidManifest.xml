@@ -1,4 +1,4 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="app.marks.finance" android:versionCode="1" android:versionName="2.1.0">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="app.marks.finance" android:versionCode="2" android:versionName="2.1.1">
  <uses-permission android:name="android.permission.INTERNET"/>
  <uses-sdk android:minSdkVersion="26" android:targetSdkVersion="35"/>
  <application android:label="Marks" android:icon="@drawable/marks_icon" android:theme="@android:style/Theme.Material.Light.NoActionBar" android:allowBackup="false" android:usesCleartextTraffic="false" android:supportsRtl="true">

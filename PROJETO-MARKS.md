@@ -1,6 +1,6 @@
 # Marks — documentação do projeto, operação e manutenção
 
-Versão da entrega: **2.1.0**. Este documento descreve o que existe no código e como gerar, operar, testar e continuar o projeto. Leia também os documentos de Firebase e os comentários nas funções financeiras antes de alterar regras de saldo.
+Versão da entrega: **2.1.1**. Este documento descreve o que existe no código e como gerar, operar, testar e continuar o projeto. Leia também os documentos de Firebase e os comentários nas funções financeiras antes de alterar regras de saldo.
 
 ## 1. Conteúdo da entrega
 
@@ -128,11 +128,13 @@ Projeto configurado: `marks-79823`. O arquivo `public/firebase-config.json` forn
 
 O aplicativo permite identidade anônima para publicar sem pedir e-mail/senha. O projeto Firebase precisa ter esse provedor habilitado, o Firestore criado e as regras publicadas. Veja `TUTORIAL-FIREBASE.md`, `FIREBASE-GRATUITO.md` e `CONFIGURAR-ONLINE.md`.
 
+Os links antigos que usavam o endereço público do GitHub Pages não abrem o visualizador depois da retirada do site. Publicar dados no Firebase não hospeda automaticamente a página de leitura; para voltar a compartilhar links utilizáveis será necessário configurar uma hospedagem permitida pelo proprietário para esse visualizador.
+
 Links não vencem pelo tempo. A revogação atualiza/remove a autorização no servidor. Um novo compartilhamento deve gerar uma autorização nova. Revogar corta consultas futuras ao servidor, mas não apaga capturas de tela nem dados já copiados pelo destinatário.
 
-GitHub Pages publica o site por `.github/workflows/`. O workflow instala dependências, verifica TypeScript, gera o site e publica `dist/`. O Firebase continua sendo o serviço remoto, não o GitHub. O plano gratuito tem cotas; não foi contratado um plano pago e não há garantia de capacidade ilimitada.
+O site público anterior do GitHub Pages foi retirado a pedido do proprietário. O workflow atual em `.github/workflows/` só compila quando o repositório é privado e guarda artefatos autenticados do Actions; ele não publica `dist/` como site. O Firebase continua sendo o serviço remoto, não o GitHub. O plano gratuito tem cotas; não foi contratado um plano pago e não há garantia de capacidade ilimitada.
 
-A versão Android publicada em `public/Marks-Android.apk` é um artefato assinado preparado separadamente. O build web não recompila Java automaticamente. Para atualizar o APK após mudar o app, siga a seção Android.
+A versão Android guardada em `public/Marks-Android.apk` é um artefato assinado preparado separadamente; o nome da pasta public não cria uma publicação online por si só. O build web não recompila Java automaticamente. Para atualizar o APK após mudar o app, siga a seção Android.
 
 ## 8. Desenvolvimento e build web
 
@@ -155,7 +157,7 @@ Não edite `src/generated`, `dist`, o APK nem o HTML empacotado para uma correç
 
 ## 9. Compilar e instalar Android
 
-Identidade do pacote: `app.marks.finance`. Versão inicial desta embalagem: `versionCode=1`, `versionName=2.1.0`. Plataforma de compilação e alvo: API 35. Versão mínima: API 26, Android 8.0.
+Identidade do pacote: `app.marks.finance`. Versão inicial desta embalagem: `versionCode=2`, `versionName=2.1.1`. Plataforma de compilação e alvo: API 35. Versão mínima: API 26, Android 8.0.
 
 Requisitos: JDK 21 (ou um JDK compatível com o compilador Java 8 usado), Android SDK com `platforms;android-35` e `build-tools;35.0.0`, Python 3 e Node/npm. Aceite as licenças do SDK na sua máquina.
 
@@ -265,3 +267,7 @@ O site e o código público podem incluir o APK assinado. **O keystore e sua sen
 `npm run build` recria `dist/downloads/Marks-projeto.zip`. O empacotador não inclui `node_modules`, `.git`, caches, pastas de build nem arquivos de assinatura. Confira `scripts/package.mjs` ao acrescentar novos diretórios.
 
 A documentação anterior foi preservada em `docs/README-anterior.md` para rastreabilidade. Se houver divergência com instruções antigas, use este documento e os comandos/scripts atuais, verificando o comportamento no código e nos testes.
+
+## 14. Correção do APK 2.1.1
+
+Veja `docs/CORRECAO-APK-2.1.1.md`: a assinatura válida não bastava para identificar a compressão indevida de resources.arsc. O build agora preserva a forma ZIP_STORED e verifica o alinhamento em 4 bytes. O código de versão foi incrementado mantendo a mesma chave. A instalação em um aparelho físico continua pendente.

@@ -2,6 +2,10 @@
 
 Aplicativo pessoal de finanças com contas, lançamentos, acordos parcelados, comprovantes, metas, reserva, entregas, agenda, lixeira e personalização visual.
 
+**Android 2.1.1:** substitui o APK 2.1.0 e corrige a compressão de recursos que impedia a instalação em Android 11+. Mesma chave de assinatura; código de versão incrementado. Veja [a correção](docs/CORRECAO-APK-2.1.1.md).
+
+O site público foi retirado. O workflow só gera artefatos autenticados quando o repositório está privado. Baixe `Visualizador.html` para abrir a simulação no computador.
+
 **Documentação completa:** [PROJETO-MARKS.md](PROJETO-MARKS.md).
 
 ## Abrir e instalar

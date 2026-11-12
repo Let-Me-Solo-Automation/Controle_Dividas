@@ -87,6 +87,6 @@ export async function createProjectArchive(root = process.cwd()) {
   await mkdir(path.join(root, "dist/downloads"), { recursive: true });
   const output = path.join(root, "dist/downloads/Marks-projeto.zip");
   await writeFile(output, zipSync(contents));
-  console.log("Download público: downloads/Marks-projeto.zip");
+  console.log("Pacote gerado: dist/downloads/Marks-projeto.zip");
   return output;
 }

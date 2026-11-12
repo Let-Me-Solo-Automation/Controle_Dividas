@@ -1,31 +1,31 @@
-name: Retirar simulador do site público
+name: Compilar entrega privada
 on:
   workflow_dispatch:
   push:
     branches: [main]
 permissions:
   contents: read
-  pages: write
-  id-token: write
 concurrency:
-  group: pages
+  group: marks-private-build
   cancel-in-progress: true
 jobs:
-  retirar:
+  build:
+    if: github.event.repository.private == true
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Preparar página sem arquivos do aplicativo
-        run: |
-          mkdir -p dist
-          printf '%s' '<!doctype html><html lang="pt-BR"><meta charset="utf-8"><title>Conteúdo privado</title><p>O aplicativo foi retirado deste site. O projeto é disponibilizado somente pelo repositório privado.</p></html>' > dist/index.html
-          touch dist/.nojekyll
-      - uses: actions/configure-pages@v5
-      - uses: actions/upload-pages-artifact@v3
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          path: dist
-      - name: Retirar downloads públicos
-        id: deployment
-        uses: actions/deploy-pages@v4
+          node-version: '24'
+          cache: npm
+      - run: npm ci --no-audit --no-fund
+      - run: npm run check
+      - run: npm run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Marks-entrega-privada
+          path: |
+            dist/downloads/Marks-projeto.zip
+            dist/downloads/Marks-Android.apk
+            Visualizador.html
+          retention-days: 30
