@@ -705,8 +705,8 @@ export function MotionCard(props: HTMLMotionProps<"section">) {
           ? false
           : {
               opacity: 0,
-              y: pref.motionStyle === "quiet" ? 0 : 16,
-              filter: pref.motionStyle === "quiet" ? "blur(0px)" : "blur(7px)",
+              y: pref.motionStyle === "quiet" ? 0 : 18,
+              filter: pref.motionStyle === "quiet" ? "blur(0px)" : "blur(11px)",
             }
       }
       animate={disabled ? revealedContent : undefined}
@@ -742,12 +742,12 @@ export function ScreenTransition(props: HTMLMotionProps<"main">) {
           : {
               opacity: 0,
               y: pref.motionStyle === "quiet" ? 0 : 12,
-              filter: pref.motionStyle === "quiet" ? "blur(0px)" : "blur(10px)",
+              filter: pref.motionStyle === "quiet" ? "blur(0px)" : "blur(16px)",
             }
       }
       animate={revealedContent}
       exit={
-        disabled ? revealedContent : { opacity: 0, y: -8, filter: "blur(5px)" }
+        disabled ? revealedContent : { opacity: 0, y: -8, filter: "blur(7px)" }
       }
       transition={{
         duration: disabled

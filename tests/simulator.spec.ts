@@ -451,7 +451,7 @@ test("screen entry and scrolling reveal content from blur to a clear final state
   const measured = await f
     .locator("html")
     .evaluate(() => (window as any).__entryBlur as number[]);
-  expect(Math.max(...measured)).toBeGreaterThan(0.1);
+  expect(Math.max(...measured)).toBeGreaterThan(1);
   await expect(screen).toHaveCSS("filter", "blur(0px)");
   await navigate(page, "Início");
   await expect(f.locator(".screen")).toHaveCSS("filter", "blur(0px)");
