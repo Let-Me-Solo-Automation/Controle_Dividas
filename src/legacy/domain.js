@@ -16,5 +16,8 @@ export default {
   themes: sharedThemes,
   validateData,
   freshData: () => validateData(NexoSimulatorDomain.freshData()),
-  demoData: () => validateData(NexoSimulatorDomain.demoData()),
+  demoData: () => { const data=NexoSimulatorDomain.demoData();const original=data.goals[0];data.goals=[
+{...original,id:"notebook",title:"Meu próximo notebook",target:100000,pinned:true,priority:"Alta",statusLabel:"Concluída",contributions:[{...original.contributions[0],amount:100000}]},
+{...original,id:"viagem",title:"Viagem",target:100000,pinned:true,priority:"Normal",statusLabel:"Em andamento",contributions:[{...original.contributions[0],id:"demo-viagem",amount:50000}]},
+{...original,id:"curso",title:"Curso",target:100000,pinned:true,priority:"Baixa",statusLabel:"Em andamento",contributions:[{...original.contributions[0],id:"demo-curso",amount:2000}]}];return validateData(data); },
 };

@@ -612,6 +612,7 @@ export function PersonalizationStudio({
             <RotateCcw size={15} /> Restaurar padrão
           </button>
         </div>
+        <div className="personal-default-actions"><button type="button" className="personal-subtle-button" onClick={() => {const preset={id:"marks-default",name:"Meu padrão Marks",settings:visualSettings(settings)};persist([...settings.customPresets.filter((item: Preset)=>item.id!==preset.id),preset]);setMessage("Seu padrão foi salvo neste aparelho.");}}>Salvar este visual como meu padrão</button><button type="button" className="personal-subtle-button" onClick={() => {const preset=settings.customPresets.find((item: Preset)=>item.id==="marks-default");if(preset)change(preset.settings);else reset();}}>Aplicar meu padrão</button></div>
         <p className="personal-muted">
           Cada escolha aparece no aplicativo enquanto você experimenta. Salve no
           topo quando terminar.

@@ -1,0 +1,21 @@
+import {test, expect} from '@playwright/test';
+import {pathToFileURL} from 'node:url';
+test('goal controls remain expanded, demo shows real completion and period is scoped to indicators',async({page})=>{
+ await page.goto(pathToFileURL(process.cwd()+'/dist/Marks-Simulador.html').href);
+ const f=page.frameLocator('iframe[title="Marks — aplicativo interativo"]');
+ const widget=f.getByRole('group',{name:'Metas em movimento',exact:true});
+ await expect(widget.getByRole('button',{name:'Recolher Metas em movimento',exact:true})).toBeVisible();
+ await expect(widget.locator('.task-goal-progress [role=progressbar]')).toHaveCount(3);
+ await expect(widget.locator('.task-goal-progress [role=progressbar]').nth(0)).toHaveAttribute('aria-valuenow','100');
+ await expect(widget.locator('.task-goal-progress [role=progressbar]').nth(1)).toHaveAttribute('aria-valuenow','50');
+ await expect(widget.locator('.task-goal-progress [role=progressbar]').nth(2)).toHaveAttribute('aria-valuenow','2');
+ await widget.getByLabel('Meta para organizar',{exact:true}).selectOption('viagem');
+ const selects=widget.locator('select');
+ await selects.nth(1).selectOption('Urgente');
+ await selects.nth(2).selectOption('Pausada');
+ await expect(widget.getByRole('button',{name:'Recolher Metas em movimento',exact:true})).toBeVisible();
+ await expect(f.locator('.dashboard-overview-card .period-controls')).toHaveCount(1);
+ const data=await page.evaluate(()=>JSON.parse(localStorage.getItem('nexo-simulator-v1')!));
+ expect(data.goals.find((g:any)=>g.id==='viagem').priority).toBe('Urgente');
+ expect(data.goals.find((g:any)=>g.id==='viagem').statusLabel).toBe('Pausada');
+});

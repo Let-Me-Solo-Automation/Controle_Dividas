@@ -1021,18 +1021,9 @@ const ReactCompat = { ...React, default: React };
         category: "Parcelas",
       }),
       (e.goals = [
-        {
-          id: "notebook",
-          title: "Meu pr\xF3ximo notebook",
-          target: 6e5,
-          due: gl(a, 5),
-          link: "",
-          image: "",
-          contributions: [
-            { id: ee(), accountId: "bradesco", amount: 18e4, date: a },
-          ],
-          extensions: [],
-        },
+        {id:"notebook",title:"Meu próximo notebook",target:100000,due:gl(a,5),priority:"Alta",pinned:true,statusLabel:"Concluída",link:"",image:"",contributions:[{id:ee(),accountId:"bradesco",amount:100000,date:a}],extensions:[]},
+        {id:"viagem",title:"Viagem",target:100000,due:gl(a,8),priority:"Normal",pinned:true,statusLabel:"Em andamento",link:"",image:"",contributions:[{id:ee(),accountId:"bradesco",amount:50000,date:a}],extensions:[]},
+        {id:"curso",title:"Curso",target:100000,due:gl(a,10),priority:"Baixa",pinned:true,statusLabel:"Em andamento",link:"",image:"",contributions:[{id:ee(),accountId:"bradesco",amount:2000,date:a}],extensions:[]},
       ]),
       (e.reserve = [{ id: ee(), accountId: "nubank", amount: 7e4 }]));
     for (let l = 0; l < 8; l++) {
@@ -1319,14 +1310,14 @@ function cn(props){return React.createElement(FluidNavigation,props);}
   function pe({ label: e, children: a, onClick: t, ...l }) {
     return A.default.createElement(
       /excluir|remover/i.test(e || '') ? LiquidDangerButton : motion.button,
-      { className: "icon-button", "aria-label": e, title: e, onClick: t, whileHover: {scale:1.025}, whileTap: {scale:.97}, transition:{type:"spring",stiffness:360,damping:28}, ...l },
+      { className: "icon-button", "aria-label": e, title: e, onClick: t ? event => setTimeout(()=>t(event),80) : undefined, whileHover: {scale:1.025}, whileTap: {scale:.97}, transition:{type:"spring",stiffness:360,damping:28}, ...l },
       a,
     );
   }
   function F({ children: e, onClick: a, variant: t = "", ...l }) {
     return A.default.createElement(
       "button",
-      { className: "button " + t, onClick: a, ...l },
+      { className: "button " + t, onClick: a ? event => {const action=()=>a(event);window.matchMedia("(prefers-reduced-motion: reduce)").matches?action():setTimeout(action,90);} : undefined, ...l },
       e,
     );
   }
@@ -2342,7 +2333,7 @@ function Hg(props){return React.createElement(AppModal,props);}
               r.default.createElement(
                 "small",
                 null,
-                (n.deadlineLabel || "Prazo") + ": " + fa(n.due) + " \xB7 " + (n.statusLabel || (f >= 1 ? "Concluída" : "Em andamento")),
+                (n.deadlineLabel || "Prazo") + ": " + fa(n.due) + " \xB7 " + (f >= 1 ? "Concluída" : n.statusLabel || "Em andamento"),
               ),
             ),
             r.default.createElement(Pe, { size: 18 }),
@@ -2924,7 +2915,6 @@ function Hg(props){return React.createElement(AppModal,props);}
       return r.default.createElement(
         r.default.Fragment,
         null,
-        ln(),
         Qg(),
         React.createElement(FinanceShortcuts, {
           onNavigate: ke,
@@ -2932,6 +2922,7 @@ function Hg(props){return React.createElement(AppModal,props);}
           onSearch: query => { ke("entries"); me(query); },
         }),
         React.createElement(DashboardOverview, {
+          periodControl: ln(),
           groups: [
             { id: "flow", title: "Seu fluxo no período", kpis: [
               {label:"Entradas",value:s?"+"+ye(Te.income):"••••",tone:"positive",icon:React.createElement(dl,{size:18})},
@@ -2950,7 +2941,7 @@ function Hg(props){return React.createElement(AppModal,props);}
             title:"Metas em movimento",progress:jo?Math.min(100,Math.round(Xo/jo*100)):0,hideProgress:!s,
             completedCount:e.goals.filter(goal=>za(goal)>=goal.target).length,totalCount:e.goals.length,
             priority:e.goals[0]?.priority||"Normal",status:e.goals[0]?.statusLabel||"Em andamento",assignees:[],
-            subtasks:e.goals.map(goal=>({id:goal.id,title:goal.title+" · "+(s?ye(za(goal))+" de "+ye(goal.target):"••••"),completed:za(goal)>=goal.target,priority:goal.priority||"Normal",status:goal.statusLabel||"Em andamento",onPriorityChange:value=>le(data=>{data.goals.find(item=>item.id===goal.id).priority=value;}),onStatusChange:value=>le(data=>{data.goals.find(item=>item.id===goal.id).statusLabel=value;}),action:()=>{if(za(goal)>=goal.target)_l("goals",goal.id);else Ma()||U("contribution",{id:goal.id});}}))
+            subtasks:(e.goals.some(goal=>goal.pinned)?e.goals.filter(goal=>goal.pinned).slice(0,4):e.goals).map(goal=>({id:goal.id,title:goal.title+" · "+(s?ye(za(goal))+" de "+ye(goal.target):"••••"),completed:za(goal)>=goal.target,progress:za(goal)/goal.target,pinned:!!goal.pinned,onPin:()=>le(data=>{const item=data.goals.find(item=>item.id===goal.id);if(!item.pinned&&data.goals.filter(item=>item.pinned).length>=4)throw Error("Você pode fixar até 4 metas.");item.pinned=!item.pinned;}),priority:goal.priority||"Normal",status:za(goal)>=goal.target?"Concluída":goal.statusLabel||"Em andamento",onPriorityChange:value=>le(data=>{data.goals.find(item=>item.id===goal.id).priority=value;}),onStatusChange:value=>le(data=>{data.goals.find(item=>item.id===goal.id).statusLabel=value;}),action:()=>{if(za(goal)>=goal.target)_l("goals",goal.id);else Ma()||U("contribution",{id:goal.id});}}))
           },
           onCreateGoal:()=>U("goal")
         }),
@@ -3320,7 +3311,7 @@ function Hg(props){return React.createElement(AppModal,props);}
             completedCount: e.goals.filter(goal => za(goal) >= goal.target).length, totalCount: e.goals.length,
             priority: e.goals[0]?.priority || "Normal",
             status: e.goals[0]?.statusLabel || "Em andamento", assignees: [],
-            subtasks: e.goals.map(goal => ({ id: goal.id, title: goal.title + " · " + (s ? ye(za(goal)) + " de " + ye(goal.target) : "••••"), completed: za(goal) >= goal.target, priority: goal.priority || "Normal", status: goal.statusLabel || "Em andamento", onPriorityChange: value => le(data => { data.goals.find(item => item.id === goal.id).priority = value; }), onStatusChange: value => le(data => { data.goals.find(item => item.id === goal.id).statusLabel = value; }), action: () => { if (za(goal) >= goal.target) _l("goals", goal.id); else Ma() || U("contribution", { id: goal.id }); } })),
+            subtasks: e.goals.map(goal => ({ id: goal.id, title: goal.title + " · " + (s ? ye(za(goal)) + " de " + ye(goal.target) : "••••"), completed: za(goal) >= goal.target, progress: za(goal)/goal.target, pinned: !!goal.pinned, onPin: () => le(data => {const item=data.goals.find(item=>item.id===goal.id);if(!item.pinned&&data.goals.filter(item=>item.pinned).length>=4)throw Error("Você pode fixar até 4 metas.");item.pinned=!item.pinned;}), priority: goal.priority || "Normal", status: za(goal)>=goal.target ? "Concluída" : goal.statusLabel || "Em andamento", onPriorityChange: value => le(data => { data.goals.find(item => item.id === goal.id).priority = value; }), onStatusChange: value => le(data => { data.goals.find(item => item.id === goal.id).statusLabel = value; }), action: () => { if (za(goal) >= goal.target) _l("goals", goal.id); else Ma() || U("contribution", { id: goal.id }); } })),
           } }),
           e.goals.map(Ys),
           !e.goals.length &&
@@ -4970,6 +4961,11 @@ function Hg(props){return React.createElement(AppModal,props);}
       r.default.createElement(
         "header",
         { className: "app-header" },
+          t !== "dashboard" && r.default.createElement(motion.button, {
+            type:"button", className:"screen-back-button", "aria-label":"Voltar uma tela", title:"Voltar",
+            onClick:backScreen, whileHover:{x:-2}, whileTap:{scale:.94}, transition:{type:"spring",stiffness:360,damping:28}
+          }, r.default.createElement($a,{size:19,strokeWidth:1.8})),
+
         r.default.createElement(
           "button",
           {
@@ -5008,7 +5004,7 @@ function Hg(props){return React.createElement(AppModal,props);}
           }),
           r.default.createElement(
             motion.div,
-            { className: "profile-menu", initial:{opacity:0,scale:.97,y:-12,filter:"blur(5px)"}, animate:{opacity:1,scale:1,y:0,filter:"blur(0px)"}, exit:{opacity:0,scale:.985,y:-6,filter:"blur(3px)"}, transition:{type:"spring",stiffness:280,damping:28,mass:.9} },
+            { className: "profile-menu", initial:{opacity:0,scale:.985,y:-8}, animate:{opacity:1,scale:1,y:0}, exit:{opacity:0,scale:.985,y:-6}, transition:{type:"tween",duration:.24,ease:[.22,1,.36,1]} },
             r.default.createElement(
               "div",
               { className: "profile-top" },
@@ -5084,10 +5080,6 @@ function Hg(props){return React.createElement(AppModal,props);}
         r.default.createElement(
           "div",
           { className: "screen-heading" },
-          t !== "dashboard" && r.default.createElement(motion.button, {
-            type:"button", className:"screen-back-button", "aria-label":"Voltar uma tela", title:"Voltar",
-            onClick:backScreen, whileHover:{x:-2}, whileTap:{scale:.94}, transition:{type:"spring",stiffness:360,damping:28}
-          }, r.default.createElement($a,{size:19,strokeWidth:1.8})),
           r.default.createElement(
             "div",
             { className: t !== "dashboard" ? "screen-heading-title" : "" },

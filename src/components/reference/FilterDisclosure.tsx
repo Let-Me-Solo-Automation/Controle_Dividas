@@ -24,8 +24,8 @@ interface FilterDisclosureProps {
 
 const SPRING = {
   type: "spring",
-  stiffness: 240,
-  damping: 20,
+  stiffness: 300,
+  damping: 36,
   mass: 1,
 } as const;
 
@@ -101,12 +101,13 @@ export const FilterDisclosure: FC<FilterDisclosureProps> = ({
   const handleSelect = (id: string) => {
     cancelPendingClose();
     setActive(id);
-    onChange?.(id);
+
     closeTimer.current = setTimeout(() => {
       closeTimer.current = null;
       restoreFocus.current = true;
       setOpen(false);
-    }, 220);
+      onChange?.(id);
+    }, 320);
   };
 
   return (
@@ -117,7 +118,7 @@ export const FilterDisclosure: FC<FilterDisclosureProps> = ({
       <MotionConfig
         transition={{
           type: "spring",
-          bounce: 0.25,
+          bounce: 0,
           duration: 0.7,
         }}
       >
@@ -125,7 +126,7 @@ export const FilterDisclosure: FC<FilterDisclosureProps> = ({
           {open ? (
             <motion.div
               key="open"
-              layoutId="filter-disclosure"
+
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{
@@ -142,7 +143,7 @@ export const FilterDisclosure: FC<FilterDisclosureProps> = ({
                 return (
                   <motion.button
                     key={item.id}
-                    initial={{ opacity: 0, scale: 1.1, y: 40 }}
+                    initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     type="button"
                     aria-pressed={selected}
@@ -186,7 +187,7 @@ export const FilterDisclosure: FC<FilterDisclosureProps> = ({
             <div key="close" className="flex items-center">
               <motion.button
                 ref={triggerRef}
-                layoutId="filter-disclosure"
+
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{
@@ -197,7 +198,7 @@ export const FilterDisclosure: FC<FilterDisclosureProps> = ({
                 aria-label={label}
                 aria-expanded={open}
                 onClick={() => setOpen(true)}
-                whileHover={{ scale: 1.05 }}
+                whileHover={{ scale: 1 }}
                 whileTap={{ scale: 0.95 }}
                 style={{
                   borderRadius: 32,
@@ -208,7 +209,7 @@ export const FilterDisclosure: FC<FilterDisclosureProps> = ({
               </motion.button>
 
               <motion.div
-                initial={{ x: -30 }}
+                initial={false}
                 animate={{ x: 0 }}
                 transition={{
                   type: "spring",

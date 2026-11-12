@@ -2,7 +2,7 @@ import { useId, useState, type ReactNode } from "react";
 import { AnimatePresence, LayoutGroup, motion } from "motion/react";
 import { ArrowUpRight, Plus, Target } from "lucide-react";
 import { FaLayerGroup, FaChartPie } from "react-icons/fa";
-import { CarouselNavigator } from "./nexo-ui";
+import { CarouselNavigator, AnimatedMoney } from "./nexo-ui";
 import { FilterDisclosure } from "./reference/FilterDisclosure";
 import { TaskWidget, type TaskData } from "./reference/TaskWidget";
 
@@ -23,10 +23,12 @@ export function DashboardOverview({
   groups,
   taskData,
   onCreateGoal,
+  periodControl,
 }: {
   groups: DashboardOverviewGroup[];
   taskData: TaskData;
   onCreateGoal: () => void;
+  periodControl?: ReactNode;
 }) {
   const scope = useId();
   const [filter, setFilter] = useState("all");
@@ -50,6 +52,7 @@ export function DashboardOverview({
           className="dashboard-overview-card"
           aria-label="Seus indicadores financeiros"
         >
+          {periodControl}
           <header className="dashboard-overview-heading">
             <div>
               <p className="eyebrow">SEU DINHEIRO, COM CLAREZA</p>
@@ -85,10 +88,10 @@ export function DashboardOverview({
           <AnimatePresence mode="wait" initial={false}>
             {current ? (
               <motion.div
-                key={current.id}
-                initial={{ opacity: 0, scale: 0.995 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.997 }}
+                key={current.id + current.kpis.map(kpi => kpi.value).join()}
+                initial={{ opacity: 0, filter: "blur(4px)" }}
+                animate={{ opacity: 1, filter: "blur(0px)" }}
+                exit={{ opacity: 0, filter: "blur(3px)" }}
                 transition={{ type: "spring", stiffness: 260, damping: 30, mass: 0.9 }}
                 className="dashboard-overview-page"
                 aria-live="polite"
@@ -114,7 +117,7 @@ export function DashboardOverview({
                         ) : null}
                         {kpi.label}
                       </dt>
-                      <dd>{kpi.value}</dd>
+                      <dd>{kpi.value.includes("R$") ? <AnimatedMoney value={Math.round(Number(kpi.value.replace(/[^0-9,.-]/g, "").replace(/\./g, "").replace(",", ".")) * 100) * (kpi.tone === "negative" ? -1 : 1)} signed fromZero /> : kpi.value}</dd>
                     </div>
                   ))}
                 </dl>
@@ -158,7 +161,7 @@ export function DashboardOverview({
             <Target size={17} />
             <h2>Seus planos em movimento</h2>
           </div>
-          <TaskWidget data={taskData} />
+          <TaskWidget data={taskData} initialOpen />
           {taskData.totalCount === 0 ? (
             <div className="dashboard-overview-goals-empty">
               <p>Seu próximo plano começa com uma meta.</p>

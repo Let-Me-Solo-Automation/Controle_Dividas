@@ -42,9 +42,10 @@ function VisibleFinanceChart({
   kind = "area",
 }: Props) {
   const preferences = useMotionPreferences();
+  if (preferences.chart && preferences.chart !== "auto") kind = preferences.chart;
   const reduced = useReducedMotion();
   const root = useRef<HTMLDivElement>(null);
-  const inView = useInView(root, { once: true, amount: 0.15 });
+  const inView = useInView(root, { once: false, amount: 0.15 });
   const id = useId().replace(/:/g, "");
   const gradient = `finance-area-${id}`;
   const clip = `finance-reveal-${id}`;

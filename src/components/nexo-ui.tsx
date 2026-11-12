@@ -63,6 +63,7 @@ type Preferences = {
   glass?: boolean;
   motionStyle?: string;
   chartAnimation?: string;
+  chart?: "auto" | "area" | "bars" | "line";
 };
 const MotionPreferences = createContext<Preferences>({});
 export const useMotionPreferences = () => useContext(MotionPreferences);
@@ -550,8 +551,8 @@ export function AnimatedMoney({
   signed?: boolean;
 }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const seen = useInView(ref, { once: true, amount: 0.1 });
-  const previous = useRef(fromZero ? 0 : value);
+  const seen = useInView(ref, { once: false, amount: 0.1 });
+  const previous = useRef(0);
   const reduce = useReducedMotion();
   const preferences = useContext(MotionPreferences);
   const noCount =
@@ -562,7 +563,7 @@ export function AnimatedMoney({
       previous.current = value;
       return;
     }
-    if (fromZero && !seen && !noCount) return;
+    if (!seen && !noCount) { previous.current = 0; ref.current.textContent = format(0); return; }
     if (noCount) {
       ref.current.textContent = format(value);
       previous.current = value;
@@ -600,7 +601,7 @@ export function MotionProgress({
   const pref = useMotionPreferences(),
     reduced = useReducedMotion();
   const root = useRef<HTMLDivElement>(null),
-    seen = useInView(root, { once: true, amount: 0.15 });
+    seen = useInView(root, { once: false, amount: 0.15 });
   const p = Math.max(0, Math.min(1, value)),
     instant = !!reduced || pref.motion === false || pref.progress === false;
   const target = instant || seen ? p : 0;
@@ -627,7 +628,7 @@ export function MotionProgress({
         style={{
           width: "100%",
           transformOrigin: "left",
-          background: "var(--accent)",
+          background: p >= 1 ? "var(--positive)" : p >= .5 ? "#d69b26" : "var(--negative)",
         }}
         transition={{ type: "tween", duration, ease: [0.22, 1, 0.36, 1] }}
       />
@@ -643,7 +644,7 @@ export function MotionProgress({
 }
 
 export function AnimatedProgressRing({progress=0,size=90,label,children}:{progress?:number;size?:number;label?:string;children?:ReactNode}) {
- const root=useRef<HTMLDivElement>(null),seen=useInView(root,{once:true,amount:.15});
+ const root=useRef<HTMLDivElement>(null),seen=useInView(root,{once:false,amount:.15});
  const pref=useMotionPreferences(),reduce=useReducedMotion(),p=Math.max(0,Math.min(1,progress));
  const instant=!!reduce||pref.motion===false||pref.progress===false;
  const length=2*Math.PI*40;

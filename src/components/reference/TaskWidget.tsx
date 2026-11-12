@@ -15,6 +15,9 @@ export interface Subtask {
   action?: () => void;
   priority?: string;
   status?: string;
+  progress?: number;
+  pinned?: boolean;
+  onPin?: () => void;
   onPriorityChange?: (value: string) => void;
   onStatusChange?: (value: string) => void;
 }
@@ -59,7 +62,7 @@ export const TaskWidget: React.FC<Props> = ({ data, initialOpen = false }) => {
         initial={false}
         role="group"
         aria-label={data.title}
-        onClick={() => setIsOpen(!isOpen)}
+
         transition={Transition}
         className={`relative w-full cursor-pointer overflow-hidden border-2 border-neutral-100 bg-white shadow-xl transition-colors select-none sm:w-[440px] dark:border-neutral-800 dark:bg-neutral-950 ${
           isOpen
@@ -276,11 +279,11 @@ export const TaskWidget: React.FC<Props> = ({ data, initialOpen = false }) => {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.1 + idx * 0.03 }}
                     aria-selected={selectedTask?.id === task.id}
-                    className={`relative flex min-w-0 cursor-pointer items-center pl-8 text-left ${selectedTask?.id === task.id ? "rounded-lg bg-neutral-50/80 dark:bg-neutral-900/70" : ""}`}
+                    className={`relative flex flex-wrap min-w-0 cursor-pointer items-center pl-8 text-left ${selectedTask?.id === task.id ? "rounded-lg bg-neutral-50/80 dark:bg-neutral-900/70" : ""}`}
                   >
                     <div className="absolute top-[-10px] left-0 h-[30px] w-4 rounded-bl-xl border-b-[1.7px] border-l-[1.7px] border-neutral-300 transition-colors sm:w-5 dark:border-neutral-700" />
                     <div
-                      className={`flex h-5 w-5 items-center justify-center rounded-full border-[1.7px] transition-colors ${task.completed ? "border-neutral-600 bg-neutral-600 dark:border-neutral-200 dark:bg-neutral-200" : "border-neutral-300 bg-white dark:border-neutral-600 dark:bg-transparent"}`}
+                      className={`shrink-0 flex h-5 w-5 items-center justify-center rounded-full border-[1.7px] transition-colors ${task.completed ? "border-neutral-600 bg-neutral-600 dark:border-neutral-200 dark:bg-neutral-200" : "border-neutral-300 bg-white dark:border-neutral-600 dark:bg-transparent"}`}
                     >
                       {task.completed && (
                         <Check
@@ -297,15 +300,18 @@ export const TaskWidget: React.FC<Props> = ({ data, initialOpen = false }) => {
                       {task.title}
                     </span>
                     </button>
+                    {task.onPin && <button type="button" aria-label={`${task.pinned ? "Desafixar" : "Fixar"} ${task.title}`} aria-pressed={!!task.pinned} onClick={event => { event.stopPropagation(); task.onPin?.(); }} className="goal-pin-button">{task.pinned ? "◆" : "◇"}</button>}
+                    {task.progress !== undefined && <div className="task-goal-progress"><MotionProgress value={task.progress} label={`Progresso de ${task.title}`} /></div>}
                   </motion.div>
                 ))}
               </div>
 
+              {data.subtasks.length > 1 && <label className="field"><span>Meta para organizar</span><select aria-label="Meta para organizar" value={selectedTask?.id ?? ""} onChange={event => setSelectedId(event.target.value)}>{data.subtasks.map(task => <option key={task.id} value={task.id}>{task.title}</option>)}</select></label>}
               {/* Priority & Status */}
               <div className="mb-6 space-y-4">
                 {[
                   {
-                    label: "Prazos",
+                    label: "Prioridade",
                     val: selectedTask?.priority ?? data.priority,
                     onChange: selectedTask?.onPriorityChange,
                     icon: (
@@ -355,8 +361,8 @@ export const TaskWidget: React.FC<Props> = ({ data, initialOpen = false }) => {
                     <label
                       className={`${item.badge} flex items-center gap-2 rounded-lg px-3 py-1 text-sm font-bold opacity-85 transition-colors`}
                     >
-                      <select aria-label={`${item.label} de ${selectedTask?.title ?? data.title}`} value={item.val} onChange={(event) => item.onChange?.(event.target.value)} disabled={!item.onChange} className="max-w-[155px] min-w-0 cursor-pointer appearance-none bg-transparent text-inherit outline-none">
-                        {[...new Set([item.val, ...(item.layoutId === "priority" ? ["Baixa", "Normal", "Alta", "Urgente"] : ["Em andamento", "No seu ritmo", "Pausada", "Concluída"])])].map(value => <option key={value} value={value}>{value}</option>)}
+                      <select aria-label={`${item.label} de ${selectedTask?.title ?? data.title}`} value={item.layoutId === "status" && selectedTask?.completed ? "Concluída" : item.val} onChange={(event) => item.onChange?.(event.target.value)} disabled={!item.onChange || (item.layoutId === "status" && selectedTask?.completed)} className="max-w-[155px] min-w-0 cursor-pointer appearance-none bg-transparent text-inherit outline-none">
+                        {[...new Set([item.val, ...(item.layoutId === "priority" ? ["Baixa", "Normal", "Alta", "Urgente"] : ["Em andamento", "No seu ritmo", "Pausada", ...(selectedTask?.completed ? ["Concluída"] : [])])])].map(value => <option key={value} value={value}>{value}</option>)}
                       </select>
                       <span
                         className={`${item.chevronWrap} border-0.5 flex items-center justify-center rounded-sm p-px transition-colors`}
