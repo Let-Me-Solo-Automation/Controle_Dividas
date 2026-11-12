@@ -24,6 +24,7 @@ const files = [
   "Marks-Simulador.html",
   "Nexo-Simulador_1.html",
   "Iniciar.command",
+  "Abrir-Visualizador.command",
   "Instalar-no-A52.command",
   "Instalar-na-Mesa.command",
   "Configurar-Firebase.command",

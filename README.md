@@ -14,6 +14,7 @@ O site público foi retirado. O workflow só gera artefatos autenticados quando 
 
 ## Abrir e instalar
 
+- **Somente visualização:** baixe `entregas/Marks-Visualizador.zip`, extraia e abra `Visualizador.html` no navegador. No Mac, `Abrir-Visualizador.command` abre no Safari. O GitHub não executa o HTML na página do repositório.
 - **Visualizador na raiz:** abra `Visualizador.html`. É um HTML completo gerado pelo build, com cenários de demonstração separados dos dados atuais.
 - **Android:** instale `Marks-Android.apk` em Android 8.0 ou superior. O primeiro uso começa vazio. Para trazer dados do navegador, exporte o backup JSON e importe pelo app.
 - **Código:** `src/` contém a aplicação web; `android/` contém o contêiner Java/WebView; `firebase/` contém as regras de compartilhamento.
