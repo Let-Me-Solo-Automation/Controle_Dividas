@@ -541,11 +541,13 @@ export function AnimatedMoney({
   visible = true,
   className = "",
   fromZero = false,
+  signed = false,
 }: {
   value: number;
   visible?: boolean;
   className?: string;
   fromZero?: boolean;
+  signed?: boolean;
 }) {
   const ref = useRef<HTMLSpanElement>(null);
   const seen = useInView(ref, { once: true, amount: 0.1 });
@@ -554,8 +556,7 @@ export function AnimatedMoney({
   const preferences = useContext(MotionPreferences);
   const noCount =
     reduce || preferences.motion === false || preferences.numbers === false;
-  const format = (v: number) =>
-    (v / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  const format = (v: number) => `${signed && v >= 0 ? "+" : ""}${(v / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`;
   useEffect(() => {
     if (!visible || !ref.current) {
       previous.current = value;

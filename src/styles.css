@@ -22,9 +22,24 @@ button {
 button:focus-visible,
 input:focus-visible,
 [role="button"]:focus-visible {
-  outline: 3px solid #2a9d8f;
-  outline-offset: 3px;
+  outline: none !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent, #2a9d8f) 72%, transparent) !important;
+  border-radius: inherit;
 }
+html body :is(button, a, input, select, textarea, summary, [role="button"]):focus-visible { outline:none !important; box-shadow:0 0 0 3px color-mix(in srgb,var(--accent,#2a9d8f) 72%,transparent) !important; border-radius:inherit; }
+.ring, .ring svg, .ring circle { outline: none !important; box-shadow: none !important; }
+.animated-disclosure-trigger { width:100%; min-height:48px; display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 2px; color:var(--text); background:transparent; text-align:left; font-weight:600; cursor:pointer; list-style:none; }
+.animated-disclosure-trigger::-webkit-details-marker { display:none; }
+.animated-disclosure-trigger span { display:grid; place-items:center; width:30px; height:30px; border-radius:50%; background:color-mix(in srgb,var(--line) 55%,transparent); transition:transform .22s ease; }
+.animated-disclosure-trigger span.is-open { transform:rotate(180deg); }
+.animated-disclosure-panel { overflow:hidden; }
+.animated-disclosure-panel > div { padding:4px 0 12px; }
+.save-toggle { width:max-content; min-width:150px; min-height:48px; margin:10px auto 0; padding:8px 16px; border:1px solid var(--line); border-radius:999px; display:flex; align-items:center; justify-content:center; gap:9px; color:var(--text); background:color-mix(in srgb,var(--surface) 88%,var(--accent)); font-weight:650; transition:background-color .22s,color .22s,transform .22s; }
+.save-toggle:active { transform:scale(.98); }
+.save-toggle.is-saved { color:var(--positive); border-color:color-mix(in srgb,var(--positive) 40%,var(--line)); }
+.save-toggle-icon { width:26px;height:26px;display:grid;place-items:center;border-radius:50%;background:color-mix(in srgb,var(--accent) 14%,var(--surface)); }
+.app-icon-preview { display:flex;justify-content:center;padding:12px; }
+.app-icon-preview .marks-brand-icon { width:72px;height:72px;border-radius:22px;overflow:hidden; }
 html body {
   background: var(--bg);
   color: var(--text);
@@ -1034,9 +1049,12 @@ html[data-theme-family="apple"] body .icon-button {
   height: 44px;
 }
 html[data-theme-family="apple"] :is(button, input, select, textarea, a, [role="button"]):focus-visible {
-  outline: 3px solid var(--accent);
-  outline-offset: 3px;
+  outline: none !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb,var(--accent) 72%,transparent) !important;
+  border-radius: inherit;
 }
+html[data-theme-family="apple"] body .command-search input:focus-visible { outline:none !important; box-shadow:none !important; border:0 !important; }
+@media (forced-colors: active) { html body :is(button, a, input, select, textarea, summary, [role="button"]):focus-visible { outline:2px solid Highlight !important; outline-offset:2px; box-shadow:none !important; } }
 html[data-theme-family="apple"] body :is(.field input:not([type="checkbox"]):not([type="range"]), .field select, .field textarea) {
   color: var(--text);
   background: var(--surface);

@@ -13,6 +13,10 @@ export interface Subtask {
   title: string;
   completed: boolean;
   action?: () => void;
+  priority?: string;
+  status?: string;
+  onPriorityChange?: (value: string) => void;
+  onStatusChange?: (value: string) => void;
 }
 
 export interface Assignee {
@@ -40,6 +44,8 @@ interface Props {
 
 export const TaskWidget: React.FC<Props> = ({ data, initialOpen = false }) => {
   const [isOpen, setIsOpen] = useState(initialOpen);
+  const [selectedId, setSelectedId] = useState(data.subtasks[0]?.id ?? "");
+  const selectedTask = data.subtasks.find((task) => task.id === selectedId) ?? data.subtasks[0];
 
   const Transition = {
     ease: [0.25, 0.1, 0.25, 1],
@@ -226,11 +232,11 @@ export const TaskWidget: React.FC<Props> = ({ data, initialOpen = false }) => {
                 <div className="flex h-5 w-5 items-center justify-center rounded-full">
                   <IoIosCheckmarkCircleOutline
                     size={24}
-                    className="text-neutral-300 dark:text-neutral-600"
+                    className="text-neutral-500 dark:text-neutral-400"
                   />
                 </div>
-                <span className="text-sm font-semibold text-neutral-400 dark:text-neutral-500">
-                  <span className="text-neutral-400 dark:text-neutral-500">
+                <span className="text-sm font-semibold text-neutral-600 dark:text-neutral-300">
+                  <span className="text-neutral-600 dark:text-neutral-300">
                     {data.completedCount}
                   </span>{" "}
                   de {data.totalCount}
@@ -260,18 +266,17 @@ export const TaskWidget: React.FC<Props> = ({ data, initialOpen = false }) => {
                   className="absolute top-0 bottom-4 left-0 w-[1.7px] origin-top bg-neutral-300 transition-colors dark:bg-neutral-700"
                 />
                 {data.subtasks.map((task, idx) => (
-                  <motion.button
-                    type="button"
-                    disabled={!task.action}
+                  <motion.div
                     onClick={(event) => {
                       event.stopPropagation();
-                      task.action?.();
+                      setSelectedId(task.id);
                     }}
                     key={task.id}
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.1 + idx * 0.03 }}
-                    className="relative flex items-center pl-8"
+                    aria-selected={selectedTask?.id === task.id}
+                    className={`relative flex min-w-0 cursor-pointer items-center pl-8 text-left ${selectedTask?.id === task.id ? "rounded-lg bg-neutral-50/80 dark:bg-neutral-900/70" : ""}`}
                   >
                     <div className="absolute top-[-10px] left-0 h-[30px] w-4 rounded-bl-xl border-b-[1.7px] border-l-[1.7px] border-neutral-300 transition-colors sm:w-5 dark:border-neutral-700" />
                     <div
@@ -285,12 +290,14 @@ export const TaskWidget: React.FC<Props> = ({ data, initialOpen = false }) => {
                         />
                       )}
                     </div>
+                    <button type="button" onClick={(event) => { event.stopPropagation(); setSelectedId(task.id); task.action?.(); }} disabled={!task.action} className="min-w-0 flex-1 py-2 text-left disabled:cursor-default">
                     <span
                       className={`ml-3 text-base font-medium transition-colors ${task.completed ? "text-neutral-400 dark:text-neutral-500" : "text-neutral-500 dark:text-neutral-300"}`}
                     >
                       {task.title}
                     </span>
-                  </motion.button>
+                    </button>
+                  </motion.div>
                 ))}
               </div>
 
@@ -299,7 +306,8 @@ export const TaskWidget: React.FC<Props> = ({ data, initialOpen = false }) => {
                 {[
                   {
                     label: "Prazos",
-                    val: data.priority,
+                    val: selectedTask?.priority ?? data.priority,
+                    onChange: selectedTask?.onPriorityChange,
                     icon: (
                       <HugeiconsIcon
                         icon={Flag01Icon}
@@ -316,7 +324,8 @@ export const TaskWidget: React.FC<Props> = ({ data, initialOpen = false }) => {
                   },
                   {
                     label: "Situação",
-                    val: data.status,
+                    val: selectedTask?.status ?? data.status,
+                    onChange: selectedTask?.onStatusChange,
                     icon: (
                       <BiSolidHourglassBottom
                         className="text-neutral-400"
@@ -343,12 +352,12 @@ export const TaskWidget: React.FC<Props> = ({ data, initialOpen = false }) => {
                       </motion.div>
                       {item.label}
                     </div>
-                    <div
+                    <label
                       className={`${item.badge} flex items-center gap-2 rounded-lg px-3 py-1 text-sm font-bold opacity-85 transition-colors`}
                     >
-                      <motion.span layoutId={`${item.layoutId}-text`}>
-                        {item.val}
-                      </motion.span>
+                      <select aria-label={`${item.label} de ${selectedTask?.title ?? data.title}`} value={item.val} onChange={(event) => item.onChange?.(event.target.value)} disabled={!item.onChange} className="max-w-[155px] min-w-0 cursor-pointer appearance-none bg-transparent text-inherit outline-none">
+                        {[...new Set([item.val, ...(item.layoutId === "priority" ? ["Baixa", "Normal", "Alta", "Urgente"] : ["Em andamento", "No seu ritmo", "Pausada", "Concluída"])])].map(value => <option key={value} value={value}>{value}</option>)}
+                      </select>
                       <span
                         className={`${item.chevronWrap} border-0.5 flex items-center justify-center rounded-sm p-px transition-colors`}
                       >
@@ -358,7 +367,7 @@ export const TaskWidget: React.FC<Props> = ({ data, initialOpen = false }) => {
                           strokeWidth={2}
                         />
                       </span>
-                    </div>
+                    </label>
                   </motion.div>
                 ))}
               </div>

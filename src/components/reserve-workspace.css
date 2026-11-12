@@ -107,6 +107,10 @@
   height: 100%;
   object-fit: cover;
 }
+.reserve-bank-mark .bank-wordmark { font-size:20px;line-height:1;font-weight:800;letter-spacing:-1px;color:#fff;text-shadow:0 1px 3px #0005; }
+.reserve-bank-mark .bank-wordmark-itau { padding:4px 2px;border-radius:5px;background:#ecb72d;color:#142b55;font-size:12px;letter-spacing:-.6px; }
+.reserve-bank-mark .bank-wordmark-inter { font-size:13px;letter-spacing:-.8px; }
+.reserve-bank-mark .bank-wordmark-nubank { font-size:22px; }
 .reserve-delete {
   position: absolute;
   right: 0;
@@ -270,6 +274,10 @@
   object-fit: cover;
   border-radius: 12px;
 }
+.reserve-icon-crop { display:grid;grid-template-columns:56px minmax(0,1fr);gap:10px 12px;align-items:center;padding:12px;border:1px solid var(--line);border-radius:16px;background:color-mix(in srgb,var(--surface) 90%,var(--line)); }
+.reserve-icon-crop label { display:grid;gap:5px;font-size:12px;color:var(--muted); }
+.reserve-icon-crop input[type="range"] { width:100%; }
+.reserve-icon-crop > button { grid-column:2;justify-self:start;min-height:40px;padding:4px 8px;border:0;background:transparent;color:var(--accent); }
 .reserve-icon-preview button {
   border: 0;
   background: transparent;
@@ -450,7 +458,10 @@
 .reserve-summary strong,
 .reserve-bank-balance {
   overflow-wrap: anywhere;
+  color: var(--positive);
 }
+.reserve-bank-card .money-in { color: var(--positive); font-weight: 650; }
+.reserve-bank-card .money-out { color: var(--negative); font-weight: 650; }
 @container (max-width:600px) {
   .reserve-summary,
   .reserve-bank-grid {

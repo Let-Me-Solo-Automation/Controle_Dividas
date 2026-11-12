@@ -38,7 +38,16 @@ const iconLabels = {
   shield: "Proteção",
   leaf: "Folha",
   star: "Estrela",
+  bradesco: "Bradesco",
+  itau: "Itaú",
+  c6: "C6 Bank",
+  nubank: "Nubank",
+  inter: "Inter",
+  santander: "Santander",
+  bb: "Banco do Brasil",
+  caixa: "Caixa",
 };
+const bankWordmarks: Record<string, string> = { bradesco: "B", itau: "itaú", c6: "C6", nubank: "nu", inter: "inter", santander: "S", bb: "BB", caixa: "X" };
 export function BankMark({ bank }: { bank: Bank }) {
   const Icon = icons[bank.icon as keyof typeof icons] || Landmark;
   return (
@@ -47,7 +56,9 @@ export function BankMark({ bank }: { bank: Bank }) {
       style={{ background: bank.color || "var(--accent)" }}
     >
       {bank.iconImage ? (
-        <img src={bank.iconImage} alt="" />
+        <img src={bank.iconImage} alt="" style={{ objectPosition: `${bank.iconPositionX ?? 50}% ${bank.iconPositionY ?? 50}%` }} />
+      ) : bankWordmarks[bank.icon || ""] ? (
+        <strong className={`bank-wordmark bank-wordmark-${bank.icon}`}>{bankWordmarks[bank.icon || ""]}</strong>
       ) : (
         <Icon size={24} aria-hidden="true" />
       )}
@@ -58,6 +69,8 @@ export function BankFields() {
   const [image, setImage] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [positionX, setPositionX] = useState(50);
+  const [positionY, setPositionY] = useState(50);
   return (
     <div className="reserve-bank-fields">
       <label>
@@ -122,11 +135,15 @@ export function BankFields() {
         />
       </label>
       <input name="iconImage" type="hidden" value={image} />
+      <input name="iconPositionX" type="hidden" value={positionX} />
+      <input name="iconPositionY" type="hidden" value={positionY} />
       {loading && <p role="status">Lendo imagem…</p>}
       {image && (
-        <div className="reserve-icon-preview">
-          <img src={image} alt="Prévia do ícone do banco" />
-          <button type="button" onClick={() => setImage("")}>
+        <div className="reserve-icon-crop">
+          <div className="reserve-icon-preview"><img src={image} alt="Prévia do ícone do banco" style={{ objectPosition: `${positionX}% ${positionY}%` }} /></div>
+          <label>Enquadramento horizontal<input aria-label="Enquadramento horizontal do ícone" type="range" min="0" max="100" value={positionX} onChange={event => setPositionX(Number(event.target.value))} /></label>
+          <label>Enquadramento vertical<input aria-label="Enquadramento vertical do ícone" type="range" min="0" max="100" value={positionY} onChange={event => setPositionY(Number(event.target.value))} /></label>
+          <button type="button" onClick={() => { setImage(""); setPositionX(50); setPositionY(50); }}>
             Remover imagem
           </button>
         </div>
@@ -150,6 +167,8 @@ export function bankFromForm(
     color: String(fields.get("color") || "#4968db"),
     icon: String(fields.get("icon") || "bank"),
     iconImage: String(fields.get("iconImage") || ""),
+    iconPositionX: Number(fields.get("iconPositionX") || 50),
+    iconPositionY: Number(fields.get("iconPositionY") || 50),
   };
 }
 export function ReserveTransactionFields({
@@ -442,20 +461,20 @@ export function ReserveWorkspace({
               </p>
               <span className="reserve-eyebrow">SALDO REAL</span>
               <strong className="reserve-bank-balance">
-                {format(balance(bank.id))}
+                {(balance(bank.id) < 0 ? "−" : "+") + format(Math.abs(balance(bank.id)))}
               </strong>
               <dl>
                 <div>
                   <dt>Disponível</dt>
-                  <dd>{format(free(bank.id))}</dd>
+                  <dd className={free(bank.id) < 0 ? "money-out" : "money-in"}>{(free(bank.id) < 0 ? "−" : "+") + format(Math.abs(free(bank.id)))}</dd>
                 </div>
                 <div>
                   <dt>Na reserva</dt>
-                  <dd>{format(reserved)}</dd>
+                  <dd className="money-in">+{format(reserved)}</dd>
                 </div>
                 <div>
                   <dt>Nas metas</dt>
-                  <dd>{format(balance(bank.id) - free(bank.id) - reserved)}</dd>
+                  <dd className="money-in">+{format(Math.max(0, balance(bank.id) - free(bank.id) - reserved))}</dd>
                 </div>
               </dl>
               <div className="reserve-plan">

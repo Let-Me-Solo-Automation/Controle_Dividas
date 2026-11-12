@@ -770,6 +770,10 @@ const ReactCompat = { ...React, default: React };
     swipeActions: !0,
     focusMode: !1,
     heroImage: "",
+    appName: "Marks",
+    appIcon: "",
+    appIconX: 50,
+    appIconY: 50,
     chart: "auto",
     intensity: 1,
     lock: !1,
@@ -1446,7 +1450,7 @@ function Hg(props){return React.createElement(AppModal,props);}
     return React.createElement(AnimatedFinanceChart, props);
   }
   function Ri({ entry: e, visible: a, onClick: t }) {
-    let l = e.type === "income", expense = e.type === "expense";
+    let l = e.type === "income", expense = e.type === "expense", moved = e.type === "transfer";
     return A.default.createElement(
       "button",
       { className: "transaction row-button", onClick: t },
@@ -1470,9 +1474,10 @@ function Hg(props){return React.createElement(AppModal,props);}
         ),
       ),
       A.default.createElement(Hs, {
-        value: expense ? -e.amount : e.amount,
+        value: expense || moved ? -e.amount : e.amount,
         visible: a,
-        className: l ? "positive-text" : expense ? "negative-text" : "",
+        signed: true,
+        className: l ? "positive-text" : expense || moved ? "negative-text" : "positive-text",
       }),
     );
   }
@@ -1604,6 +1609,7 @@ function Hg(props){return React.createElement(AppModal,props);}
           clearTimeout(Vs.current),
           (Vs.current = setTimeout(() => E(""), 4500)));
       };
+    r.default.useEffect(() => { document.title = `${O.appName || "Marks"} · Organização financeira`; }, [O.appName]);
     function ke(n) {
       if (n !== t && n !== 'agenda' && t !== 'agenda') {
         screenHistory.current.push({screen:t,section:Z,period:h,date:m,query:z,scrollY:window.scrollY});
@@ -2161,6 +2167,7 @@ function Hg(props){return React.createElement(AppModal,props);}
                   due: f.date,
                   deadlineLabel: f.deadlineLabel?.trim() || "Prazo",
                   statusLabel: f.statusLabel?.trim() || "Em andamento",
+                  priority: f.priority || "Normal",
                   link: f.link,
                   image: o.image || "",
                   contributions: [],
@@ -2343,7 +2350,7 @@ function Hg(props){return React.createElement(AppModal,props);}
           r.default.createElement(
             "div",
             { className: "amount-pair" },
-            React.createElement(AnimatedMoney,{value:za(n),visible:s,fromZero:true}),
+            React.createElement(AnimatedMoney,{value:za(n),visible:s,fromZero:true,signed:true,className:"positive-text"}),
             r.default.createElement(
               "small",
               null,
@@ -2927,23 +2934,23 @@ function Hg(props){return React.createElement(AppModal,props);}
         React.createElement(DashboardOverview, {
           groups: [
             { id: "flow", title: "Seu fluxo no período", kpis: [
-              {label:"Entradas",value:s?ye(Te.income):"••••",tone:"positive",icon:React.createElement(dl,{size:18})},
-              {label:"Saídas",value:s?ye(Te.expense):"••••",tone:"negative",icon:React.createElement(Da,{size:18})}
+              {label:"Entradas",value:s?"+"+ye(Te.income):"••••",tone:"positive",icon:React.createElement(dl,{size:18})},
+              {label:"Saídas",value:s?"−"+ye(Te.expense):"••••",tone:"negative",icon:React.createElement(Da,{size:18})}
             ], actionLabel:"Abrir extrato",onAction:()=>ke("entries") },
             { id: "agreements", title: "Seus acordos", kpis: [
-              {label:"A receber",value:s?ye(_s):"••••",tone:"positive",icon:React.createElement(ta,{size:18})},
-              {label:"A pagar",value:s?ye(Xs):"••••",tone:"negative",icon:React.createElement(Ko,{size:18})}
+              {label:"A receber",value:s?"+"+ye(_s):"••••",tone:"positive",icon:React.createElement(ta,{size:18})},
+              {label:"A pagar",value:s?"−"+ye(Xs):"••••",tone:"negative",icon:React.createElement(Ko,{size:18})}
             ],actionLabel:"Ver seções",onAction:()=>ke("sections") },
             { id:"balances", title:"Saldo real, sem somar metas futuras",kpis:[
-              {label:"Patrimônio em contas",value:s?ye(Te.balance):"••••",tone:"neutral",icon:React.createElement(Et,{size:18})},
-              {label:"Na reserva",value:s?ye(Te.reserved):"••••",tone:"positive",icon:React.createElement(Et,{size:18})}
+              {label:"Patrimônio em contas",value:s?"+"+ye(Te.balance):"••••",tone:"positive",icon:React.createElement(Et,{size:18})},
+              {label:"Na reserva",value:s?"+"+ye(Te.reserved):"••••",tone:"positive",icon:React.createElement(Et,{size:18})}
             ],actionLabel:"Organizar reserva",onAction:()=>ke("accounts") }
           ],
           taskData:{
             title:"Metas em movimento",progress:jo?Math.min(100,Math.round(Xo/jo*100)):0,hideProgress:!s,
             completedCount:e.goals.filter(goal=>za(goal)>=goal.target).length,totalCount:e.goals.length,
-            priority:e.goals.length?(e.goals[0].deadlineLabel||"Prazo"):"Prazo",status:e.goals.length?(e.goals[0].statusLabel||"Em andamento"):"Situação",assignees:[],
-            subtasks:e.goals.map(goal=>({id:goal.id,title:goal.title+" · "+(s?ye(za(goal))+" de "+ye(goal.target):"••••"),completed:za(goal)>=goal.target,action:()=>{if(za(goal)>=goal.target)_l("goals",goal.id);else Ma()||U("contribution",{id:goal.id});}}))
+            priority:e.goals[0]?.priority||"Normal",status:e.goals[0]?.statusLabel||"Em andamento",assignees:[],
+            subtasks:e.goals.map(goal=>({id:goal.id,title:goal.title+" · "+(s?ye(za(goal))+" de "+ye(goal.target):"••••"),completed:za(goal)>=goal.target,priority:goal.priority||"Normal",status:goal.statusLabel||"Em andamento",onPriorityChange:value=>le(data=>{data.goals.find(item=>item.id===goal.id).priority=value;}),onStatusChange:value=>le(data=>{data.goals.find(item=>item.id===goal.id).statusLabel=value;}),action:()=>{if(za(goal)>=goal.target)_l("goals",goal.id);else Ma()||U("contribution",{id:goal.id});}}))
           },
           onCreateGoal:()=>U("goal")
         }),
@@ -3311,9 +3318,9 @@ function Hg(props){return React.createElement(AppModal,props);}
           e.goals.length > 0 && React.createElement(GoalProgress, { data: {
             title: "Metas e aportes", progress: jo ? Math.min(100, Math.round(Xo / jo * 100)) : 0, hideProgress: !s,
             completedCount: e.goals.filter(goal => za(goal) >= goal.target).length, totalCount: e.goals.length,
-            priority: e.goals.length ? (e.goals[0].deadlineLabel || "Prazo") : "Prazo",
-            status: e.goals.length ? (e.goals[0].statusLabel || "Em andamento") : "Situação", assignees: [],
-            subtasks: e.goals.map(goal => ({ id: goal.id, title: goal.title + " · " + (s ? ye(za(goal)) + " de " + ye(goal.target) : "••••") + (za(goal) < goal.target ? " · Organizar aporte" : " · Concluída"), completed: za(goal) >= goal.target, action: () => { if (za(goal) >= goal.target) _l("goals", goal.id); else Ma() || U("contribution", { id: goal.id }); } })),
+            priority: e.goals[0]?.priority || "Normal",
+            status: e.goals[0]?.statusLabel || "Em andamento", assignees: [],
+            subtasks: e.goals.map(goal => ({ id: goal.id, title: goal.title + " · " + (s ? ye(za(goal)) + " de " + ye(goal.target) : "••••"), completed: za(goal) >= goal.target, priority: goal.priority || "Normal", status: goal.statusLabel || "Em andamento", onPriorityChange: value => le(data => { data.goals.find(item => item.id === goal.id).priority = value; }), onStatusChange: value => le(data => { data.goals.find(item => item.id === goal.id).statusLabel = value; }), action: () => { if (za(goal) >= goal.target) _l("goals", goal.id); else Ma() || U("contribution", { id: goal.id }); } })),
           } }),
           e.goals.map(Ys),
           !e.goals.length &&
@@ -3379,7 +3386,7 @@ function Hg(props){return React.createElement(AppModal,props);}
               "div",
               null,
               r.default.createElement("small", null, "Seu progresso"),
-              r.default.createElement("div", { className: "big-value" }, React.createElement(AnimatedMoney,{value:f,visible:s,fromZero:true})),
+              r.default.createElement("div", { className: "big-value positive-text" }, React.createElement(AnimatedMoney,{value:f,visible:s,fromZero:true,signed:true,className:"positive-text"})),
               r.default.createElement("p", null, "Objetivo: ", P(n.target)),
             ),
             r.default.createElement(Pl, { progress: L }),
@@ -3418,7 +3425,7 @@ function Hg(props){return React.createElement(AppModal,props);}
             "Adicionar ou resgatar valor",
           ),
           React.createElement(GoalTargetEditor,{key:n.id,target:n.target,deposited:f,parse:Rl,format:ye,onSave:value=>le(data=>{data.goals.find(goal=>goal.id===n.id).target=value;},"Valor da meta atualizado.")}),
-          React.createElement(GoalMetaEditor,{key:n.id+"-meta",due:n.due,deadlineLabel:n.deadlineLabel,statusLabel:n.statusLabel,onSave:value=>le(data=>Object.assign(data.goals.find(goal=>goal.id===n.id),value),"Prazo e situação atualizados.")}),
+          React.createElement(GoalMetaEditor,{key:n.id+"-meta",due:n.due,deadlineLabel:n.deadlineLabel,statusLabel:n.statusLabel,priority:n.priority,onSave:value=>le(data=>Object.assign(data.goals.find(goal=>goal.id===n.id),value),"Prazo e situação atualizados.")}),
           r.default.createElement(
             F,
             {
@@ -3462,7 +3469,7 @@ function Hg(props){return React.createElement(AppModal,props);}
                 "div",
                 { className: "simple-row", key: v.id },
                 r.default.createElement("span", null, v.title),
-                P(S),
+                r.default.createElement(Hs, { value: S, visible: s, signed: true, className: S < 0 ? "negative-text" : "positive-text" }),
               )
             );
           }),
@@ -3493,7 +3500,7 @@ function Hg(props){return React.createElement(AppModal,props);}
                     fa(v.date),
                   ),
                 ),
-                P(v.amount),
+                r.default.createElement(Hs, { value: v.amount, visible: s, signed: true, className: v.amount < 0 ? "negative-text" : "positive-text" }),
               ),
             ),
           !n.contributions.length &&
@@ -3925,6 +3932,9 @@ function Hg(props){return React.createElement(AppModal,props);}
         r.default.createElement(
           J,
           { title: "Composição e uso" },
+          r.default.createElement(X, { label: "Nome do aplicativo", value: O.appName || "Marks", maxLength: 30, onChange: event => ge(draft => { draft.appName = event.target.value; }) }),
+          r.default.createElement("label", { className: "field" }, r.default.createElement("span", null, "Ícone do aplicativo (PNG, JPEG ou WebP até 256 KB)"), r.default.createElement("input", { type: "file", accept: "image/png,image/jpeg,image/webp", onChange: event => { const file = event.target.files?.[0]; if (!file) return; if (file.size > 256 * 1024) { event.target.value = ""; return; } const reader = new FileReader(); reader.onload = () => ge(draft => { draft.appIcon = String(reader.result || ""); }); reader.readAsDataURL(file); } }), O.appIcon ? r.default.createElement("button", { type: "button", className: "text-button", onClick: () => ge(draft => { draft.appIcon = ""; }) }, "Restaurar ícone original") : null),
+          O.appIcon && r.default.createElement(React.Fragment, null, r.default.createElement("label", { className: "field" }, r.default.createElement("span", null, "Ajustar enquadramento horizontal"), r.default.createElement("input", { type: "range", min: 0, max: 100, value: O.appIconX ?? 50, onChange: event => ge(draft => { draft.appIconX = Number(event.target.value); }) })), r.default.createElement("label", { className: "field" }, r.default.createElement("span", null, "Ajustar enquadramento vertical"), r.default.createElement("input", { type: "range", min: 0, max: 100, value: O.appIconY ?? 50, onChange: event => ge(draft => { draft.appIconY = Number(event.target.value); }) })), r.default.createElement("div", { className: "app-icon-preview" }, r.default.createElement(BrandIcon, { image: O.appIcon, position: `${O.appIconX ?? 50}% ${O.appIconY ?? 50}%` }))),
           r.default.createElement(Ye, {
             label: "Ações por deslize",
             description: "Deslize seções e metas para abrir ou excluir",
@@ -4355,6 +4365,7 @@ function Hg(props){return React.createElement(AppModal,props);}
               }),
               r.default.createElement(X, { label: "Rótulo do prazo", name: "deadlineLabel", maxLength: 32, defaultValue: "Prazo", placeholder: "Ex.: Entrega" }),
               r.default.createElement(X, { label: "Situação", name: "statusLabel", maxLength: 32, defaultValue: "Em andamento", placeholder: "Ex.: Pausada" }),
+              r.default.createElement("label", { className: "field" }, r.default.createElement("span", null, "Prioridade"), r.default.createElement("select", { name: "priority", defaultValue: "Normal" }, ["Baixa", "Normal", "Alta", "Urgente"].map(value => r.default.createElement("option", { key: value, value }, value)))),
               Wa("Quanto quero juntar (R$)"),
               nl("Data prevista"),
               r.default.createElement(X, {
@@ -4966,8 +4977,8 @@ function Hg(props){return React.createElement(AppModal,props);}
             onClick: () => ke("dashboard"),
             "aria-label": "Marks in\xEDcio",
           },
-          React.createElement(BrandIcon,{className:'brand-icon'}),
-          r.default.createElement("span", null, "Marks"),
+          React.createElement(BrandIcon,{className:'brand-icon',image:O.appIcon,position:`${O.appIconX ?? 50}% ${O.appIconY ?? 50}%`}),
+          r.default.createElement("span", null, O.appName || "Marks"),
         ),
         r.default.createElement(
           "div",

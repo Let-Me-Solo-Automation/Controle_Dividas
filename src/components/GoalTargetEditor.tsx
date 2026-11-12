@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { AdaptiveSlider } from "./reference/AdaptiveSlider";
+import { AnimatedDisclosure } from "./AnimatedDisclosure";
 export function GoalTargetEditor({
   target,
   deposited,
@@ -17,6 +18,7 @@ export function GoalTargetEditor({
     (target / 100).toFixed(2).replace(".", ","),
   );
   const [message, setMessage] = useState("");
+  const [saved, setSaved] = useState(false);
   let cents = 0;
   try {
     cents = parse(draft);
@@ -26,8 +28,7 @@ export function GoalTargetEditor({
     Math.max(100000, target * 3, deposited * 2, cents),
   );
   return (
-    <details className="goal-target-editor">
-      <summary>Ajustar valor da meta</summary>
+    <AnimatedDisclosure className="goal-target-editor" title="Ajustar valor da meta">
       <form
         onSubmit={(event) => {
           event.preventDefault();
@@ -35,10 +36,12 @@ export function GoalTargetEditor({
             const value = parse(draft);
             if (!Number.isSafeInteger(value) || value <= 0 || value > 1e12)
               throw Error("Informe um valor positivo válido.");
-            if (onSave(value))
+            if (onSave(value)) {
+              setSaved(true);
               setMessage(
                 "Valor da meta atualizado. Seus aportes foram preservados.",
               );
+            }
           } catch (e) {
             setMessage(e instanceof Error ? e.message : "Confira o valor.");
           }
@@ -54,6 +57,7 @@ export function GoalTargetEditor({
             onChange={(e) => {
               setDraft(e.target.value);
               setMessage("");
+              setSaved(false);
             }}
           />
         </label>
@@ -68,17 +72,18 @@ export function GoalTargetEditor({
           onChange={(v) => {
             setDraft((v / 100).toFixed(2).replace(".", ","));
             setMessage("");
+            setSaved(false);
           }}
         />
         <p className="muted">
           Guardado de verdade: {format(deposited)}. Alterar o objetivo não
           altera seu patrimônio.
         </p>
-        <button type="submit" className="button full">
-          Salvar valor da meta
+        <button type="submit" className={`save-toggle ${saved ? "is-saved" : ""}`} aria-live="polite">
+          <span aria-hidden="true" className="save-toggle-icon">{saved ? "✓" : "↗"}</span><span>{saved ? "Salvo" : "Salvar valor da meta"}</span>
         </button>
         {message && <p role="status">{message}</p>}
       </form>
-    </details>
+    </AnimatedDisclosure>
   );
 }

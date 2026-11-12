@@ -6,6 +6,8 @@ export type Bank = {
   description?: string;
   icon?: string;
   iconImage?: string;
+  iconPositionX?: number;
+  iconPositionY?: number;
 };
 export type ReserveTransaction = {
   id: string;
@@ -33,7 +35,7 @@ export type ReserveData = {
   reserveTransactions?: ReserveTransaction[];
   reservePlans?: ReservePlan[];
 };
-export const bankIcons = ["bank", "wallet", "shield", "leaf", "star"] as const;
+export const bankIcons = ["bank", "wallet", "shield", "leaf", "star", "bradesco", "itau", "c6", "nubank", "inter", "santander", "bb", "caixa"] as const;
 export const MAX_BANK_ICON_BYTES = 256 * 1024;
 const cents = (value: unknown): value is number =>
   Number.isSafeInteger(value) && Math.abs(value as number) <= 1e12;
@@ -136,6 +138,9 @@ function validateBank(bank: Bank) {
     throw Error(
       "Imagem do banco inválida. Use PNG, JPEG ou WebP de até 256 KB.",
     );
+  for (const key of ["iconPositionX", "iconPositionY"] as const)
+    if (bank[key] !== undefined && (!Number.isFinite(bank[key]) || bank[key]! < 0 || bank[key]! > 100))
+      throw Error("Enquadramento do ícone inválido.");
 }
 export function validateReserveMetadata(data: ReserveData) {
   for (const bank of data.accounts) validateBank(bank);
