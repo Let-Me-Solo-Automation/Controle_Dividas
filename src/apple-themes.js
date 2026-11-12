@@ -1,3 +1,4 @@
+import { glossaryThemes } from "./features/themes/catalog.js";
 // Shared visual definitions for the app and Studio; no financial data or effects.
 export const systemFontStack = 'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
 
@@ -26,7 +27,7 @@ export const appleThemes = [
 
 // The picker is deliberately small. Older IDs are migrated by the preferences
 // model; their financial data and other saved settings remain untouched.
-export const curatedThemes = [
+const baseThemes = [
   appleThemes[2], light, dark,
   {
     ...common, id: 'obsidiana', name: 'Obsidiana', family: 'obsidiana',
@@ -47,6 +48,8 @@ export const curatedThemes = [
     order: ['agenda', 'sections', 'trend', 'activity', 'goals', 'reserve', 'platforms'],
   },
 ];
+
+export const curatedThemes = [...baseThemes, ...baseThemes.filter(theme=>theme.id==='obsidiana'||theme.id==='rubi').map(theme=>({...theme,id:theme.id+'-light',name:theme.name+' Claro',dark:false,bg:theme.id==='rubi'?'#eee2e7':'#e5e9ed',surface:theme.id==='rubi'?'#faf0f4':'#f5f7fa',text:'#20242c',muted:'#505966',line:'#b2bac4',accent:theme.id==='rubi'?'#923250':'#216048',accentText:'#ffffff',positive:'#166334',negative:'#a81930'})), ...glossaryThemes];
 
 export function resolveAppleTheme(id, systemDark) {
   if (id === 'apple-system') return systemDark ? dark : light;

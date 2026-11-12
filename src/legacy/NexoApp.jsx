@@ -1,3 +1,6 @@
+import {validateDeliveryMetadata} from "../features/delivery/model";
+import {DeliveryWorkspace} from "../features/delivery/DeliveryWorkspace";
+import { resizeIcon } from "../lib/image-resize";
 import {CashflowForecast} from "../features/forecast/CashflowForecast";
 import {TrashPanel} from "../features/trash/TrashPanel";
 import {normalizeTrash,archiveDeleted,restoreDeleted,purgeExpired} from "../features/trash/model";
@@ -775,7 +778,7 @@ const ReactCompat = { ...React, default: React };
       sections: [],
       goals: [],
       deliveries: [],
-      platforms: ["iFood", "99Food", "Keeta", "Outras"],
+      platforms: ["iFood entregador", "99 Food", "Keeta entregador", "Uber", "inDrive"],
       recurring: [],
       reserve: [],
       settings: normalizePersonalizationSettings(structuredClone(iu)),
@@ -875,7 +878,7 @@ const ReactCompat = { ...React, default: React };
         o.cost < 0 ||
         typeof o.km != "number" ||
         !Number.isFinite(o.km) ||
-        o.km <= 0
+        o.km < 0
       )
         throw Error("Entrega inv\xE1lida.");
     for (let o of e.recurring)
@@ -925,7 +928,7 @@ const ReactCompat = { ...React, default: React };
       if (o.extensions === void 0) o.extensions = [];
       else if (!Array.isArray(o.extensions))
         throw Error("Hist\xF3rico da meta inv\xE1lido.");
-    return (normalizeTrash(e), xf(e.settings), e.settings = normalizePersonalizationSettings(e.settings), validateReserveMetadata(e), e);
+    return (normalizeTrash(e), xf(e.settings), e.settings = normalizePersonalizationSettings(e.settings), validateReserveMetadata(e), validateDeliveryMetadata(e), e);
   }
   function bf() {
     let e = du(),
@@ -1708,6 +1711,8 @@ function Hg(props){return React.createElement(AppModal,props);}
       (0, r.useLayoutEffect)(() => {
         ((document.documentElement.dataset.theme = we.id),
           (document.documentElement.dataset.themeFamily = we.family || "custom"),
+          (document.documentElement.dataset.material = we.pattern || "default"),
+          document.documentElement.style.setProperty("--catalog-radius",`${we.radius || 26}px`),
           (document.documentElement.dataset.themeChoice = O.theme),
           (document.documentElement.style.colorScheme = we.dark ? "dark" : "light"),
           (document.documentElement.dataset.dark = String(we.dark)),
@@ -2079,9 +2084,9 @@ function Hg(props){return React.createElement(AppModal,props);}
           }
           case "delivery": {
             let S = y(),
-              k = Number(f.km.replace(",", ".")),
+              k = f.km ? Number(f.km.replace(",", ".")) : 0,
               q = Rl(f.cost || "0");
-            if (!Number.isFinite(k) || k <= 0)
+            if (!Number.isFinite(k) || k < 0)
               throw Error("Informe a dist\xE2ncia real em km.");
             if (!f.platform.trim()) throw Error("Escolha uma plataforma.");
             let ne = ee();
@@ -2089,6 +2094,7 @@ function Hg(props){return React.createElement(AppModal,props);}
               ($.deliveries.push({
                 id: ne,
                 platform: f.platform,
+                receiptStatus: f.receiptStatus==='pending'?'pending':'received',
                 title: v(),
                 pickup: f.pickup.trim(),
                 destination: f.destination.trim(),
@@ -2097,7 +2103,7 @@ function Hg(props){return React.createElement(AppModal,props);}
                 cost: q,
                 date: f.date,
               }),
-                $.entries.push({
+                f.receiptStatus!=='pending' && $.entries.push({
                   id: ee(),
                   deliveryId: ne,
                   title: "Entrega \u2022 " + f.platform,
@@ -2529,7 +2535,7 @@ function Hg(props){return React.createElement(AppModal,props);}
           sa("Ganho l\xEDquido", P(il - _o), ou),
           sa(
             "Por km",
-            P(Ct ? Math.round(il / Ct) : 0),
+            Ct ? P(Math.round(Ha.filter(item=>item.km>0).reduce((sum,item)=>sum+item.amount,0)/Ct)) : "Sem distância",
             Wo,
             "Receita bruta / km",
           ),
@@ -3498,131 +3504,8 @@ function Hg(props){return React.createElement(AppModal,props);}
         ),
       );
     }
-    function Wg() {
-      return r.default.createElement(
-        r.default.Fragment,
-        null,
-        ln(),
-        r.default.createElement(
-          "section",
-          { className: "delivery-hero" },
-          r.default.createElement(
-            "div",
-            null,
-            r.default.createElement(
-              "span",
-              { className: "round-icon" },
-              r.default.createElement(Ta, { size: 25 }),
-            ),
-            r.default.createElement(
-              "small",
-              null,
-              "Ganho l\xEDquido no per\xEDodo",
-            ),
-            r.default.createElement(
-              "div",
-              { className: "big-value" },
-              P(il - _o),
-            ),
-            r.default.createElement(
-              "p",
-              null,
-              "Seu trabalho, visto por inteiro.",
-            ),
-          ),
-          r.default.createElement(
-            F,
-            {
-              onClick: () => {
-                Ma() || U("delivery");
-              },
-            },
-            r.default.createElement(be, { size: 17 }),
-            "Entrega",
-          ),
-        ),
-        r.default.createElement(
-          "div",
-          { className: "overview-grid" },
-          sa("Bruto", P(il)),
-          sa("Custos", P(_o)),
-          sa("Receita / km", P(Ct ? Math.round(il / Ct) : 0)),
-          sa("L\xEDquido / km", P(Ct ? Math.round((il - _o) / Ct) : 0)),
-          sa("Entregas", Ha.length),
-          sa("Dist\xE2ncia", Ct.toFixed(1).replace(".", ",") + " km"),
-        ),
-        Zs(),
-        r.default.createElement(
-          "div",
-          { className: "section-label" },
-          r.default.createElement("h2", null, "Seu hist\xF3rico"),
-          r.default.createElement(
-            "button",
-            { className: "text-button", onClick: () => U("platform") },
-            "Plataformas ",
-            r.default.createElement(be, { size: 16 }),
-          ),
-        ),
-        [...Ha]
-          .sort((n, f) => f.date.localeCompare(n.date))
-          .map((n) =>
-            r.default.createElement(
-              "button",
-              {
-                className: "delivery-row row-button",
-                key: n.id,
-                onClick: () => U("deliveryDetail", { delivery: n }),
-              },
-              r.default.createElement(
-                "span",
-                { className: "round-icon" },
-                r.default.createElement(Ta, { size: 21 }),
-              ),
-              r.default.createElement(
-                "span",
-                { className: "grow" },
-                r.default.createElement("strong", null, n.title),
-                r.default.createElement(
-                  "small",
-                  null,
-                  n.platform,
-                  " \xB7 ",
-                  fa(n.date),
-                ),
-                r.default.createElement(
-                  "small",
-                  null,
-                  n.km.toFixed(1),
-                  " km \xB7",
-                  " ",
-                  s ? ye(Math.round(n.amount / n.km)) : "\u2022\u2022",
-                  "/km",
-                ),
-              ),
-              P(n.amount),
-              r.default.createElement(Pe, { size: 17 }),
-            ),
-          ),
-        !Ha.length &&
-          r.default.createElement(
-            St,
-            {
-              icon: Ta,
-              title: "Nenhuma entrega neste per\xEDodo",
-              action: "Registrar entrega",
-              onAction: () => {
-                Ma() || U("delivery");
-              },
-            },
-            "O valor por km usa a dist\xE2ncia que voc\xEA informar.",
-          ),
-        r.default.createElement(
-          ve,
-          null,
-          "Endere\xE7os s\xE3o opcionais e ficam no seu aparelho. A dist\xE2ncia \xE9 informada por voc\xEA; n\xE3o h\xE1 rastreamento autom\xE1tico.",
-        ),
-      );
-    }
+    function Wg() {return React.createElement(React.Fragment,null,ln(),React.createElement(DeliveryWorkspace,{data:e,rows:Ha,visible:s,parseAmount:Rl,onChange:le,onCreate:type=>{if(type!=="delivery"||!Ma())U(type);},onOpen:delivery=>U("deliveryDetail",{delivery})}));}
+
     function Rg() {
       return React.createElement(ReserveWorkspace, {
         data: e,
@@ -3905,7 +3788,7 @@ function Hg(props){return React.createElement(AppModal,props);}
           J,
           { title: "Composição e uso" },
           r.default.createElement(X, { label: "Nome do aplicativo", value: O.appName || "Marks", maxLength: 30, onChange: event => ge(draft => { draft.appName = event.target.value; }) }),
-          r.default.createElement("label", { className: "field" }, r.default.createElement("span", null, "Ícone do aplicativo (PNG, JPEG ou WebP até 256 KB)"), r.default.createElement("input", { type: "file", accept: "image/png,image/jpeg,image/webp", onChange: event => { const file = event.target.files?.[0]; if (!file) return; if (file.size > 256 * 1024) { event.target.value = ""; return; } const reader = new FileReader(); reader.onload = () => ge(draft => { draft.appIcon = String(reader.result || ""); }); reader.readAsDataURL(file); } }), O.appIcon ? r.default.createElement("button", { type: "button", className: "text-button", onClick: () => ge(draft => { draft.appIcon = ""; }) }, "Restaurar ícone original") : null),
+          r.default.createElement("label", { className: "field" }, r.default.createElement("span", null, "Ícone do aplicativo (ajuste automático, até 20 MB)"), r.default.createElement("input", { type: "file", accept: "image/png,image/jpeg,image/webp", onChange: async event => { const file=event.target.files?.[0];if(!file)return;try {const icon=await resizeIcon(file);ge(draft=>{draft.appIcon=icon;});}catch(error){Qe(error.message);} } }), O.appIcon ? r.default.createElement("button", { type: "button", className: "text-button", onClick: () => ge(draft => { draft.appIcon = ""; }) }, "Restaurar ícone original") : null),
           O.appIcon && r.default.createElement(React.Fragment, null, r.default.createElement("label", { className: "field" }, r.default.createElement("span", null, "Ajustar enquadramento horizontal"), r.default.createElement("input", { type: "range", min: 0, max: 100, value: O.appIconX ?? 50, onChange: event => ge(draft => { draft.appIconX = Number(event.target.value); }) })), r.default.createElement("label", { className: "field" }, r.default.createElement("span", null, "Ajustar enquadramento vertical"), r.default.createElement("input", { type: "range", min: 0, max: 100, value: O.appIconY ?? 50, onChange: event => ge(draft => { draft.appIconY = Number(event.target.value); }) })), r.default.createElement("div", { className: "app-icon-preview" }, r.default.createElement(BrandIcon, { image: O.appIcon, position: `${O.appIconX ?? 50}% ${O.appIconY ?? 50}%` }))),
           r.default.createElement(Ye, {
             label: "Ações por deslize",
@@ -4258,6 +4141,9 @@ function Hg(props){return React.createElement(AppModal,props);}
                 options: e.platforms.map((v) => ({ value: v, label: v })),
               }),
               r.default.createElement(X, {
+                label: "Recebimento", name: "receiptStatus", options:[{value:"received",label:"Já recebi na conta"},{value:"pending",label:"A receber na plataforma"}],
+              }),
+              r.default.createElement(X, {
                 label: "Nome do estabelecimento",
                 name: "title",
                 required: !0,
@@ -4276,10 +4162,9 @@ function Hg(props){return React.createElement(AppModal,props);}
               }),
               Wa("Valor recebido (R$)"),
               r.default.createElement(X, {
-                label: "Dist\xE2ncia percorrida (km)",
+                label: "Distância percorrida (km, opcional)",
                 name: "km",
                 inputMode: "decimal",
-                required: !0,
                 placeholder: "Ex.: 4,5",
               }),
               r.default.createElement(X, {
@@ -4549,7 +4434,7 @@ function Hg(props){return React.createElement(AppModal,props);}
                   }
                   if (n.kind === "entry") {
                     let k = S.entries.find((q) => q.id === n.id);
-                    if (k?.paymentId || k?.deliveryId)
+                    if (k?.paymentId || k?.deliveryId || k?.deliveryPayoutId)
                       throw Error(
                         "Use o estorno na parcela ou a exclus\xE3o da entrega.",
                       );
@@ -4699,7 +4584,7 @@ function Hg(props){return React.createElement(AppModal,props);}
               r.default.createElement("strong", null, k),
             ),
           ),
-          v.paymentId || v.deliveryId
+          v.paymentId || v.deliveryId || v.deliveryPayoutId
             ? r.default.createElement(
                 ve,
                 null,
@@ -4734,7 +4619,7 @@ function Hg(props){return React.createElement(AppModal,props);}
             ["Dist\xE2ncia", v.km + " km"],
             [
               "Receita por km",
-              s ? ye(Math.round(v.amount / v.km)) : "\u2022\u2022\u2022\u2022",
+              v.km ? (s ? ye(Math.round(v.amount / v.km)) : "••••") : "Sem distância informada",
             ],
             ["Custo", s ? ye(v.cost) : "\u2022\u2022\u2022\u2022"],
             ["Data", fa(v.date)],
@@ -5007,7 +4892,7 @@ function Hg(props){return React.createElement(AppModal,props);}
               React.createElement(ThemeMorphToggle, {
                 dark: we.dark,
                 onToggle: () => {
-                  le((n) => { n.settings.theme = O.theme.startsWith("apple-") ? (we.dark ? "apple-light" : "apple-dark") : (we.dark ? "apple-light" : "obsidiana"); });
+                  le((n) => { n.settings.theme = O.theme.startsWith("apple-") ? (we.dark ? "apple-light" : "apple-dark") : O.theme.startsWith("glossary-") ? O.theme.replace(/-(dark|light)$/,we.dark?"-light":"-dark") : (we.dark?O.theme+"-light":O.theme.replace("-light","")); });
                   x(null);
                 },
               }),

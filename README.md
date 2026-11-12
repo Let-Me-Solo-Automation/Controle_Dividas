@@ -2,7 +2,9 @@
 
 Aplicativo pessoal de finanças com contas, lançamentos, acordos parcelados, comprovantes, metas, reserva, entregas, agenda, lixeira e personalização visual.
 
-**Android 2.1.3:** hierarquia e espaçamento revisados, vidro do cabeçalho configurável, blur de revelação mais perceptível e navegação simplificada. Veja [o refinamento de UI e UX](docs/UI-UX-2.1.3.md).
+**Android 2.2.0:** plataformas e repasses, ícones redimensionados, biblioteca do glossário com favoritos e exportação interativa para Figma. Veja [os detalhes](docs/ENTREGAS-TEMAS-2.2.0.md).
+
+**UI e UX, 2.1.3:** hierarquia e espaçamento revisados, vidro do cabeçalho configurável, blur de revelação mais perceptível e navegação simplificada. Veja [o refinamento de UI e UX](docs/UI-UX-2.1.3.md).
 
 **Desempenho, 2.1.2:** perfil automático de desempenho no Android, mantendo o blur de entrada dos cards e o vidro do menu. Veja [as otimizações](docs/DESEMPENHO-ANDROID-2.1.2.md).
 

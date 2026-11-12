@@ -1,9 +1,9 @@
 import icon from "./assets/marks-icon.png";
 export const brandImage = icon;
 export const projectDownloadUrl =
-  "https://let-me-solo-automation.github.io/Controle_Dividas/downloads/Marks-projeto.zip";
+  "https://github.com/Let-Me-Solo-Automation/Controle_Dividas/blob/main/entregas/Marks-projeto.zip?raw=true";
 export const htmlDownloadUrl =
-  "https://let-me-solo-automation.github.io/Controle_Dividas/Marks-Simulador.html";
+  "https://github.com/Let-Me-Solo-Automation/Controle_Dividas/blob/main/entregas/Marks-Visualizador.zip?raw=true";
 export function installBrandIcon() {
   let link = document.querySelector<HTMLLinkElement>('link[rel="icon"]');
   if (!link) {

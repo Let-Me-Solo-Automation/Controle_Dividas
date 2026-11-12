@@ -168,8 +168,8 @@ test("delivery KPIs have gutters and dashboard section rows have complete outlin
   await open(page);
   const f = app(page);
   await navigate(page, "Entregas");
-  const layout = await f.locator(".kpi-grid").evaluate((el) => {
-    const cards = Array.from(el.querySelectorAll(".kpi"));
+  const layout = await f.locator(".delivery-metrics").first().evaluate((el) => {
+    const cards = Array.from(el.querySelectorAll(":scope > section"));
     const a = cards[0].getBoundingClientRect(),
       b = cards[1].getBoundingClientRect();
     return {

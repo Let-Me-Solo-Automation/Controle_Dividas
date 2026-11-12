@@ -1,3 +1,4 @@
+import { resizeIcon } from "./image-resize";
 export type Bank = {
   id: string;
   title: string;
@@ -273,28 +274,4 @@ export function setReservePlan(data: ReserveData, plan: ReservePlan) {
     plan,
   ];
 }
-export async function readBankIcon(file: File) {
-  if (file.size === 0 || file.size > MAX_BANK_ICON_BYTES)
-    throw Error("Use uma imagem de até 256 KB.");
-  const bytes = new Uint8Array(await file.arrayBuffer());
-  const png = [137, 80, 78, 71, 13, 10, 26, 10].every(
-    (byte, index) => bytes[index] === byte,
-  );
-  const jpeg = bytes[0] === 255 && bytes[1] === 216 && bytes[2] === 255;
-  const webp =
-    String.fromCharCode(...bytes.slice(0, 4)) === "RIFF" &&
-    String.fromCharCode(...bytes.slice(8, 12)) === "WEBP";
-  const mime = png
-    ? "image/png"
-    : jpeg
-      ? "image/jpeg"
-      : webp
-        ? "image/webp"
-        : "";
-  if (!mime || file.type !== mime)
-    throw Error("Use um arquivo PNG, JPEG ou WebP válido.");
-  let binary = "";
-  for (let offset = 0; offset < bytes.length; offset += 8192)
-    binary += String.fromCharCode(...bytes.slice(offset, offset + 8192));
-  return `data:${mime};base64,${btoa(binary)}`;
-}
+export async function readBankIcon(file: File) { return resizeIcon(file); }

@@ -1,0 +1,18 @@
+import {build} from 'esbuild';
+import assert from 'node:assert/strict';
+const compiled=await build({entryPoints:['src/features/delivery/model.ts'],bundle:true,format:'esm',write:false});
+const {nextPayout,recordWithdrawal,platformTotals,validateDeliveryMetadata}=await import('data:text/javascript;base64,'+Buffer.from(compiled.outputFiles[0].text).toString('base64'));
+assert.equal(nextPayout({mode:'weekly',weekday:3},new Date('2026-11-12T12:00:00')),'2026-11-18');
+assert.equal(nextPayout({mode:'interval',interval:7,anchor:'2026-11-01'},new Date('2026-11-12T12:00:00')),'2026-11-15');
+assert.equal(nextPayout({mode:'interval',interval:7,anchor:'2026-12-01'},new Date('2026-11-12T12:00:00')),'2026-12-01');
+assert.equal(nextPayout({mode:'manual'},new Date()),null);
+const data={platforms:['Uber'],deliveries:[{platform:'Uber',amount:1500}],entries:[{amount:1500}]};
+recordWithdrawal(data,{platform:'Uber',amount:500,date:'2026-11-12',note:'Repasse'});
+assert.equal(platformTotals(data,'Uber').available,1000);assert.equal(data.entries.length,1);
+assert.throws(()=>recordWithdrawal(data,{platform:'Uber',amount:1001,date:'2026-11-12',note:''}));
+validateDeliveryMetadata(data);data.deliveries=[];assert.throws(()=>validateDeliveryMetadata(data));
+console.log('Entregas: ciclos, limites, histórico e não duplicação de receitas validados.');
+const pending={platforms:['Uber'],accounts:[{id:'bank'}],deliveries:[{platform:'Uber',amount:1000,receiptStatus:'pending'}],entries:[]};
+recordWithdrawal(pending,{platform:'Uber',amount:400,date:'2026-11-12',note:'Parcial',accountId:'bank'});
+assert.equal(pending.entries.length,1);assert.equal(pending.entries[0].amount,400);assert.equal(platformTotals(pending,'Uber').pendingAvailable,600);validateDeliveryMetadata(pending);
+assert.throws(()=>recordWithdrawal(pending,{platform:'Uber',amount:100,date:'2026-11-12',note:'',accountId:'missing'}));

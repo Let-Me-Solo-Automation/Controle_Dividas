@@ -1632,3 +1632,39 @@ html body .hero-main > div:first-child { min-width: 0; }
 html body .hero-amount { white-space: normal; overflow-wrap: anywhere; }
 html body .hero .money.positive-text { color: var(--positive); }
 html body .hero .money.negative-text { color: var(--negative); }
+/* Operational delivery workspace: independent groups, responsive metrics. */
+.delivery-workspace {display:grid;gap:28px;margin-top:24px;min-width:0;}
+.workspace-actions,.theme-library-actions {display:flex;gap:10px;align-items:center;flex-wrap:wrap;justify-content:space-between;}
+.delivery-workspace button,.theme-library-actions button,.theme-library-card button {min-height:44px;padding:10px 14px;border:1px solid var(--line);border-radius:16px;background:var(--surface);color:var(--text);transition:transform .15s;}
+.delivery-workspace button:active,.theme-library button:active {transform:scale(.98);}
+.delivery-metrics {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:16px 0;}
+.delivery-metrics > section {padding:16px;background:color-mix(in srgb,var(--surface) 85%,var(--accent) 15%);border:1px solid var(--line);border-radius:22px;}
+.delivery-metrics strong,.delivery-metrics small {display:block;margin:6px 0;overflow-wrap:anywhere;}
+.delivery-metrics .money {font-weight:650;font-size:20px;}
+.delivery-platform-grid {display:grid;gap:16px;margin-top:16px;grid-template-columns:repeat(2,minmax(0,1fr));}
+.delivery-platform-card {padding:16px;border:1px solid var(--line);border-radius:24px;background:var(--surface);display:grid;gap:12px;min-width:0;}
+.delivery-app-icon {width:52px;height:52px;object-fit:contain;border-radius:15px;display:grid;place-items:center;color:white;overflow:hidden;font-size:13px;flex-shrink:0;}
+.delivery-app-icon img {width:100%;height:100%;object-fit:contain;}
+.delivery-platform-card .platform-open {border:0;background:none;padding:0;display:flex;align-items:center;gap:10px;text-align:left;flex-wrap:wrap;}
+.delivery-platform-card small {display:flex;gap:6px;align-items:center;overflow-wrap:anywhere;}
+.delivery-history-row {display:flex;width:100%;align-items:center;gap:12px;padding:14px 0!important;border:0!important;border-bottom:1px solid var(--line)!important;border-radius:0!important;text-align:left;background:none!important;}
+.delivery-history-row > span:first-of-type {flex:1;min-width:0;overflow-wrap:anywhere;}
+.delivery-history-row small {display:block;}
+html body .settled-money {color:var(--muted)!important;text-shadow:none!important;}
+.theme-library {display:grid;gap:18px;}
+.theme-library-card {border:1px solid;padding:16px;border-radius:24px;display:grid;gap:12px;min-width:0;}
+.theme-library-heading {display:flex;gap:8px;align-items:center;justify-content:space-between;}
+.theme-library-heading button {background:transparent;border:0;color:inherit;padding:8px;}
+.theme-mini-sample {display:grid;gap:8px;padding:16px;}
+.theme-mini-sample i {height:5px;width:36px;border-radius:10px;}
+.theme-mini-sample svg {width:100%;height:40px;}
+.theme-library-card small {color:inherit;opacity:.85;line-height:1.5;}
+html[data-theme-family="glossary"] body :is(.card,.hero,.production-surface,.dashboard-overview-card) {border-radius:var(--catalog-radius);background:var(--surface);border:1px solid var(--line);}
+html[data-theme-family="glossary"][data-material="paper"] body .card {box-shadow:4px 4px 0 var(--line);}
+html[data-theme-family="glossary"][data-material="soft"] body .card {box-shadow:5px 5px 15px color-mix(in srgb,var(--text) 12%,transparent),-4px -4px 15px color-mix(in srgb,var(--surface) 90%,white);}
+html[data-theme-family="glossary"][data-material="clay"] body .card {box-shadow:inset 0 4px 8px #ffffff25,0 8px 14px #00000012;}
+html[data-theme-family="glossary"][data-material="metal"] body .card {background:linear-gradient(125deg,var(--surface),color-mix(in srgb,var(--surface) 85%,var(--accent)),var(--surface));}
+html[data-theme-family="glossary"][data-material="liquid"] body .card {background:radial-gradient(ellipse at top right,color-mix(in srgb,var(--accent) 15%,transparent),transparent 70%),var(--surface);}
+@media(max-width:380px) {.delivery-platform-grid {grid-template-columns:minmax(0,1fr);}.delivery-metrics .money {font-size:17px;}}
+#delivery-platform-editor {scroll-margin-top:96px;}
+.workspace-actions > button {display:inline-flex;align-items:center;justify-content:center;gap:8px;}

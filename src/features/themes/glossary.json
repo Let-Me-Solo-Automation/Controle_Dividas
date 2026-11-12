@@ -1,0 +1,457 @@
+[
+  {
+    "name": "Glassmorphism",
+    "description": "Simula placas de vidro fosco flutuando sobre o fundo. A chave técnica é o uso de backdrop-filter: blur, transparência variável e bordas brancas sutis (1px) para simular a espessura e o reflexo do vidro. Cria uma hierarquia visual clara sem bloquear totalmente o fundo. Muito popularizado pelo macOS Big Sur e Windows 11.",
+    "category": "Materiais, Texturas e Superfícies"
+  },
+  {
+    "name": "Neumorphism",
+    "description": "Uma evolução do skeuomorphism, onde os elementos não flutuam sobre a superfície, mas parecem ser extrudados (empurrados) dela. Utiliza dois tipos de sombra (uma clara no topo esquerdo, uma escura na base direita) para criar um relevo suave em superfícies monocromáticas. Lembra plásticos moldados de alta qualidade ou cerâmica soft.",
+    "category": "Materiais, Texturas e Superfícies"
+  },
+  {
+    "name": "Claymorphism",
+    "description": "Estética amigável e infantil que mistura o 3D com a física de desenhos animados. Os elementos parecem feitos de massinha de modelar ou argila, com formas arredondadas, cores vibrantes e sombras internas que dão volume \"fofo\" e inflado. Frequentemente usado em NFTs, apps financeiros modernos e Web3.",
+    "category": "Materiais, Texturas e Superfícies"
+  },
+  {
+    "name": "Liquid / Fluid",
+    "description": "Uso de formas orgânicas que simulam líquidos em movimento, como metal derretido, água ou tinta a óleo. Frequentemente acompanhado de animações de distorção (WebGL) que reagem ao passar do mouse, criando uma experiência hipnótica e premium.",
+    "category": "Materiais, Texturas e Superfícies"
+  },
+  {
+    "name": "Skeuomorphism",
+    "description": "A imitação literal de materiais do mundo real para facilitar o entendimento do utilizador. Botões que parecem de plástico rígido, fundos de couro costurado, interruptores de metal. Embora tenha caído em desuso nos anos 2010, está a voltar em detalhes específicos (ícones de app, botões de \"call to action\").",
+    "category": "Materiais, Texturas e Superfícies"
+  },
+  {
+    "name": "Paper Cutout",
+    "description": "Estilo de colagem digital que simula recortes de papel sobrepostos. Utiliza sombras duras e projetadas (drop-shadows sem blur) para criar a ilusão de camadas físicas de cartolina ou papel colorido. Muito usado para uma estética \"artesanal\" ou lúdica.",
+    "category": "Materiais, Texturas e Superfícies"
+  },
+  {
+    "name": "Acrylic Material",
+    "description": "Uma variação mais densa do Glassmorphism. Enquanto o vidro é transparente, o acrílico é translúcido e difunde a luz de forma mais leitosa. Foca na refração da luz e texturas que parecem plástico de alta engenharia.",
+    "category": "Materiais, Texturas e Superfícies"
+  },
+  {
+    "name": "Brushed Metal",
+    "description": "Texturas que simulam aço escovado, alumínio anodizado ou titânio. Evoca durabilidade, engenharia de precisão e tecnologia industrial. Frequentemente combinado com luzes frias e tipografia técnica.",
+    "category": "Materiais, Texturas e Superfícies"
+  },
+  {
+    "name": "Plastic Wrap",
+    "description": "Uma tendência estética \"trash\" ou experimental onde fotos e tipografia parecem estar embaladas a vácuo ou cobertas por plástico filme enrugado. Cria uma barreira visual tátil e uma sensação de \"produto novo\" ou \"objeto de arte preservado\".",
+    "category": "Materiais, Texturas e Superfícies"
+  },
+  {
+    "name": "Marble / Stone",
+    "description": "Incorporação de texturas naturais de mármore, granito, travertino ou concreto polido. Utilizado para transmitir solidez, luxo clássico, frieza e elegância atemporal. Comum em sites de arquitetura e moda de alto padrão.",
+    "category": "Materiais, Texturas e Superfícies"
+  },
+  {
+    "name": "Fabric / Textile",
+    "description": "Uso de tramas visíveis como linho, algodão cru, denim ou lona. Adiciona calor e humanidade à interface digital, quebrando a frieza dos pixéis. Muito eficaz em e-commerce de moda ou decoração.",
+    "category": "Materiais, Texturas e Superfícies"
+  },
+  {
+    "name": "Chalkboard",
+    "description": "Estética nostálgica de lousa negra ou verde com texturas de giz e apagador. Fontes manuscritas imperfeitas e ilustrações a traço branco completam o visual. Ideal para contextos educacionais, menus de restaurantes casuais ou campanhas \"back to school\".",
+    "category": "Materiais, Texturas e Superfícies"
+  },
+  {
+    "name": "Cardboard",
+    "description": "Texturas de papelão pardo, papel reciclado, kraft ou caixas de correio. Comunica sustentabilidade, reciclagem, criatividade DIY (Do It Yourself) e uma abordagem ecológica ou orgânica.",
+    "category": "Materiais, Texturas e Superfícies"
+  },
+  {
+    "name": "Water / Wet",
+    "description": "Efeitos visuais que simulam superfícies molhadas, condensação, gotas de chuva na tela ou ondulações aquáticas. Adiciona frescura e dinamismo, sendo muito usado em marcas de bebidas ou produtos de skincare.",
+    "category": "Materiais, Texturas e Superfícies"
+  },
+  {
+    "name": "Ice / Frozen",
+    "description": "Texturas que evocam o frio: cristais de gelo, vidros congelados com padrões de fractais e cores frias (ciano, branco, azul pálido). Usado para campanhas sazonais de inverno ou produtos refrescantes.",
+    "category": "Materiais, Texturas e Superfícies"
+  },
+  {
+    "name": "Furry / Fuzzy",
+    "description": "Uma das texturas mais difíceis de renderizar, mas impactante. Tipografia ou elementos 3D cobertos por pelos, veludo, musgo ou pelúcia. Apela ao sentido do tato e cria uma atmosfera acolhedora ou surreal.",
+    "category": "Materiais, Texturas e Superfícies"
+  },
+  {
+    "name": "Wireframe / Blueprint",
+    "description": "Estética \"em construção\" ou arquitetônica. Fundo azul ou preto milimetrado com linhas brancas finas, cotas de medição e anotações técnicas. Passa a ideia de planeamento, estrutura e bastidores da criação.",
+    "category": "Materiais, Texturas e Superfícies"
+  },
+  {
+    "name": "Collage / Mixed Media",
+    "description": "Estilo rebelde e artístico que mistura recortes de fotos vintage, texturas de papel rasgado, fita adesiva, rabiscos à mão e tipografia digital. Quebra a rigidez do grid web tradicional.",
+    "category": "Materiais, Texturas e Superfícies"
+  },
+  {
+    "name": "Isometric 3D",
+    "description": "Representação tridimensional sem ponto de fuga (perspectiva paralela). Permite mostrar sistemas complexos, cidades ou fluxos de dados de uma forma organizada e técnica, onde todos os elementos têm a mesma escala visual.",
+    "category": "Materiais, Texturas e Superfícies"
+  },
+  {
+    "name": "Aurora Gradients",
+    "description": "Gradientes suaves e orgânicos que lembram a Aurora Boreal. Diferente dos degradês lineares antigos, estes são \"mesh gradients\" (malhas de cor) onde múltiplos pontos de cor se fundem e distorcem. Transmite modernidade, calma e tecnologia etérea.",
+    "category": "Luz, Cor e Atmosfera"
+  },
+  {
+    "name": "Holographic",
+    "description": "Superfícies que refletem um espectro de arco-íris metálico, similar ao verso de um CD ou mancha de óleo. As cores mudam conforme o ângulo ou movimento simulado da luz. Futurista, jovem e associado à cultura cripto/Web3.",
+    "category": "Luz, Cor e Atmosfera"
+  },
+  {
+    "name": "Glow / Neon",
+    "description": "Estética de alta energia com fundos escuros e elementos que parecem emitir luz própria (Bloom). Utiliza sombras coloridas brilhantes para simular a dispersão da luz neon na atmosfera. Comum em sites de gaming e criptomoedas.",
+    "category": "Luz, Cor e Atmosfera"
+  },
+  {
+    "name": "Noise / Grain",
+    "description": "Aplicação proposital de texturas de ruído (estática de TV, grão de filme fotográfico) sobre cores sólidas ou degradês. A textura \"suja\" o digital perfeito, adicionando tato e evitando o problema de \"banding\" em degradês complexos.",
+    "category": "Luz, Cor e Atmosfera"
+  },
+  {
+    "name": "Duotone",
+    "description": "Imagens e layouts tratados para exibir apenas duas cores contrastantes (ex: Azul escuro e Rosa choque), eliminando os meios-tons naturais. Cria uma identidade visual extremamente forte e unificada.",
+    "category": "Luz, Cor e Atmosfera"
+  },
+  {
+    "name": "Dark Mode (OLED)",
+    "description": "Uso de preto absoluto (#000000) em vez de cinza escuro. Em ecrãs OLED, os pixéis desligam-se, criando um contraste infinito com os elementos coloridos e economizando bateria. Transmite elegância suprema e foco.",
+    "category": "Luz, Cor e Atmosfera"
+  },
+  {
+    "name": "Pastel Goth",
+    "description": "Uma fusão improvável de cores pastéis doces (rosa bebé, lavanda) com elementos góticos, tipografia agressiva, correntes e iconografia sombria. Uma subcultura visual popular na moda e blogs pessoais.",
+    "category": "Luz, Cor e Atmosfera"
+  },
+  {
+    "name": "Monochrome",
+    "description": "Restrição severa da paleta a uma única cor base (HUE) variando apenas a saturação e luminosidade. Cria uma harmonia visual instantânea e foca a atenção na estrutura e conteúdo, removendo a distração da cor.",
+    "category": "Luz, Cor e Atmosfera"
+  },
+  {
+    "name": "Chromatic Aberration",
+    "description": "Simulação de defeito de lente onde os canais de cor (RGB) se desalham nas bordas de alto contraste. Cria um efeito de \"glitch\", vertigem ou movimento rápido. Adiciona uma camada de imperfeição digital estilosa.",
+    "category": "Luz, Cor e Atmosfera"
+  },
+  {
+    "name": "Bokeh",
+    "description": "Técnica fotográfica de desfocar pontos de luz no fundo da imagem, transformando-os em bolas suaves e luminosas. Em UI, usa-se para criar fundos abstratos que dão profundidade sem roubar a atenção do conteúdo frontal.",
+    "category": "Luz, Cor e Atmosfera"
+  },
+  {
+    "name": "Vignette",
+    "description": "Escurecimento gradual das bordas da tela em direção ao centro. Uma técnica clássica para guiar o olho do utilizador para o meio da página e criar uma atmosfera mais intimista ou cinematográfica.",
+    "category": "Luz, Cor e Atmosfera"
+  },
+  {
+    "name": "Flat Color",
+    "description": "Uso de cores sólidas, vibrantes e chapadas, sem qualquer tipo de sombra, brilho ou textura. Uma resposta direta ao realismo, focando na clareza da forma e na legibilidade imediata. Estilo \"cartoon\" vetorial.",
+    "category": "Luz, Cor e Atmosfera"
+  },
+  {
+    "name": "Color Blocking",
+    "description": "Layouts construídos através de blocos geométricos gigantes de cores sólidas e contrastantes colocados lado a lado. Cria uma estrutura de \"grelha\" visual muito forte e moderna, típica de sites de moda editorial.",
+    "category": "Luz, Cor e Atmosfera"
+  },
+  {
+    "name": "Infrared",
+    "description": "Estilo surrealista que imita a fotografia infravermelha (filme Kodak Aerochrome), transformando folhagens verdes em tons de rosa, vermelho ou branco, mantendo o céu escuro. Cria paisagens oníricas e alienígenas.",
+    "category": "Luz, Cor e Atmosfera"
+  },
+  {
+    "name": "Lens Flare",
+    "description": "Adição de reflexos de luz internos da lente da câmera (anéis de luz, estrelas de difração) para simular uma fonte de luz intensa e realismo cinematográfico numa cena digital.",
+    "category": "Luz, Cor e Atmosfera"
+  },
+  {
+    "name": "High Contrast (A11y)",
+    "description": "Estética brutalista ou de acessibilidade que usa combinações de contraste máximo (Preto no Branco, Amarelo no Preto, Azul no Branco). Garante leitura perfeita e cria um visual impactante e \"sem rodeios\".",
+    "category": "Luz, Cor e Atmosfera"
+  },
+  {
+    "name": "Muted / Earth Tones",
+    "description": "Paletas desaturadas inspiradas na natureza: terracota, verde sálvia, bege areia, ocre. Evoca calma, sustentabilidade, orgânico e sofisticação \"slow living\". Muito comum em marcas de lifestyle ético.",
+    "category": "Luz, Cor e Atmosfera"
+  },
+  {
+    "name": "Cyberpunk",
+    "description": "A paleta da \"High Tech, Low Life\". Mistura cores noturnas e escuras com neons ácidos: Ciano elétrico, Magenta laser, Verde ácido. Frequentemente associado a falhas digitais (glitches) e caracteres japoneses.",
+    "category": "Luz, Cor e Atmosfera"
+  },
+  {
+    "name": "Halftone",
+    "description": "A estética da impressão de jornal antiga, onde imagens e sombras são formadas por padrões de pontos de tamanhos variados. Dá uma textura \"pop art\" ou retro-impressa ao design digital.",
+    "category": "Luz, Cor e Atmosfera"
+  },
+  {
+    "name": "Bento Grids",
+    "description": "Organização modular inspirada nas lancheiras japonesas. O conteúdo é dividido em caixas retangulares e quadradas de tamanhos variados que se encaixam perfeitamente num grid coeso. Popularizado pelos widgets da Apple e painéis de controlo.",
+    "category": "Layout e Estrutura"
+  },
+  {
+    "name": "Brutalism",
+    "description": "Rejeição das normas de \"beleza\" convencional. Usa fontes padrão gigantes, cores \"feias\" ou cruas, linhas divisórias grossas e falta de espaçamento confortável. É uma afirmação de design que prioriza a crueza e a honestidade estrutural.",
+    "category": "Layout e Estrutura"
+  },
+  {
+    "name": "Broken Grid",
+    "description": "Layouts que quebram deliberadamente o alinhamento rígido. Imagens sobrepõem textos, elementos \"vazam\" para fora das margens e o espaço em branco é assimétrico. Cria uma experiência de visualização dinâmica e editorial.",
+    "category": "Layout e Estrutura"
+  },
+  {
+    "name": "Split Screen",
+    "description": "A tela é dividida verticalmente ao meio (50/50). Frequentemente usa-se um lado para uma imagem/vídeo fixo e o outro para o conteúdo rolável, ou para apresentar duas opções de escolha iguais.",
+    "category": "Layout e Estrutura"
+  },
+  {
+    "name": "Z-Pattern",
+    "description": "Layout otimizado para a leitura ocidental rápida (esquerda para a direita, topo para baixo). Guia o olho do logo (canto superior esquerdo) para o menu (direito), cruza a página na diagonal e termina na ação principal (botão inferior).",
+    "category": "Layout e Estrutura"
+  },
+  {
+    "name": "F-Pattern",
+    "description": "Padrão de leitura para páginas densas em texto (blogs, notícias). Os usuários leem o topo, descem a lateral esquerda buscando palavras-chave e leem horizontalmente quando encontram algo interessante, formando um \"F\".",
+    "category": "Layout e Estrutura"
+  },
+  {
+    "name": "Masonry",
+    "description": "O estilo \"tijolo\" popularizado pelo Pinterest. Os cartões de conteúdo têm larguras fixas mas alturas variáveis, encaixando-se verticalmente para eliminar espaços vazios, ideal para galerias de imagens variadas.",
+    "category": "Layout e Estrutura"
+  },
+  {
+    "name": "Single Page App (SPA)",
+    "description": "Design onde a navegação não carrega novas páginas. O conteúdo muda dinamicamente e suavemente dentro da mesma estrutura, criando a sensação de um aplicativo nativo fluido e contínuo.",
+    "category": "Layout e Estrutura"
+  },
+  {
+    "name": "Horizontal Scroll",
+    "description": "Subverte a expectativa vertical da web. O site move-se para a direita à medida que o usuário rola o scroll. Cria uma sensação de galeria de arte, timeline ou viagem linear. Requer cuidado com a usabilidade.",
+    "category": "Layout e Estrutura"
+  },
+  {
+    "name": "Fullscreen Typography",
+    "description": "O texto deixa de ser apenas conteúdo para se tornar o elemento visual principal. Títulos gigantescos ocupam 80-100% da tela, muitas vezes mascarando imagens ou vídeos dentro das letras.",
+    "category": "Layout e Estrutura"
+  },
+  {
+    "name": "Swiss Style",
+    "description": "Também conhecido como Estilo Tipográfico Internacional. Foca na objetividade, clareza, uso rigoroso de grids matemáticos, fontes sem serifa (como Helvetica) e alinhamento à esquerda. É o design \"invisível\" e funcional.",
+    "category": "Layout e Estrutura"
+  },
+  {
+    "name": "Diagonal Sections",
+    "description": "Em vez de linhas horizontais separando as seções do site, usam-se cortes angulares e diagonais. Isso cria linhas de tensão visual que puxam o olho para baixo e adicionam dinamismo e velocidade ao layout.",
+    "category": "Layout e Estrutura"
+  },
+  {
+    "name": "Overlap / Layering",
+    "description": "Técnica de profundidade onde elementos se sobrepõem parcialmente. Um texto sobre uma imagem, uma imagem sobre uma caixa de cor. Cria a sensação de que o site tem múltiplas camadas físicas (eixo Z).",
+    "category": "Layout e Estrutura"
+  },
+  {
+    "name": "Cards UI",
+    "description": "O conteúdo é fragmentado em \"contentores\" individuais e independentes (cartões), cada um com sua imagem, título e ação. É extremamente flexível e responsivo, adaptando-se facilmente de desktop para mobile.",
+    "category": "Layout e Estrutura"
+  },
+  {
+    "name": "Hero Video",
+    "description": "Uso de vídeos em loop de alta qualidade cobrindo todo o fundo da primeira dobra do site. Captura a atmosfera da marca instantaneamente, mas requer otimização pesada para não deixar o site lento.",
+    "category": "Layout e Estrutura"
+  },
+  {
+    "name": "Minimalism",
+    "description": "O uso estratégico do \"espaço negativo\" (vazio). O design é definido não pelo que está lá, mas pelo que foi removido. Foca o utilizador inteiramente em um único conceito ou ação por vez. Menos é, de facto, mais.",
+    "category": "Layout e Estrutura"
+  },
+  {
+    "name": "Sidebar Navigation",
+    "description": "Em vez do menu no topo, a navegação fica fixa numa coluna lateral (geralmente à esquerda). É excelente para sites complexos, dashboards ou portfólios que precisam de acesso rápido a muitas categorias.",
+    "category": "Layout e Estrutura"
+  },
+  {
+    "name": "Asymmetrical Balance",
+    "description": "Equilibrio visual sem espelhamento. Um elemento visualmente \"pesado\" (grande, escuro) de um lado é equilibrado por vários elementos \"leves\" (pequenos, claros) ou muito espaço em branco do outro. Cria tensão e interesse.",
+    "category": "Layout e Estrutura"
+  },
+  {
+    "name": "Parallax",
+    "description": "Uma ilusão de profundidade onde elementos em diferentes planos (fundo, meio, frente) movem-se a velocidades diferentes durante o scroll. O fundo move-se lentamente enquanto o conteúdo frontal passa rápido.",
+    "category": "Movimento e Interatividade"
+  },
+  {
+    "name": "Scrollytelling",
+    "description": "A fusão de \"Scroll\" e \"Storytelling\". O site não é apenas uma página estática; conforme o usuário rola, a narrativa avança visualmente: elementos montam-se, personagens movem-se e gráficos desenham-se em sincronia com o scroll.",
+    "category": "Movimento e Interatividade"
+  },
+  {
+    "name": "Kinetic Type",
+    "description": "Tipografia que não fica parada. Letras que giram, esticam, flutuam ou reagem ao cursor. Transforma o texto numa imagem expressiva e emocional, muitas vezes tornando-se o foco principal da atenção.",
+    "category": "Movimento e Interatividade"
+  },
+  {
+    "name": "Micro-interactions",
+    "description": "Pequenos momentos de feedback funcional que encantam. O botão que \"afunda\" ao clicar, o ícone de coração que explode em confetis ao curtir, o switch que muda de cor suavemente. Tornam a interface \"viva\" e tátil.",
+    "category": "Movimento e Interatividade"
+  },
+  {
+    "name": "Hover Reveal",
+    "description": "Ocultação estratégica de informação para manter o design limpo. Imagens, legendas ou cores secundárias só são reveladas quando o usuário demonstra interesse passando o mouse por cima do elemento.",
+    "category": "Movimento e Interatividade"
+  },
+  {
+    "name": "Custom Cursor",
+    "description": "Substituição da seta padrão do sistema operacional por um elemento gráfico personalizado (círculo, ponto, texto). O cursor pode mudar de forma ou cor dependendo do que está a apontar (ex: virar \"Ver Projeto\" ao passar sobre uma foto).",
+    "category": "Movimento e Interatividade"
+  },
+  {
+    "name": "Particle Effects",
+    "description": "Simulações físicas de milhares de pequenas partículas (poeira, estrelas, pontos geométricos) que flutuam no fundo e frequentemente reagem repelindo ou atraindo o cursor do mouse. Criado geralmente com JavaScript/WebGL.",
+    "category": "Movimento e Interatividade"
+  },
+  {
+    "name": "Morphing Shapes",
+    "description": "Formas vetoriais (SVG) que transitam suavemente de uma geometria para outra (ex: um círculo que vira um quadrado arredondado ou uma forma ameboide). Dá uma sensação orgânica e fluida à interface.",
+    "category": "Movimento e Interatividade"
+  },
+  {
+    "name": "Loading Animations",
+    "description": "Aproveitamento do tempo de espera para reforçar a marca. Em vez de uma barra de progresso chata, usa-se logotipos animados, \"Skeleton Screens\" (esqueletos pulsantes do layout) ou animações criativas.",
+    "category": "Movimento e Interatividade"
+  },
+  {
+    "name": "Infinite Scroll",
+    "description": "Padrão de interação onde o rodapé nunca é alcançado; novo conteúdo é carregado automaticamente assim que o utilizador se aproxima do fim da página. Essencial para feeds de redes sociais e descoberta de conteúdo exploratório.",
+    "category": "Movimento e Interatividade"
+  },
+  {
+    "name": "Drag & Drop",
+    "description": "Interfaces que permitem manipulação direta. O utilizador pode clicar, segurar e arrastar elementos para organizar listas, fazer upload de arquivos ou mover quadros (estilo Kanban/Trello).",
+    "category": "Movimento e Interatividade"
+  },
+  {
+    "name": "Voice UI Visualization",
+    "description": "Representação visual da voz ou som. Ondas sonoras, barras de equalizador ou esferas pulsantes que reagem em tempo real ao áudio do sistema ou ao microfone do usuário (com permissão).",
+    "category": "Movimento e Interatividade"
+  },
+  {
+    "name": "3D Product View",
+    "description": "Experiência de e-commerce interativa onde o produto é renderizado em 3D em tempo real, permitindo que o usuário o gire 360 graus, dê zoom e examine detalhes de qualquer ângulo.",
+    "category": "Movimento e Interatividade"
+  },
+  {
+    "name": "Gamification",
+    "description": "Incorporação de mecânicas de jogos em contextos não-lúdicos. Barras de progresso de perfil, badges de conquista, animações de comemoração (confetis) ao completar tarefas. Aumenta o engajamento e retenção.",
+    "category": "Movimento e Interatividade"
+  },
+  {
+    "name": "Magnetic Buttons",
+    "description": "Um efeito subtil mas sofisticado onde o botão parece ter um \"campo magnético\". Quando o cursor chega perto, o botão move-se ligeiramente em direção ao mouse, como se estivesse a ser atraído, facilitando o clique.",
+    "category": "Movimento e Interatividade"
+  },
+  {
+    "name": "Step-by-Step Wizards",
+    "description": "Quebra de formulários longos e complexos em passos pequenos, digeríveis e sequenciais. Geralmente usa transições laterais animadas para dar a sensação de progresso numa jornada linear.",
+    "category": "Movimento e Interatividade"
+  },
+  {
+    "name": "Glitch Effect on Hover",
+    "description": "Uso estético de falhas digitais. Ao passar o mouse sobre uma imagem ou texto, ela sofre distorções momentâneas, separação de cores RGB e ruído digital, sugerindo uma estética hacker ou tecnológica.",
+    "category": "Movimento e Interatividade"
+  },
+  {
+    "name": "Lottie Animations",
+    "description": "Uso da tecnologia Lottie (JSON) para renderizar animações vetoriais complexas (criadas no After Effects) que são extremamente leves e escaláveis na web, ao contrário de GIFs pesados ou vídeos.",
+    "category": "Movimento e Interatividade"
+  },
+  {
+    "name": "Y2K",
+    "description": "A estética da virada do milénio (1998-2003). Caracteriza-se pelo otimismo tecnológico ingénuo: cromados líquidos, rosa chiclete, azul ciano, formas tribais digitais, fontes futuristas arredondadas e interfaces que lembram o Winamp ou MP3 players antigos.",
+    "category": "Nostalgia, Arte e Estética"
+  },
+  {
+    "name": "Vaporwave",
+    "description": "Um estilo surrealista e nostálgico dos anos 80/90. Mistura estátuas gregas clássicas, plantas tropicais, golfinhos, janelas do Windows 95 e pores-do-sol roxos em grids distorcidos. É uma crítica irónica ao consumismo e tecnologia retro.",
+    "category": "Nostalgia, Arte e Estética"
+  },
+  {
+    "name": "Pixel Art",
+    "description": "Estética derivada dos videojogos de 8 e 16 bits. Imagens construídas pixel a pixel, fontes bitmap serrilhadas e interfaces que lembram sistemas operacionais antigos ou jogos de GameBoy. Apela fortemente à nostalgia Millennial.",
+    "category": "Nostalgia, Arte e Estética"
+  },
+  {
+    "name": "Bauhaus",
+    "description": "Inspirado na escola de design alemã (1919-1933). Foca na geometria primária (círculos, triângulos, quadrados), cores primárias (azul, vermelho, amarelo) e funcionalismo. É artístico, limpo e intelectual.",
+    "category": "Nostalgia, Arte e Estética"
+  },
+  {
+    "name": "Art Deco",
+    "description": "O luxo dos anos 1920 (O Grande Gatsby). Uso de linhas geométricas complexas, simetria, padrões de leque, cores preta e dourada (gold foil). Transmite sofisticação clássica, riqueza e glamour.",
+    "category": "Nostalgia, Arte e Estética"
+  },
+  {
+    "name": "Memphis Design",
+    "description": "O caos divertido dos anos 80 (Grupo Memphis). Rejeita o \"bom gosto\" com padrões de bactérias (squiggles), formas geométricas aleatórias espalhadas e cores vibrantes contrastantes que não deveriam combinar, mas combinam.",
+    "category": "Nostalgia, Arte e Estética"
+  },
+  {
+    "name": "Grunge (90s)",
+    "description": "A estética \"anti-design\" dos anos 90, popularizada por bandas de rock e zines. Texturas sujas, papel rasgado, fontes de máquina de escrever estragada, manchas de tinta, fita cola e uma aparência geral de decadência urbana e rebeldia.",
+    "category": "Nostalgia, Arte e Estética"
+  },
+  {
+    "name": "Pop Art",
+    "description": "Inspirado em Andy Warhol e Roy Lichtenstein. Uso de retículas de impressão (pontos visíveis), cores saturadas primárias, contornos pretos grossos e repetição de imagens. Transforma a interface numa história em quadrinhos vibrante.",
+    "category": "Nostalgia, Arte e Estética"
+  },
+  {
+    "name": "Steampunk",
+    "description": "Ficção científica retro-futurista baseada na era vitoriana e no vapor. Engrenagens visíveis, latão, cobre, madeira escura, couro, relógios analógicos e válvulas. Uma estética mecânica e complexa.",
+    "category": "Nostalgia, Arte e Estética"
+  },
+  {
+    "name": "Low Poly",
+    "description": "Estilo de modelagem 3D simplificado, onde a malha de polígonos é visível. Lembra jogos de Playstation 1 ou arte em papel dobrado (origami). Cria paisagens geométricas abstratas e modernas.",
+    "category": "Nostalgia, Arte e Estética"
+  },
+  {
+    "name": "Risograph",
+    "description": "Imita a estética das impressoras Risograph japonesas. As características principais são cores vibrantes e limitadas, sobreposição de tintas com efeito de multiplicação, texturas granuladas e imperfeições de alinhamento no registro de impressão.",
+    "category": "Nostalgia, Arte e Estética"
+  },
+  {
+    "name": "Gothic / Blackletter",
+    "description": "Uso ousado de tipografia gótica (Blackletter) medieval, tradicionalmente associada a jornais antigos ou metal, recontextualizada em designs modernos e limpos. Muito popular em marcas de streetwear de luxo.",
+    "category": "Nostalgia, Arte e Estética"
+  },
+  {
+    "name": "Kawaii",
+    "description": "A cultura da \"fofura\" japonesa. Uso excessivo de tons pastéis, bordas arredondadas, inclusão de rostinhos felizes em objetos inanimados e uma atmosfera geral de inocência e alegria.",
+    "category": "Nostalgia, Arte e Estética"
+  },
+  {
+    "name": "Psychedelic",
+    "description": "Inspirado na arte dos anos 60/70. Cores saturadas que vibram visualmente, formas líquidas distorcidas, tipografia que derrete e padrões fractais complexos. Tenta replicar estados alterados de consciência.",
+    "category": "Nostalgia, Arte e Estética"
+  },
+  {
+    "name": "Victorian",
+    "description": "Estilo ornamental do século XIX. Uso de tipografia serifada complexa, bordas decorativas florais, gravuras antigas em vez de fotos e uma paleta de cores séria e desaturada (creme, preto, vinho).",
+    "category": "Nostalgia, Arte e Estética"
+  },
+  {
+    "name": "Anti-Design",
+    "description": "Uma reação ao design corporativo limpo e perfeito. Propositalmente caótico, com elementos sobrepostos de forma ilegível, cores que chocam, falta de hierarquia clara e \"feiúra\" intencional como forma de expressão artística.",
+    "category": "Nostalgia, Arte e Estética"
+  },
+  {
+    "name": "Corporate Memphis",
+    "description": "Estilo de ilustração vetorial plana, popularizado pelo Facebook e Big Techs. Personagens com membros desproporcionalmente longos, cabeças pequenas, cores alegres não-realistas (pele azul ou roxa) e cenários de trabalho idílicos.",
+    "category": "Nostalgia, Arte e Estética"
+  }
+]

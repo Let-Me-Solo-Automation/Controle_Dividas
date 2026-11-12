@@ -1,3 +1,4 @@
+import {ThemeLibrary} from "../features/themes/ThemeLibrary";
 import { SaveToggleButton } from "./SaveToggleButton";
 import { FluidNavigation, MotionAppRoot } from "./nexo-ui";
 import { useEffect, useId, useState, type CSSProperties } from "react";
@@ -624,45 +625,7 @@ export function PersonalizationStudio({
           Cada escolha aparece no aplicativo enquanto você experimenta. Salve no
           topo quando terminar.
         </p>
-        <div className="personal-theme-grid">
-          {themes.map((item) => (
-            <button
-              type="button"
-              key={item.id}
-              className={`personal-theme-card ${settings.theme === item.id ? "is-selected" : ""}`}
-              aria-pressed={settings.theme === item.id}
-              onClick={() => change({ theme: item.id })}
-              style={
-                {
-                  "--sample-bg": item.bg,
-                  "--sample-surface": item.surface,
-                  "--sample-text": item.text,
-                  "--sample-accent": item.accent,
-                } as CSSProperties
-              }
-            >
-              <div
-                className={`personal-theme-art ${item.id === "apple-system" ? "is-system" : ""}`}
-              >
-                <span />
-                <i />
-                <div>
-                  <b />
-                  <b />
-                  <b />
-                  <b />
-                  <b />
-                </div>
-                <em />
-              </div>
-              <strong>
-                {item.name}
-                {settings.theme === item.id && <Check size={15} />}
-              </strong>
-              <small>{item.description}</small>
-            </button>
-          ))}
-        </div>
+        <ThemeLibrary themes={themes} settings={settings} onChange={change}/>
       </section>
 
       <section

@@ -1,16 +1,20 @@
 {
-  "version": "2.1.3",
-  "builtAtUTC": "2026-11-12T17:33:30.546977+00:00",
+  "version": "2.2.0",
+  "builtAtUTC": "2026-11-12T18:39:18.413260+00:00",
   "androidPackage": "app.marks.finance",
   "minSdk": 26,
   "targetSdk": 35,
   "buildTools": "35.0.0",
-  "apkSHA256": "faf1da7a0e71bdc4d3edd3b1ad1211590b1c0381a330f72b5ddec7ea9b4b78dd",
-  "embeddedAppSHA256": "df432919686df840c5b9a6d769bec880871c8ef54684b4b7d26a9a348f3982ef",
+  "apkSHA256": "2fbac96c611a1b9c79394313034ec8528b413d513ffebfc70ff7969f874f8f0d",
+  "embeddedAppSHA256": "cdfcda8976b00ed54afacf56af1194d7b70fa8833327edd4390caa7d83e5584d",
   "hardwareDeviceTested": false,
   "javaSourceSHA256": "f7170348c435d724b844ccede8ed7b4e9acfc55d569b718fe4778c2a4bfcaf9e",
-  "androidVersionCode": 4,
+  "androidVersionCode": 5,
   "resourcesArscCompression": "ZIP_STORED",
   "resourcesArscAlignment": 4,
-  "uiScenariosValidated": 50
+  "uiScenariosValidated": 15,
+  "validationScope": "Targeted release regressions; accounting, reserve and delivery models",
+  "figmaHTMLBytes": 354,
+  "figmaArchiveBytes": 995162,
+  "figmaUploadStatus": "blocked-connect-tunnel-http-403"
 }

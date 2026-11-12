@@ -110,7 +110,7 @@ export function BankFields() {
         </label>
       </div>
       <label>
-        Imagem do banco <span>(opcional · até 256 KB)</span>
+        Imagem do banco <span>(opcional · até 20 MB, com ajuste automático)</span>
         <input
           type="file"
           accept="image/png,image/jpeg,image/webp"

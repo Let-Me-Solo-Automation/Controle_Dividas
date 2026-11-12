@@ -141,6 +141,7 @@ if (!process.argv.includes("--app-only")) {
   );
   await copyFile("dist/Nexo-Simulador_1.html", "Visualizador.html");
   try { await access("public/Marks-Android.apk"); await mkdir("dist/downloads",{recursive:true}); await copyFile("public/Marks-Android.apk","dist/downloads/Marks-Android.apk"); await copyFile("public/Marks-Android.apk","Marks-Android.apk"); } catch(error) { if(error.code!=="ENOENT")throw error; }
+  await import("./export-figma.mjs");
   await createViewerArchive();
   await createProjectArchive();
 }

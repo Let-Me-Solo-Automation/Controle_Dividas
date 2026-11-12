@@ -150,6 +150,7 @@ export function normalizePersonalizationSettings(settings = {}) {
   const normalized = { ...safe, ...visualSettings(safe), customPresets };
   delete normalized.chromaticEdges;
   delete normalized.lock;
+  normalized.favoriteThemes = Array.isArray(safe.favoriteThemes) ? [...new Set(safe.favoriteThemes.filter(id=>typeof id==='string'&&id.length<100))].slice(0,200) : [];
   return normalized;
 }
 export function motionTransition(settings = {}, reduced = false) {

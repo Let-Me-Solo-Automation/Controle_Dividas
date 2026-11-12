@@ -173,7 +173,7 @@ test("delivery creates revenue and cost once and updates the balance", async ({
     .getByLabel("Nome do estabelecimento", { exact: true })
     .fill("Entrega de validação");
   await f.getByLabel("Valor recebido (R$)", { exact: true }).fill("25,50");
-  await f.getByLabel("Distância percorrida (km)", { exact: true }).fill("4,5");
+  await f.getByLabel("Distância percorrida (km, opcional)", { exact: true }).fill("4,5");
   await f.getByLabel("Custo desta entrega (R$)", { exact: true }).fill("3,25");
   await f
     .getByLabel("Conta bancária", { exact: true })

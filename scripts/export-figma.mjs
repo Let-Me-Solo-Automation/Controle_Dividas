@@ -1,0 +1,18 @@
+import {readFile,writeFile,mkdir} from 'node:fs/promises';
+import {zipSync} from 'fflate';
+import {build} from 'esbuild';
+const bundled=await build({entryPoints:['src/legacy/domain.js'],bundle:true,platform:'node',format:'esm',write:false});
+const {default:domain}=await import('data:text/javascript;base64,'+Buffer.from(bundled.outputFiles[0].text).toString('base64'));
+const demo=domain.demoData();demo.settings.showOnOpen=true;
+const root='output/Marks-Figma';await mkdir(root,{recursive:true});
+let html=await readFile('src/generated/app.html','utf8');
+const style=html.match(/<style>([\s\S]*?)<\/style>/)[1];
+const script=html.match(/<script>([\s\S]*?)<\/script>/)[1].replaceAll('nexo-v1','marks-figma-review-v1');
+await writeFile(root+'/styles.css',style);
+await writeFile(root+'/app.js',`if(!localStorage.getItem('marks-figma-review-v1'))localStorage.setItem('marks-figma-review-v1',${JSON.stringify(JSON.stringify(demo))});\n`+script);
+const index='<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#f2f2f7"><title>Marks — revisão interativa</title><link rel="stylesheet" href="styles.css"></head><body><div id="root"></div><script src="app.js"></script></body></html>';
+await writeFile(root+'/index.html',index);
+await writeFile(root+'/LEIA-ME.md','# Marks no Figma\n\nExportação estática do aplicativo React com interações. Abra index.html mantendo app.js e styles.css ao lado. HTML abaixo de 1 MB; os recursos são arquivos separados, necessários para funcionamento. Dados de demonstração isolados no armazenamento marks-figma-review-v1. Não contém registros pessoais.\n');
+const files={};for(const file of ['index.html','app.js','styles.css','LEIA-ME.md'])files[file]=[new Uint8Array(await readFile(root+'/'+file)),{level:6,os:3,attrs:(0o100644<<16)>>>0}];
+await mkdir('entregas',{recursive:true});await writeFile('entregas/Marks-Figma.zip',zipSync(files));
+console.log(`Exportação Figma: index.html ${Buffer.byteLength(index)} bytes; JS e CSS separados.`);
