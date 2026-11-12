@@ -42,6 +42,19 @@ async function saved(p: Page) {
   );
 }
 
+test("income and outgoing summary uses animated signed comparison bars", async ({ page }) => {
+  await open(page);
+  await menu(page, "Lançamentos");
+  const f = app(page);
+  const chart = f.locator(".finance-comparison");
+  await expect(chart).toBeVisible();
+  await expect(chart).toContainText("Entradas");
+  await expect(chart).toContainText("Saídas");
+  await expect(chart).toContainText("+");
+  await expect(chart).toContainText("−");
+  await expect(chart.locator(".finance-comparison-fill")).toHaveCount(2);
+});
+
 test("green glass plus resets after selecting and the icon morph completes before the palette changes", async ({
   page,
 }) => {
@@ -233,6 +246,13 @@ test("calendar switches between month and week and shows real installment dates"
   await expect(cal.locator(".finance-calendar-row")).toHaveCount(1);
   await cal.getByRole("button", { name: "Mês", exact: true }).click();
   await expect(cal.locator(".finance-calendar-row")).toHaveCount(6);
+  await cal.getByRole("button", { name: "Ano", exact: true }).click();
+  await expect(cal.locator(".finance-calendar-mini-month")).toHaveCount(12);
+  await cal.getByRole("button", { name: "dezembro", exact: true }).click();
+  await expect(cal.locator(".finance-calendar-row")).toHaveCount(6);
+  await cal.getByRole("button", { name: "Dia", exact: true }).click();
+  await expect(cal.locator(".finance-calendar-row")).toHaveCount(1);
+  await cal.getByRole("button", { name: "Mês", exact: true }).click();
   await cal.getByLabel("Ir para a data", { exact: true }).fill("2026-12-10");
   await expect(cal).toContainText("Venda do videogame");
   await cal.getByText("Filtrar datas da agenda", { exact: true }).click();

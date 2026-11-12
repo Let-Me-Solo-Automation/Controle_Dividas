@@ -62,6 +62,10 @@ test("home uses actual KPI slides, a working filter, expandable goals and persis
     widget.locator("button").filter({ hasText: /R\$/ }).first(),
   ).toBeVisible();
   const sections = f.locator(".module-sections");
+  const filters = sections.locator(".production-filter-kind > div > button");
+  await expect(filters).toHaveCount(3);
+  const tabWidths = await filters.evaluateAll((nodes) => nodes.map((node) => node.getBoundingClientRect().width));
+  expect(Math.max(...tabWidths) - Math.min(...tabWidths)).toBeLessThan(1);
   const pin = sections.getByRole("button", {
     name: "Fixar Venda do videogame",
     exact: true,

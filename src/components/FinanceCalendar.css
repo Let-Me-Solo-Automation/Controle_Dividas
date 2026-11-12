@@ -6,11 +6,11 @@
   color: var(--text);
 }
 .finance-calendar-toolbar {
-  display: flex;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   align-items: center;
-  gap: 16px;
-  flex-wrap: wrap;
-  padding: 22px 22px 10px;
+  gap: 12px 18px;
+  padding: 20px 22px 14px;
 }
 .finance-calendar-title {
   display: flex;
@@ -27,6 +27,7 @@
   gap: 5px;
   flex: 1;
 }
+.finance-calendar-navigation button:first-child { border-radius:999px; padding-inline:15px; font-weight:600; }
 .finance-calendar-navigation h3 {
   margin: 0 0 0 9px;
   font-size: 16px;
@@ -55,37 +56,46 @@
 .finance-calendar-view {
   display: flex;
   border: 1px solid var(--line);
-  border-radius: 10px;
+  border-radius: 999px;
   padding: 3px;
-  gap: 3px;
+  gap: 2px;
+  background: color-mix(in srgb,var(--line) 34%,var(--surface));
 }
 .finance-calendar-view button {
   border: 0;
   background: transparent;
-  border-radius: 7px;
-  padding: 6px 10px;
+  border-radius: 999px;
+  padding: 7px 12px;
   font-size: 13px;
+  color:var(--muted);
 }
 .finance-calendar-view button[aria-pressed="true"] {
-  background: var(--accent);
-  color: var(--accent-text, #fff);
+  background: var(--surface);
+  color: var(--text);
+  box-shadow:0 1px 3px #0002;
 }
 .finance-calendar-date {
   display: flex;
   gap: 8px;
   align-items: center;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 0;
+  justify-self:end;
+  grid-column:3;
+  grid-row:2;
 }
 .finance-calendar-date input {
-  max-width: 145px;
+  width: 126px;
+  max-width: 100%;
   min-height: 34px;
   border: 1px solid var(--line);
   border-radius: 8px;
   background: var(--surface);
   color: var(--text);
   font: inherit;
-  padding: 5px;
+  font-size:12px;
+  padding: 5px 9px;
+  font-variant-numeric:tabular-nums;
 }
 .finance-calendar-note {
   font-size: 12px;
@@ -98,6 +108,20 @@
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
 }
+.finance-calendar-dayview .finance-calendar-weekdays { display:none; }
+.finance-calendar-dayview .finance-calendar-row { grid-template-columns:minmax(0,1fr); }
+.finance-calendar-dayview .finance-calendar-day { min-height:260px; }
+.finance-calendar-year { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px;padding:20px 24px 24px;border-top:1px solid var(--line); }
+.finance-calendar-mini-month { min-width:0; }
+.finance-calendar-mini-title { min-height:36px;border:0;background:transparent;color:var(--accent);font-size:14px;font-weight:700;text-transform:capitalize; }
+.finance-calendar-mini-grid { display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:2px;text-align:center; }
+.finance-calendar-mini-grid > span { padding:4px 0;color:var(--muted);font-size:10px;font-weight:600; }
+.finance-calendar-mini-grid > button { position:relative;display:grid;place-items:center;aspect-ratio:1;min-width:0;border:0;border-radius:50%;background:transparent;font-size:11px; }
+.finance-calendar-mini-grid > button.is-outside { visibility:hidden; }
+.finance-calendar-mini-grid > button.is-selected { background:color-mix(in srgb,var(--accent) 15%,var(--surface));color:var(--accent);font-weight:700; }
+.finance-calendar-mini-grid > button.is-today { background:var(--accent);color:var(--accent-text,#fff);font-weight:700; }
+.finance-calendar-mini-grid > button.is-holiday:not(.is-today) { color:var(--negative); }
+.finance-calendar-mini-grid i { position:absolute;bottom:2px;width:3px;height:3px;border-radius:50%;background:var(--positive); }
 .finance-calendar-weekdays {
   border-top: 1px solid var(--line);
   color: var(--muted);
@@ -247,25 +271,32 @@ html[data-dark="true"] .finance-calendar-day.is-national-holiday .finance-calend
 }
 @media (max-width: 640px) {
   .finance-calendar-toolbar {
-    padding: 16px 12px 10px;
+    grid-template-columns:minmax(0,1fr) auto;
+    padding: 15px 12px 10px;
     gap: 10px;
   }
   .finance-calendar-title {
-    width: 100%;
+    width: auto;
   }
   .finance-calendar-title h2 {
     font-size: 18px;
   }
   .finance-calendar-navigation {
     flex-wrap: wrap;
+    grid-column:1 / -1;
+    grid-row:2;
   }
   .finance-calendar-navigation h3 {
     font-size: 13px;
   }
   .finance-calendar-date {
-    width: 100%;
-    justify-content: space-between;
+    grid-column:2;
+    grid-row:1;
+    width:auto;
+    justify-content:flex-end;
   }
+  .finance-calendar-view { grid-column:1 / -1;grid-row:3;justify-self:stretch;justify-content:space-between; }
+  .finance-calendar-view button { flex:1; }
   .finance-calendar-note {
     padding: 0 12px 12px;
     font-size: 11px;
@@ -314,10 +345,12 @@ html[data-dark="true"] .finance-calendar-day.is-national-holiday .finance-calend
     padding: 6px 8px;
     font-size: 12px;
   }
+  .finance-calendar-year { grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;padding:15px 12px; }
   .finance-calendar-weekdays {
     font-size: 9px;
   }
 }
+@media (max-width:360px) { .finance-calendar-view button { padding-inline:6px;font-size:11px; } .finance-calendar-navigation h3 { flex:1; } }
 .finance-calendar-filters {
   padding: 16px 22px;
   border-top: 1px solid var(--line);

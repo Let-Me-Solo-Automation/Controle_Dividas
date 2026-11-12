@@ -43,8 +43,8 @@ function VisibleFinanceChart({
 }: Props) {
   const preferences = useMotionPreferences();
   const reduced = useReducedMotion();
-  const svg = useRef<SVGSVGElement>(null);
-  const inView = useInView(svg, { once: true, amount: 0.15 });
+  const root = useRef<HTMLDivElement>(null);
+  const inView = useInView(root, { once: true, amount: 0.15 });
   const id = useId().replace(/:/g, "");
   const gradient = `finance-area-${id}`;
   const clip = `finance-reveal-${id}`;
@@ -77,8 +77,18 @@ function VisibleFinanceChart({
     : "Nenhuma receita neste período.";
 
   return (
-    <div className={`chart chart-${kind}`} data-chart-animation={animation}>
-      <svg ref={svg} viewBox="0 0 300 130" role="img" aria-label={description}>
+    <div ref={root} className={`chart chart-${kind}`} data-chart-animation={animation}>
+      {kind === "bars" && values.length === 2 ? (
+        <div className="finance-comparison" role="img" aria-label={description}>
+          {values.map((value, index) => {
+            const ratio = value / maximum;
+            return <div className="finance-comparison-row" key={index}>
+              <div className="finance-comparison-copy"><span><i style={{ background: colors[index] || "var(--accent)" }} />{labels[index] || `Período ${index + 1}`}</span><strong className={index === 0 ? "positive-text" : "negative-text"}>{index === 0 ? "+" : "−"}{money(Math.abs(value))}</strong></div>
+              <div className="finance-comparison-track"><motion.div className="finance-comparison-fill" style={{ background: colors[index] || "var(--accent)", transformOrigin: "left" }} initial={active ? { scaleX: 0 } : false} animate={{ scaleX: shown ? ratio : 0 }} transition={delayed(index)} /></div>
+            </div>;
+          })}
+        </div>
+      ) : <svg viewBox="0 0 300 130" role="img" aria-label={description}>
         <defs>
           <linearGradient id={gradient} x1="0" y1="0" x2="1" y2="1">
             <stop stopColor="var(--accent)" stopOpacity=".4" />
@@ -217,21 +227,21 @@ function VisibleFinanceChart({
             ))}
           </>
         )}
-      </svg>
-      <div
+      </svg>}
+      {!(kind === "bars" && values.length === 2) && <div
         className={`chart-labels${labels.length > 8 ? " dense-labels" : ""}`}
       >
         {labels.map((label, index) => (
           <span key={index}>{label}</span>
         ))}
-      </div>
+      </div>}
       <details className="chart-data">
         <summary>Ver valores do gráfico</summary>
         <table>
           <thead>
             <tr>
               <th scope="col">Período</th>
-              <th scope="col">Receita em R$</th>
+              <th scope="col">Valor em R$</th>
             </tr>
           </thead>
           <tbody>

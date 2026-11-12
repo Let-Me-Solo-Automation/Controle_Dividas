@@ -20,7 +20,7 @@ const addDays = (date: Date, days: number) => {
   next.setDate(next.getDate() + days);
   return next;
 };
-const startOfWeek = (date: Date) => addDays(date, -((date.getDay() + 6) % 7));
+const startOfWeek = (date: Date) => addDays(date, -date.getDay());
 const validDate = (value: string) =>
   /^\d{4}-\d{2}-\d{2}$/.test(value) &&
   !Number.isNaN(dateOf(value).getTime()) &&
@@ -37,6 +37,25 @@ const nationalHoliday = (date: Date) => {
   return fixed.has(iso(date).slice(5));
 };
 
+function YearCalendar({ year, selected, today, items, onSelect, onMonth }: { year: number; selected: string; today: string; items: AgendaItem[]; onSelect: (value: string) => void; onMonth: (value: string) => void }) {
+  return <div className="finance-calendar-year" aria-label={`Calendário de ${year}`}>
+    {Array.from({ length: 12 }, (_, month) => {
+      const first = startOfWeek(new Date(year, month, 1, 12));
+      const days = Array.from({ length: 42 }, (_, i) => addDays(first, i));
+      return <section className="finance-calendar-mini-month" key={month}>
+        <button type="button" className="finance-calendar-mini-title" onClick={() => onMonth(`${year}-${String(month + 1).padStart(2, "0")}-01`)}>{new Date(year, month, 1).toLocaleDateString("pt-BR", { month: "long" })}</button>
+        <div className="finance-calendar-mini-grid">
+          {["D", "S", "T", "Q", "Q", "S", "S"].map((day, index) => <span key={`${day}${index}`}>{day}</span>)}
+          {days.map(day => {
+            const value = iso(day), inMonth = day.getMonth() === month, hasItems = items.some(item => item.date === value);
+            return <button type="button" key={value} data-date={value} aria-label={day.toLocaleDateString("pt-BR", { dateStyle: "full" })} aria-pressed={value === selected} className={`${inMonth ? "" : "is-outside"} ${value === selected ? "is-selected" : ""} ${value === today ? "is-today" : ""} ${nationalHoliday(day) ? "is-holiday" : ""}`} onClick={() => onSelect(value)}>{day.getDate()}{hasItems && <i aria-hidden="true" />}</button>;
+          })}
+        </div>
+      </section>;
+    })}
+  </div>;
+}
+
 export function FinanceCalendar({
   items,
   selected,
@@ -50,7 +69,7 @@ export function FinanceCalendar({
   onMonth: (offset: number) => void;
   format: (value: number) => string;
 }) {
-  const [view, setView] = useState<"month" | "week">("month");
+  const [view, setView] = useState<"day" | "week" | "month" | "year">("month");
   const [scope, setScope] = useState("day");
   const [windows, setWindows] = useState([
     {
@@ -81,10 +100,10 @@ export function FinanceCalendar({
   const current = validDate(selected) ? dateOf(selected) : new Date();
   const today = iso(new Date());
   const first =
-    view === "month"
+    view === "month" || view === "year"
       ? startOfWeek(new Date(current.getFullYear(), current.getMonth(), 1, 12))
-      : startOfWeek(current);
-  const count = view === "month" ? 42 : 7;
+      : view === "week" ? startOfWeek(current) : current;
+  const count = view === "month" ? 42 : view === "day" ? 1 : 7;
   const days = Array.from({ length: count }, (_, i) => addDays(first, i));
   const eventsByDate = new Map<string, AgendaItem[]>();
   for (const item of filtered) {
@@ -99,13 +118,12 @@ export function FinanceCalendar({
       ? filtered.filter((item) => item.date >= selected)
       : selectedItems;
   const title =
-    view === "month"
+    view === "year"
+      ? String(current.getFullYear())
+      : view === "month"
       ? current.toLocaleDateString("pt-BR", { month: "long", year: "numeric" })
-      : `${first.toLocaleDateString("pt-BR", { day: "numeric", month: "short" })} – ${days[6].toLocaleDateString("pt-BR", { day: "numeric", month: "short", year: "numeric" })}`;
-  const navigate = (offset: number) =>
-    view === "month"
-      ? onMonth(offset)
-      : onSelect(iso(addDays(current, offset * 7)));
+      : view === "week" ? `${first.toLocaleDateString("pt-BR", { day: "numeric", month: "short" })} – ${days[6].toLocaleDateString("pt-BR", { day: "numeric", month: "short", year: "numeric" })}` : current.toLocaleDateString("pt-BR", { dateStyle: "full" });
+  const navigate = (offset: number) => view === "month" ? onMonth(offset) : view === "year" ? onSelect(`${current.getFullYear() + offset}-${String(current.getMonth() + 1).padStart(2, "0")}-${String(current.getDate()).padStart(2, "0")}`) : onSelect(iso(addDays(current, offset * (view === "week" ? 7 : 1))));
   return (
     <section className="finance-calendar" aria-label="Agenda financeira">
       <header className="finance-calendar-toolbar">
@@ -119,14 +137,14 @@ export function FinanceCalendar({
           </button>
           <button
             type="button"
-            aria-label={view === "month" ? "Mês anterior" : "Semana anterior"}
+            aria-label={view === "year" ? "Ano anterior" : view === "month" ? "Mês anterior" : view === "week" ? "Semana anterior" : "Dia anterior"}
             onClick={() => navigate(-1)}
           >
             <ChevronLeft size={19} />
           </button>
           <button
             type="button"
-            aria-label={view === "month" ? "Próximo mês" : "Próxima semana"}
+            aria-label={view === "year" ? "Próximo ano" : view === "month" ? "Próximo mês" : view === "week" ? "Próxima semana" : "Próximo dia"}
             onClick={() => navigate(1)}
           >
             <ChevronRight size={19} />
@@ -138,6 +156,12 @@ export function FinanceCalendar({
           role="group"
           aria-label="Visualização do calendário"
         >
+          <button type="button" aria-pressed={view === "day"} onClick={() => setView("day")}>Dia</button>
+          <button
+            type="button"
+            aria-pressed={view === "week"}
+            onClick={() => setView("week")}
+          >Semana</button>
           <button
             type="button"
             aria-pressed={view === "month"}
@@ -145,19 +169,15 @@ export function FinanceCalendar({
           >
             Mês
           </button>
-          <button
-            type="button"
-            aria-pressed={view === "week"}
-            onClick={() => setView("week")}
-          >
-            Semana
-          </button>
+          <button type="button" aria-pressed={view === "year"} onClick={() => setView("year")}>Ano</button>
         </div>
         <label className="finance-calendar-date">
           Ir para a data
           <input
             aria-label="Ir para a data"
-            type="date"
+            type="text"
+            inputMode="numeric"
+            placeholder="AAAA-MM-DD"
             value={selected}
             onChange={(event) => {
               if (validDate(event.target.value)) onSelect(event.target.value);
@@ -168,10 +188,10 @@ export function FinanceCalendar({
       <p className="finance-calendar-note">
         Parcelas, recorrências e prazos de metas · compromissos de dia inteiro
       </p>
-      <div className={`finance-calendar-scroll finance-calendar-${view}`}>
+      {view === "year" ? <YearCalendar year={current.getFullYear()} selected={selected} today={today} items={filtered} onSelect={onSelect} onMonth={value => { onSelect(value); setView("month"); }} /> : <div className={`finance-calendar-scroll finance-calendar-${view}`}>
         <div className="finance-calendar-grid" role="table" aria-label={title}>
           <div className="finance-calendar-weekdays" role="row">
-            {days.slice(0, 7).map((day) => (
+            {Array.from({ length: 7 }, (_, index) => addDays(startOfWeek(current), index)).map((day) => (
               <div role="columnheader" key={iso(day)}>
                 {day
                   .toLocaleDateString("pt-BR", { weekday: "short" })
@@ -179,9 +199,9 @@ export function FinanceCalendar({
               </div>
             ))}
           </div>
-          {Array.from({ length: count / 7 }, (_, week) => (
+          {Array.from({ length: view === "day" ? 1 : count / 7 }, (_, week) => (
             <div className="finance-calendar-row" role="row" key={week}>
-              {days.slice(week * 7, week * 7 + 7).map((day) => {
+              {(view === "day" ? days : days.slice(week * 7, week * 7 + 7)).map((day) => {
                 const value = iso(day);
                 const entries = eventsByDate.get(value) ?? [];
                 const max = view === "month" ? 3 : entries.length;
@@ -238,7 +258,7 @@ export function FinanceCalendar({
             </div>
           ))}
         </div>
-      </div>
+      </div>}
       <details className="finance-calendar-filters">
         <summary>Filtrar datas da agenda</summary>
         <SlotPicker
