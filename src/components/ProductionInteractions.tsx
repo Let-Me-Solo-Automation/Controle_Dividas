@@ -5,7 +5,6 @@ import {
   ArrowUpRight,
   ArrowLeftRight,
   CalendarDays,
-  List,
   Landmark,
   Search,
   ShieldCheck,
@@ -32,20 +31,16 @@ import {
   ActivitiesCard,
   type ActivityItemType,
 } from "./reference/ActivitiesCard";
-import { CalendarWidget, type EventsData } from "./reference/CalendarWidget";
 import { FilterDisclosure } from "./reference/FilterDisclosure";
 import { InviteDisclosure } from "./reference/InviteDisclosure";
 import { OptionPicker } from "./reference/OptionPicker";
 import { PinItemComponent, type PlaceItem } from "./reference/PinItemComponent";
-import { SlotPicker } from "./reference/SlotPicker";
 import { SwitchDisclosure } from "./reference/SwitchDisclosure";
 import { TaskWidget, type TaskData } from "./reference/TaskWidget";
-import { ViewOnMap } from "./reference/ViewOnMap";
 import { AccordionApp } from "./reference/AccordionApp";
 import {
   CarouselNavigator,
   ContextualAIBar,
-  DiscreteTabs,
   FluidTabs,
 } from "./nexo-ui";
 
@@ -219,151 +214,7 @@ export function SectionOrganizer({
   );
 }
 
-type AgendaItem = {
-  id: string;
-  date: string;
-  title: string;
-  amount: number;
-  type: string;
-  open: () => void;
-};
-type DateWindow = {
-  id: string;
-  label: string;
-  enabled: boolean;
-  slots: { id: string; from: string; to: string }[];
-};
-export function FinanceAgenda({
-  items,
-  selected,
-  onSelect,
-  onMonth,
-  format,
-}: {
-  items: AgendaItem[];
-  selected: string;
-  onSelect: (date: string) => void;
-  onMonth: (offset: number) => void;
-  format: (value: number) => string;
-}) {
-  const [scope, setScope] = useState("day");
-  const [windows, setWindows] = useState<DateWindow[]>([
-    {
-      id: "period",
-      label: "Filtrar por intervalo",
-      enabled: false,
-      slots: [
-        { id: "range", from: selected.slice(0, 7) + "-01", to: selected },
-      ],
-    },
-  ]);
-  const active = windows.filter((w) => w.enabled).flatMap((w) => w.slots);
-  const invalid = active.some((s) => !s.from || !s.to || s.from > s.to);
-  const filtered = invalid
-    ? []
-    : items.filter(
-        (item) =>
-          !active.length ||
-          active.some((w) => item.date >= w.from && item.date <= w.to),
-      );
-  const events: EventsData = {};
-  for (const item of filtered)
-    (events[item.date] ||= []).push({
-      id: item.id,
-      title: item.title,
-      time: `${item.type === "goal" ? "Prazo da meta" : item.type === "receive" || item.type === "income" ? "A receber" : "A pagar"} · ${format(item.amount)}`,
-      action: item.open,
-    });
-  const upcoming = filtered.filter((item) => item.date >= selected);
-  return (
-    <Surface className="production-agenda">
-      <div className="production-agenda-heading">
-        <button
-          className="text-button"
-          aria-label="Mês anterior"
-          onClick={() => onMonth(-1)}
-        >
-          ←
-        </button>
-        <h2>Sua agenda</h2>
-        <button
-          className="text-button"
-          aria-label="Próximo mês"
-          onClick={() => onMonth(1)}
-        >
-          →
-        </button>
-      </div>
-      <CalendarWidget
-        key={selected.slice(0, 7)}
-        events={events}
-        selectedDate={selected}
-        initialSelectedDate={selected}
-        onSelect={onSelect}
-        currentMonthYear={new Date(selected + "T12:00:00").toLocaleDateString(
-          "pt-BR",
-          { month: "long", year: "numeric" },
-        )}
-      />
-      <div className="production-agenda-controls">
-        <DiscreteTabs
-          defaultTab="day"
-          onTabChange={setScope}
-          tabs={[
-            {
-              id: "day",
-              label: "Dia selecionado",
-              icon: <CalendarDays size={18} />,
-            },
-            { id: "next", label: "Próximos prazos", icon: <List size={18} /> },
-          ]}
-        />
-        <SlotPicker
-          days={windows}
-          inputType="date"
-          defaultFrom={selected}
-          defaultTo={selected}
-          onUpdate={setWindows}
-        />
-      </div>
-      {invalid && (
-        <p role="alert" className="production-hint">
-          Informe um intervalo com data final igual ou posterior à inicial.
-        </p>
-      )}
-      {scope === "next" && (
-        <div className="production-upcoming">
-          <h3>
-            A partir de{" "}
-            {new Date(selected + "T12:00:00").toLocaleDateString("pt-BR")}
-          </h3>
-          {upcoming.length ? (
-            upcoming.map((item) => (
-              <button
-                type="button"
-                key={`${item.type}-${item.id}`}
-                onClick={item.open}
-              >
-                <CalendarDays size={18} />
-                <span>
-                  <strong>{item.title}</strong>
-                  <small>
-                    {new Date(item.date + "T12:00:00").toLocaleDateString(
-                      "pt-BR",
-                    )}
-                  </small>
-                </span>
-                <b>{format(item.amount)}</b>
-              </button>
-            ))
-          ) : (
-            <p className="muted">Nenhum prazo encontrado neste intervalo.</p>
-          )}
-        </div>
-      )}
-    </Surface>
-  );
-}
+export { FinanceCalendar as FinanceAgenda } from "./FinanceCalendar";
 
 type Highlight = {
   id: string;
@@ -491,66 +342,6 @@ export function FocusDisclosure({
       <p className="production-hint">
         Prioriza entregas, acordos e compromissos no seu painel.
       </p>
-    </Surface>
-  );
-}
-
-export function BalanceMap({
-  accounts,
-  format,
-}: {
-  accounts: {
-    id: string;
-    title: string;
-    balance: number;
-    free: number;
-    reserved: number;
-    goals: number;
-    action: () => void;
-  }[];
-  format: (value: number) => string;
-}) {
-  if (!accounts.length) return null;
-  return (
-    <Surface className="production-map">
-      <ViewOnMap
-        buttonLabel="Mapa do saldo"
-        content={
-          <>
-            <span className="eyebrow">CADA PARTE TEM UM LUGAR</span>
-            <h2>Seu dinheiro por conta</h2>
-            <p>Reserva e metas já fazem parte do saldo.</p>
-            {accounts.map((a) => (
-              <section key={a.id}>
-                <h3>
-                  {a.title} <b>{format(a.balance)}</b>
-                </h3>
-                <dl>
-                  <div>
-                    <dt>Disponível</dt>
-                    <dd>{format(a.free)}</dd>
-                  </div>
-                  <div>
-                    <dt>Reserva</dt>
-                    <dd>{format(a.reserved)}</dd>
-                  </div>
-                  <div>
-                    <dt>Metas</dt>
-                    <dd>{format(a.goals)}</dd>
-                  </div>
-                </dl>
-                <button
-                  type="button"
-                  className="text-button"
-                  onClick={a.action}
-                >
-                  Ajustar reserva <ArrowUpRight size={14} />
-                </button>
-              </section>
-            ))}
-          </>
-        }
-      />
     </Surface>
   );
 }

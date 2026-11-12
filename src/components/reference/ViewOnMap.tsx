@@ -135,7 +135,7 @@ export const ViewOnMap: React.FC<ViewOnMapProps> = ({
                   initial={{ opacity: 0, scale: 0.5 }}
                   animate={{ opacity: 1, scale: 1 }}
                   onClick={toggleOpen}
-                  aria-label={content ? "Fechar mapa do saldo" : "Fechar mapa"}
+                  aria-label="Fechar mapa"
                   className="absolute top-4 right-4 z-50 flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#85848B] shadow-lg transition-all hover:bg-gray-50 active:scale-90 sm:top-6 sm:right-6 sm:h-11 sm:w-11 dark:bg-[#2A2A2D] dark:text-white dark:hover:bg-[#3A3A3D]"
                 >
                   <X className="h-5 w-5 sm:h-6 sm:w-6" strokeWidth={3} />

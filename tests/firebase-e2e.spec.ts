@@ -12,12 +12,17 @@ async function configure(context: BrowserContext) {
     r.fulfill({ json: config }),
   );
 }
-test("owner publishes one section, recipient sees payment updates, and revocation blocks access", async ({
+test("anonymous owner persists after reload; unauthenticated recipient sees updates and revocation blocks old links", async ({
   page,
   context,
   browser,
 }) => {
   await configure(context);
+  const ownerSignups: Record<string, unknown>[] = [];
+  context.on("request", (request) => {
+    if (request.url().includes("/accounts:signUp"))
+      ownerSignups.push(request.postDataJSON());
+  });
   await page.goto("http://127.0.0.1:4180/");
   const f = page.frameLocator('iframe[title="Marks — aplicativo interativo"]');
   await f.getByRole("button", { name: "Expandir navegação" }).click();
@@ -33,17 +38,20 @@ test("owner publishes one section, recipient sees payment updates, and revocatio
   await f
     .getByRole("button", { name: "Compartilhar seção", exact: true })
     .click();
-  await f
-    .getByRole("button", { name: "Criar meu acesso gratuito", exact: true })
-    .click();
-  await f
-    .getByLabel("E-mail de compartilhamento")
-    .fill(`owner-${Date.now()}@example.com`);
-  await f.getByLabel("Senha de compartilhamento").fill("test-password-123");
-  await f.getByRole("button", { name: "Criar acesso", exact: true }).click();
+  await expect(
+    f.getByText("Compartilhe sem cadastro.", { exact: false }),
+  ).toBeVisible();
+  await expect(f.getByLabel("E-mail de compartilhamento")).not.toBeVisible();
+  expect(ownerSignups).toHaveLength(0);
   await f
     .getByRole("button", { name: "Criar link sem vencimento", exact: true })
     .click();
+  await expect(
+    f.getByText("Acesso salvo neste navegador", { exact: true }),
+  ).toBeVisible();
+  expect(ownerSignups).toHaveLength(1);
+  expect(ownerSignups[0]).not.toHaveProperty("email");
+  expect(ownerSignups[0]).not.toHaveProperty("password");
   const input = f.getByLabel("Link de acompanhamento");
   await expect(input).toHaveValue(/compartilhar.html#s=[a-f0-9]{48}$/);
   const link = await input.inputValue();
@@ -82,7 +90,16 @@ test("owner publishes one section, recipient sees payment updates, and revocatio
   await expect(
     f.getByRole("button", { name: "Atualizar publicação", exact: true }),
   ).toBeVisible();
+  await expect(
+    f.getByText("Acesso salvo neste navegador", { exact: true }),
+  ).toBeVisible();
+  expect(ownerSignups).toHaveLength(1);
   const recipient = await browser.newContext();
+  const recipientAuthRequests: string[] = [];
+  recipient.on("request", (request) => {
+    if (request.url().includes("identitytoolkit.googleapis.com"))
+      recipientAuthRequests.push(request.url());
+  });
   await configure(recipient);
   const viewer = await recipient.newPage();
   await viewer.goto(link);
@@ -147,5 +164,7 @@ test("owner publishes one section, recipient sees payment updates, and revocatio
   await expect(
     nextViewer.getByRole("heading", { name: "Acompanhamento indisponível" }),
   ).toBeVisible();
+  expect(ownerSignups).toHaveLength(1);
+  expect(recipientAuthRequests).toEqual([]);
   await recipient.close();
 });

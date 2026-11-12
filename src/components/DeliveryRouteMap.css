@@ -1,0 +1,82 @@
+.delivery-route-map {
+  padding: 20px 0;
+}
+.delivery-route-map .production-balance-map {
+  padding: 0;
+  background: var(--surface);
+  color: var(--text);
+}
+.delivery-route-content {
+  padding: 28px 24px 24px;
+  background: var(--surface);
+  color: var(--text);
+}
+.delivery-route-content > .eyebrow {
+  padding-right: 45px;
+  display: block;
+  font-size: 10px;
+  color: var(--muted);
+}
+.delivery-route-content h2 {
+  font-size: 20px;
+  margin: 12px 0 22px;
+  padding-right: 32px;
+}
+.delivery-route-content ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 22px;
+}
+.delivery-route-content li {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+.delivery-route-content li > svg {
+  flex-shrink: 0;
+  color: var(--accent);
+  margin-top: 3px;
+}
+.delivery-route-content li div {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+.delivery-route-content li small {
+  color: var(--muted);
+  font-size: 11px;
+}
+.delivery-route-content li strong {
+  font-size: 14px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.delivery-route-content p {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+  margin: 24px 0 14px;
+}
+.delivery-route-content a {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  font-size: 13px;
+  line-height: 1.5;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+}
+.delivery-route-content a:hover {
+  text-decoration: underline;
+}
+.delivery-route-map [role="button"] {
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+  color: var(--text);
+}
+.delivery-route-map [role="button"] svg,
+.delivery-route-map [role="button"] span {
+  color: var(--text);
+}

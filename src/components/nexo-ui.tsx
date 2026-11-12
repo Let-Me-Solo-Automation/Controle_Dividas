@@ -18,7 +18,9 @@ import {
   motion,
   useReducedMotion,
   useMotionValue,
+  useInView,
   type HTMLMotionProps,
+  type Transition,
 } from "motion/react";
 import {
   ArrowDownLeft,
@@ -59,8 +61,24 @@ type Preferences = {
   footerBlur?: boolean;
   blurStrength?: number;
   glass?: boolean;
+  motionStyle?: string;
+  chartAnimation?: string;
 };
 const MotionPreferences = createContext<Preferences>({});
+export const useMotionPreferences = () => useContext(MotionPreferences);
+function preferenceTransition(
+  settings: Preferences,
+  reduced = false,
+): Transition {
+  if (reduced || settings.motion === false) return { duration: 0 };
+  if (settings.motionStyle === "spring")
+    return { ...spring, stiffness: 250, damping: 25 };
+  if (settings.motionStyle === "snappy")
+    return { type: "tween", duration: 0.2, ease: [0.22, 1, 0.36, 1] };
+  if (settings.motionStyle === "quiet")
+    return { type: "tween", duration: 0.16, ease: "easeOut" };
+  return spring;
+}
 export function MotionAppRoot({
   settings,
   children,
@@ -74,7 +92,7 @@ export function MotionAppRoot({
     <MotionPreferences.Provider value={settings}>
       <MotionConfig
         reducedMotion={settings.motion === false ? "always" : "user"}
-        transition={settings.motion === false ? { duration: 0 } : spring}
+        transition={preferenceTransition(settings)}
       >
         <div {...props}>{children}</div>
       </MotionConfig>
@@ -177,9 +195,7 @@ export function FluidNavigation({
     const sequence = ++generation.current;
     setSelected(key);
     setPhase("selecting");
-    const transition = instant
-      ? { duration: 0 }
-      : { ...spring, stiffness: 420, damping: 34 };
+    const transition = preferenceTransition(preferences, instant);
     const controls = [
       animate(x, button.offsetLeft, transition),
       animate(y, button.offsetTop, transition),
@@ -198,11 +214,11 @@ export function FluidNavigation({
   return (
     <div
       ref={root}
-      className="nexo-mini-dock"
+      className={`nexo-mini-dock nav-variant-${preferences.nav ?? "capsule"}`}
       data-phase={phase}
       style={
         {
-          "--nav-blur": `${preferences.blurStrength ?? 28}px`,
+          "--nav-blur": `${preferences.footerBlur === false ? 0 : (preferences.blurStrength ?? 28)}px`,
         } as React.CSSProperties
       }
     >
@@ -283,6 +299,7 @@ export function FluidNavigation({
         ref={toggle}
         type="button"
         className="nexo-glass-plus"
+        data-active={expanded && phase === "idle"}
         aria-label={expanded ? "Recolher navegação" : "Expandir navegação"}
         aria-expanded={expanded}
         aria-controls={expanded ? controlsId : undefined}
@@ -321,21 +338,48 @@ export function ThemeMorphToggle({
   className?: string;
 }) {
   const maskId = useId().replace(/:/g, "");
-  const preferences = useContext(MotionPreferences);
-  const reduce = useReducedMotion();
-  const instant = !!reduce || preferences.motion === false;
-  const transition = instant
-    ? { duration: 0 }
-    : { type: "spring" as const, stiffness: 220, damping: 23 };
+  const pref = useMotionPreferences(),
+    reduced = useReducedMotion();
+  const [visualDark, setVisualDark] = useState(dark),
+    [changing, setChanging] = useState(false);
+  const pending = useRef<boolean | null>(null);
+  const instant = !!reduced || pref.motion === false;
+  useEffect(() => {
+    if (!changing) setVisualDark(dark);
+  }, [dark, changing]);
+  const finish = () => {
+    if (pending.current === null) return;
+    pending.current = null;
+    onToggle();
+    setChanging(false);
+  };
+  const transition: Transition = {
+    type: "tween",
+    duration: instant ? 0 : 0.38,
+    ease: [0.22, 1, 0.36, 1],
+  };
   return (
     <motion.button
       type="button"
       className={`theme-morph-toggle ${className}`}
       aria-label={dark ? "Ativar tema claro" : "Ativar tema escuro"}
       aria-pressed={dark}
+      aria-busy={changing}
       disabled={disabled}
-      onClick={onToggle}
-      whileTap={instant ? undefined : { scale: 0.94 }}
+      aria-disabled={disabled || changing}
+      onClick={() => {
+        if (changing) return;
+        if (instant) {
+          onToggle();
+          return;
+        }
+        pending.current = !dark;
+        setChanging(true);
+        setVisualDark(!dark);
+      }}
+      whileTap={
+        instant || pref.feedback === false ? undefined : { scale: 0.96 }
+      }
     >
       <motion.svg
         viewBox="0 0 24 24"
@@ -343,7 +387,7 @@ export function ThemeMorphToggle({
         height="22"
         aria-hidden="true"
         initial={false}
-        animate={{ rotate: dark ? -14 : 0 }}
+        animate={{ rotate: visualDark ? -14 : 0 }}
         transition={transition}
       >
         <defs>
@@ -353,8 +397,12 @@ export function ThemeMorphToggle({
               fill="black"
               r="7"
               initial={false}
-              animate={{ cx: dark ? 16.5 : 26, cy: dark ? 7.5 : -3 }}
+              animate={{
+                cx: visualDark ? 16.5 : 26,
+                cy: visualDark ? 7.5 : -3,
+              }}
               transition={transition}
+              onAnimationComplete={finish}
             />
           </mask>
         </defs>
@@ -364,7 +412,7 @@ export function ThemeMorphToggle({
           fill="currentColor"
           mask={`url(#${maskId})`}
           initial={false}
-          animate={{ r: dark ? 7.5 : 4.25 }}
+          animate={{ r: visualDark ? 7.5 : 4.25 }}
           transition={transition}
         />
         <motion.g
@@ -373,9 +421,9 @@ export function ThemeMorphToggle({
           strokeLinecap="round"
           initial={false}
           animate={{
-            opacity: dark ? 0 : 1,
-            scale: dark ? 0.6 : 1,
-            rotate: dark ? 45 : 0,
+            opacity: visualDark ? 0 : 1,
+            scale: visualDark ? 0.6 : 1,
+            rotate: visualDark ? 45 : 0,
           }}
           style={{ transformOrigin: "12px 12px" }}
           transition={transition}
@@ -383,7 +431,7 @@ export function ThemeMorphToggle({
           <path d="M12 2v2m0 16v2M2 12h2m16 0h2M4.9 4.9l1.4 1.4m11.4 11.4 1.4 1.4M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" />
         </motion.g>
       </motion.svg>
-      <span>{dark ? "Escuro" : "Claro"}</span>
+      <span>{visualDark ? "Escuro" : "Claro"}</span>
     </motion.button>
   );
 }
@@ -492,13 +540,16 @@ export function AnimatedMoney({
   value,
   visible = true,
   className = "",
+  fromZero = false,
 }: {
   value: number;
   visible?: boolean;
   className?: string;
+  fromZero?: boolean;
 }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const previous = useRef(value);
+  const seen = useInView(ref, { once: true, amount: 0.1 });
+  const previous = useRef(fromZero ? 0 : value);
   const reduce = useReducedMotion();
   const preferences = useContext(MotionPreferences);
   const noCount =
@@ -510,6 +561,7 @@ export function AnimatedMoney({
       previous.current = value;
       return;
     }
+    if (fromZero && !seen && !noCount) return;
     if (noCount) {
       ref.current.textContent = format(value);
       previous.current = value;
@@ -525,14 +577,14 @@ export function AnimatedMoney({
       },
     });
     return () => animation.stop();
-  }, [value, visible, noCount]);
+  }, [value, visible, noCount, fromZero, seen]);
   return (
     <span
       className={`money tabular-nums ${className}`}
       aria-label={visible ? format(value) : "Valor oculto"}
     >
       <span aria-hidden="true" ref={ref}>
-        {visible ? format(value) : "••••••"}
+        {visible ? format(fromZero && !noCount ? 0 : value) : "••••••"}
       </span>
     </span>
   );
@@ -544,12 +596,24 @@ export function MotionProgress({
   value?: number;
   label?: string;
 }) {
-  const pref = useContext(MotionPreferences);
-  const reduce = useReducedMotion();
-  const p = Math.max(0, Math.min(1, value));
+  const pref = useMotionPreferences(),
+    reduced = useReducedMotion();
+  const root = useRef<HTMLDivElement>(null),
+    seen = useInView(root, { once: true, amount: 0.15 });
+  const p = Math.max(0, Math.min(1, value)),
+    instant = !!reduced || pref.motion === false || pref.progress === false;
+  const target = instant || seen ? p : 0;
+  const duration = instant
+    ? 0
+    : pref.motionStyle === "snappy"
+      ? 0.35
+      : pref.motionStyle === "quiet"
+        ? 0.25
+        : 0.9 * Math.min(2, Math.max(0.4, pref.intensity ?? 1));
   return (
     <div
-      className="progress"
+      ref={root}
+      className="progress adaptive-progress"
       role="progressbar"
       aria-label={label}
       aria-valuemin={0}
@@ -557,30 +621,38 @@ export function MotionProgress({
       aria-valuenow={Math.round(p * 100)}
     >
       <motion.div
-        initial={
-          pref.motion === false || pref.progress === false || reduce
-            ? false
-            : { scaleX: 0 }
-        }
-        whileInView={{ scaleX: p }}
-        viewport={{ once: true }}
-        animate={{ scaleX: p }}
+        initial={false}
+        animate={{ scaleX: target }}
         style={{
           width: "100%",
           transformOrigin: "left",
           background: "var(--accent)",
         }}
-        transition={{
-          duration:
-            pref.motion === false || pref.progress === false || reduce
-              ? 0
-              : 0.8,
-          ease: [0.22, 1, 0.36, 1],
-        }}
+        transition={{ type: "tween", duration, ease: [0.22, 1, 0.36, 1] }}
+      />
+      <motion.span
+        aria-hidden="true"
+        className="adaptive-progress-thumb"
+        initial={false}
+        animate={{ left: `${target * 100}%`, opacity: target > 0 ? 1 : 0 }}
+        transition={{ type: "tween", duration, ease: [0.22, 1, 0.36, 1] }}
       />
     </div>
   );
 }
+
+export function AnimatedProgressRing({progress=0,size=90,label,children}:{progress?:number;size?:number;label?:string;children?:ReactNode}) {
+ const root=useRef<HTMLDivElement>(null),seen=useInView(root,{once:true,amount:.15});
+ const pref=useMotionPreferences(),reduce=useReducedMotion(),p=Math.max(0,Math.min(1,progress));
+ const instant=!!reduce||pref.motion===false||pref.progress===false;
+ const length=2*Math.PI*40;
+ return <div ref={root} className="ring" style={{width:size,height:size}} role="img" aria-label={label??`${Math.round(p*100)}% concluído`}>
+ <svg viewBox="0 0 96 96"><circle className="ring-track" cx="48" cy="48" r="40"/>
+ <motion.circle className="ring-value" cx="48" cy="48" r="40" strokeDasharray={length} initial={false}
+ animate={{strokeDashoffset:length*(1-(instant||seen?p:0))}} transition={{duration:instant?0:.9,ease:[.22,1,.36,1]}}/></svg>
+ <div>{children??<strong>{Math.round(p*100)}<small>%</small></strong>}</div></div>;
+}
+
 export function MotionToggle({
   label,
   checked,
@@ -627,12 +699,29 @@ export function MotionCard(props: HTMLMotionProps<"section">) {
   return (
     <motion.section
       {...props}
-      initial={disabled ? false : { opacity: 0, y: 16, filter: "blur(7px)" }}
+      initial={
+        disabled
+          ? false
+          : {
+              opacity: 0,
+              y: pref.motionStyle === "quiet" ? 0 : 16,
+              filter: pref.motionStyle === "quiet" ? "blur(0px)" : "blur(7px)",
+            }
+      }
       animate={disabled ? revealedContent : undefined}
       whileInView={revealedContent}
       viewport={{ once: true, amount: 0.06 }}
       transition={{
-        duration: disabled ? 0 : revealDuration(pref.intensity, 0.62),
+        duration: disabled
+          ? 0
+          : revealDuration(
+              pref.intensity,
+              pref.motionStyle === "snappy"
+                ? 0.24
+                : pref.motionStyle === "quiet"
+                  ? 0.2
+                  : 0.62,
+            ),
         ease: revealEase,
       }}
     />
@@ -646,13 +735,30 @@ export function ScreenTransition(props: HTMLMotionProps<"main">) {
   return (
     <motion.main
       {...props}
-      initial={disabled ? false : { opacity: 0, y: 12, filter: "blur(10px)" }}
+      initial={
+        disabled
+          ? false
+          : {
+              opacity: 0,
+              y: pref.motionStyle === "quiet" ? 0 : 12,
+              filter: pref.motionStyle === "quiet" ? "blur(0px)" : "blur(10px)",
+            }
+      }
       animate={revealedContent}
       exit={
         disabled ? revealedContent : { opacity: 0, y: -8, filter: "blur(5px)" }
       }
       transition={{
-        duration: disabled ? 0 : revealDuration(pref.intensity, 0.7),
+        duration: disabled
+          ? 0
+          : revealDuration(
+              pref.intensity,
+              pref.motionStyle === "snappy"
+                ? 0.26
+                : pref.motionStyle === "quiet"
+                  ? 0.2
+                  : 0.7,
+            ),
         ease: revealEase,
       }}
     />

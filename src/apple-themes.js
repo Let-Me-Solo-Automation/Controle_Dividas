@@ -24,6 +24,30 @@ export const appleThemes = [
   { ...light, id: 'apple-system', name: 'Apple Sistema', description: 'A mesma identidade, acompanhando o claro ou escuro do aparelho.' },
 ];
 
+// The picker is deliberately small. Older IDs are migrated by the preferences
+// model; their financial data and other saved settings remain untouched.
+export const curatedThemes = [
+  appleThemes[2], light, dark,
+  {
+    ...common, id: 'obsidiana', name: 'Obsidiana', family: 'obsidiana',
+    description: 'OLED, números com neon discreto e respostas ao toque.',
+    bg: '#080a0e', surface: '#171b22', text: '#f0f3fa', muted: '#a5b0c2',
+    accent: '#a9e9c6', accentText: '#10271b', line: '#343c49',
+    positive: '#91e4b8', negative: '#ff9cac', dark: true,
+    font: 'Space Grotesk', layout: 'oled', hero: 'cashflow', chart: 'bars',
+    order: ['platforms', 'trend', 'sections', 'activity', 'goals', 'reserve', 'agenda'],
+  },
+  {
+    ...common, id: 'rubi', name: 'Rubi', family: 'rubi',
+    description: 'Bordô profundo, luz suave e leitura acolhedora.',
+    bg: '#24151c', surface: '#39222d', text: '#fff0f4', muted: '#d6b4c3',
+    accent: '#ffb3c6', accentText: '#492333', line: '#684352',
+    positive: '#a3e4bb', negative: '#ffb7a4', dark: true,
+    font: 'Manrope', layout: 'velvet', hero: 'agenda', chart: 'area',
+    order: ['agenda', 'sections', 'trend', 'activity', 'goals', 'reserve', 'platforms'],
+  },
+];
+
 export function resolveAppleTheme(id, systemDark) {
   if (id === 'apple-system') return systemDark ? dark : light;
   return appleThemes.find((theme) => theme.id === id);

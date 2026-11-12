@@ -168,7 +168,7 @@ test("search works by keyboard and all themes render without runtime errors", as
   const options = await page
     .locator("#theme-select option")
     .evaluateAll((opts) => opts.map((o) => (o as HTMLOptionElement).value));
-  expect(options).toHaveLength(18);
+  expect(options).toHaveLength(5);
   for (const id of options) {
     await page.locator("#theme-select").selectOption(id);
     await expect(f.locator("html")).toHaveAttribute(
@@ -190,7 +190,7 @@ test("all 19 unique supplied components render in the lab", async ({
   await open(page);
   const f = app(page);
   await menu(page, "Personalização");
-  await f.getByRole("button", { name: "Referência das interações" }).click();
+  await f.getByRole("button", { name: "Explorar interações" }).click();
   const lab = f.getByRole("dialog", { name: "Referência das interações" });
   await expect(lab.locator(".gallery-example")).toHaveCount(6);
   await lab.getByRole("button", { name: "Próximo slide" }).click();
@@ -230,7 +230,7 @@ test("mobile layouts, empty state and reset confirmation", async ({ page }) => {
   await app(page)
     .getByLabel("Nome do banco ou carteira")
     .fill("Minha carteira");
-  await app(page).getByLabel("Saldo inicial (R$)").fill("75,00");
+  await app(page).getByLabel("Saldo inicial real (R$)").fill("75,00");
   await app(page).getByRole("button", { name: "Salvar", exact: true }).click();
   await expect(app(page).locator(".hero-amount")).toContainText("75,00");
   await page.screenshot({ path: "test-results/mobile.png", fullPage: true });

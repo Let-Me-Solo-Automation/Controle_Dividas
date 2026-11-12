@@ -1,4 +1,8 @@
 import themeDomain from './domain.js';
+import { DashboardOverview } from '../components/DashboardOverview';
+import { GoalTargetEditor } from '../components/GoalTargetEditor';
+import { LiquidDangerButton } from '../components/LiquidDangerButton';
+import { AnimatedProgressRing } from '../components/nexo-ui';
 import { resolveAppleTheme, systemFontStack } from '../apple-themes.js';
 import { useSystemDark } from '../use-system-dark';
 import { BrandIcon } from '../components/BrandIcon';
@@ -9,8 +13,14 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom/client';
 import { motion, AnimatePresence, MotionConfig } from 'motion/react';
 import { FluidNavigation, ContinuousTabs, AnimatedMoney, MotionProgress, MotionToggle, CommandPalette, CreateGrid, CreateNewDisclosure, ScreenTransition, AppModal, MotionCard, BlurSlider, DashboardTools, MotionAppRoot, ThemeMorphToggle } from '../components/nexo-ui';
-import { EntryFilters, RecentActivity, GoalProgress, SectionOrganizer, FinanceAgenda, FinanceHighlights, FinanceShortcuts, FocusDisclosure, BalanceMap, FinanceHelp, ContributionPlanner } from '../components/ProductionInteractions';
+import { EntryFilters, RecentActivity, GoalProgress, SectionOrganizer, FinanceAgenda, FinanceHighlights, FinanceShortcuts, FocusDisclosure, FinanceHelp, ContributionPlanner } from '../components/ProductionInteractions';
+import { DeliveryRouteMap } from '../components/DeliveryRouteMap';
 import { ComponentGallery } from '../components/ComponentGallery';
+import { ReserveWorkspace, BankFields, ReserveTransactionFields, bankFromForm } from '../components/ReserveWorkspace';
+import { addBank, changeReserve, validateReserveMetadata } from '../lib/reserve-model';
+import { normalizePersonalizationSettings } from '../personalization.js';
+import { PersonalizationStudio } from '../components/PersonalizationStudio';
+import { AnimatedFinanceChart } from '../components/AnimatedFinanceChart';
 const ReactCompat = { ...React, default: React };
   var ca = ReactCompat;
   var Lr = ReactCompat;
@@ -785,7 +795,7 @@ const ReactCompat = { ...React, default: React };
       platforms: ["iFood", "99Food", "Keeta", "Outras"],
       recurring: [],
       reserve: [],
-      settings: structuredClone(iu),
+      settings: normalizePersonalizationSettings(structuredClone(iu)),
       sharing: { url: "", key: "", grants: {} },
     };
   }
@@ -932,7 +942,7 @@ const ReactCompat = { ...React, default: React };
       if (o.extensions === void 0) o.extensions = [];
       else if (!Array.isArray(o.extensions))
         throw Error("Hist\xF3rico da meta inv\xE1lido.");
-    return (xf(e.settings), e);
+    return (xf(e.settings), e.settings = normalizePersonalizationSettings(e.settings), validateReserveMetadata(e), e);
   }
   function bf() {
     let e = du(),
@@ -1088,25 +1098,27 @@ const ReactCompat = { ...React, default: React };
     }
     return e;
   }
-  function fn({ data: e, date: a, onSelect: t }) {
+  function fn({ data: e, date: a, onSelect: t, scheduled = [] }) {
     let [l] = yr("week", a),
       o = Array.from({ length: 7 }, (i, d) => {
         let s = new Date(l + "T12:00:00");
         s.setDate(s.getDate() + d);
         let c = `${s.getFullYear()}-${String(s.getMonth() + 1).padStart(2, "0")}-${String(s.getDate()).padStart(2, "0")}`,
           h = e.deliveries.filter((m) => m.date === c).length,
-          C = e.entries.filter((m) => m.date === c).length;
+          C = e.entries.filter((m) => m.date === c).length,
+          planned = scheduled.filter((item) => item.date === c).length;
         return {
           iso: c,
           rides: h,
           moves: C,
+          planned,
           label: s
             .toLocaleDateString("pt-BR", { weekday: "short" })
             .replace(".", ""),
           day: s.getDate(),
         };
       }),
-      u = o.filter((i) => i.moves > 0 || i.rides > 0).length;
+      u = o.filter((i) => i.moves > 0 || i.rides > 0 || i.planned > 0).length;
     return ca.default.createElement(
       ca.default.Fragment,
       null,
@@ -1117,7 +1129,7 @@ const ReactCompat = { ...React, default: React };
         ca.default.createElement(
           "small",
           null,
-          "com lan\xE7amentos ou entregas",
+          "com atividade ou compromissos agendados",
         ),
       ),
       ca.default.createElement(
@@ -1128,22 +1140,24 @@ const ReactCompat = { ...React, default: React };
             "button",
             {
               key: i.iso,
-              "aria-label": `${i.iso}: ${i.rides} entregas e ${i.moves} lan\xE7amentos`,
-              className: i.rides || i.moves ? "has-activity" : "",
+              "aria-label": `${i.iso}: ${i.rides} entregas, ${i.moves} lançamentos e ${i.planned} compromissos agendados`,
+              className: i.rides || i.moves || i.planned ? "has-activity" : "",
               onClick: () => t(i.iso),
             },
             ca.default.createElement("small", null, i.label),
             ca.default.createElement(
               "span",
               null,
-              i.rides || i.moves
+              i.rides || i.moves || i.planned
                 ? ca.default.createElement(Ze, { size: 19 })
                 : i.day,
             ),
             ca.default.createElement(
               "small",
               null,
-              i.rides
+              i.planned
+                ? i.planned + " prazo" + (i.planned > 1 ? "s" : "")
+                : i.rides
                 ? i.rides + " ent."
                 : i.moves
                   ? i.moves + " mov."
@@ -1204,7 +1218,7 @@ function cn(props){return React.createElement(FluidNavigation,props);}
               Ue.default.createElement("small", null, "Abrir"),
             ),
             Ue.default.createElement(
-              "button",
+              LiquidDangerButton,
               {
                 className: "swipe-delete",
                 "aria-label": "Excluir " + e,
@@ -1231,7 +1245,7 @@ function cn(props){return React.createElement(FluidNavigation,props);}
   var r = ReactCompat,
     Pg = ReactDOM;
   var Go = themeDomain.themes,
-    qg = (id, systemDark) => resolveAppleTheme(id, systemDark) || Go.find((theme) => theme.id === id) || Go[0];
+    qg = (id, systemDark) => resolveAppleTheme(id, systemDark) || Go.find((theme) => theme.id === id) || resolveAppleTheme('apple-system', systemDark);
   function Ug() {
     try {
       let e = window.NexoNative
@@ -1299,7 +1313,7 @@ function cn(props){return React.createElement(FluidNavigation,props);}
   var A = ReactCompat;
   function pe({ label: e, children: a, onClick: t, ...l }) {
     return A.default.createElement(
-      "button",
+      /excluir|remover/i.test(e || '') ? LiquidDangerButton : "button",
       { className: "icon-button", "aria-label": e, title: e, onClick: t, ...l },
       a,
     );
@@ -1328,47 +1342,7 @@ function cn(props){return React.createElement(FluidNavigation,props);}
     );
   }
 function Hs(props){return React.createElement(AnimatedMoney,props);}
-  function Pl({ progress: e = 0, size: a = 90, label: t, children: l }) {
-    let u = 2 * Math.PI * 40;
-    return A.default.createElement(
-      "div",
-      {
-        className: "ring",
-        style: { width: a, height: a },
-        role: "img",
-        "aria-label": t || `${Math.round(e * 100)}% conclu\xEDdo`,
-      },
-      A.default.createElement(
-        "svg",
-        { viewBox: "0 0 96 96" },
-        A.default.createElement("circle", {
-          className: "ring-track",
-          cx: "48",
-          cy: "48",
-          r: 40,
-        }),
-        A.default.createElement("circle", {
-          className: "ring-value",
-          cx: "48",
-          cy: "48",
-          r: 40,
-          strokeDasharray: u,
-          strokeDashoffset: u * (1 - Math.min(1, Math.max(0, e))),
-        }),
-      ),
-      A.default.createElement(
-        "div",
-        null,
-        l ||
-          A.default.createElement(
-            "strong",
-            null,
-            Math.round(e * 100),
-            A.default.createElement("small", null, "%"),
-          ),
-      ),
-    );
-  }
+  function Pl(props){return React.createElement(AnimatedProgressRing,props);}
 function Gl(props){return React.createElement(MotionProgress,props);}
 function Ye(props){return React.createElement(MotionToggle,props);}
 function Wi(props){return React.createElement(ContinuousTabs,props);}
@@ -1467,133 +1441,8 @@ function Hg(props){return React.createElement(AppModal,props);}
       i && A.default.createElement("small", null, i),
     );
   }
-  function Fs({
-    values: e = [],
-    labels: a = [],
-    kind: t = "area",
-    visible: l = !0,
-  }) {
-    if (!l)
-      return A.default.createElement(
-        "p",
-        { className: "muted" },
-        "Gr\xE1fico oculto enquanto os valores est\xE3o protegidos.",
-      );
-    let o = Math.max(1, ...e),
-      u = e.map((d, s) => [
-        12 + (s * 276) / Math.max(1, e.length - 1),
-        108 - (d / o) * 90,
-      ]),
-      i = u.map((d, s) => (s ? "L" : "M") + d.join(",")).join(" ");
-    return A.default.createElement(
-      "div",
-      { className: "chart chart-" + t },
-      A.default.createElement(
-        "svg",
-        {
-          viewBox: "0 0 300 130",
-          role: "img",
-          "aria-label": e.map((d, s) => a[s] + ": " + ye(d)).join("; "),
-        },
-        A.default.createElement(
-          "defs",
-          null,
-          A.default.createElement(
-            "linearGradient",
-            { id: "areaFill", x1: "0", y1: "0", x2: "1", y2: "1" },
-            A.default.createElement("stop", {
-              stopColor: "var(--accent)",
-              stopOpacity: ".4",
-            }),
-            A.default.createElement("stop", {
-              offset: "1",
-              stopColor: "var(--accent)",
-              stopOpacity: ".02",
-            }),
-          ),
-        ),
-        [28, 68, 108].map((d) =>
-          A.default.createElement("line", {
-            key: d,
-            className: "gridline",
-            x1: "5",
-            x2: "295",
-            y1: d,
-            y2: d,
-          }),
-        ),
-        t === "bars"
-          ? e.map((d, s) =>
-              A.default.createElement(
-                "rect",
-                {
-                  key: s,
-                  className: "bar",
-                  x: 9 + (s * 284) / Math.max(1, e.length),
-                  y: 108 - (d / o) * 90,
-                  width: Math.max(4, 220 / Math.max(1, e.length)),
-                  height: Math.max(2, (d / o) * 90),
-                  rx: "6",
-                },
-                A.default.createElement("title", null, a[s], ": ", ye(d)),
-              ),
-            )
-          : A.default.createElement(
-              A.default.Fragment,
-              null,
-              t === "area" &&
-                u.length > 0 &&
-                A.default.createElement("path", {
-                  d: i + " L288,108 L12,108 Z",
-                  fill: "url(#areaFill)",
-                }),
-              A.default.createElement("path", { d: i, className: "line" }),
-              u.map(([d, s], c) =>
-                A.default.createElement(
-                  "circle",
-                  { key: c, cx: d, cy: s, r: "3", className: "point" },
-                  A.default.createElement("title", null, a[c], ": ", ye(e[c])),
-                ),
-              ),
-            ),
-      ),
-      A.default.createElement(
-        "div",
-        { className: "chart-labels" + (a.length > 8 ? " dense-labels" : "") },
-        a.map((d, s) => A.default.createElement("span", { key: s }, d)),
-      ),
-      A.default.createElement(
-        "details",
-        { className: "chart-data" },
-        A.default.createElement("summary", null, "Ver valores do gr\xE1fico"),
-        A.default.createElement(
-          "table",
-          null,
-          A.default.createElement(
-            "thead",
-            null,
-            A.default.createElement(
-              "tr",
-              null,
-              A.default.createElement("th", null, "Per\xEDodo"),
-              A.default.createElement("th", null, "Receita em R$"),
-            ),
-          ),
-          A.default.createElement(
-            "tbody",
-            null,
-            e.map((d, s) =>
-              A.default.createElement(
-                "tr",
-                { key: s },
-                A.default.createElement("td", null, a[s]),
-                A.default.createElement("td", null, ye(d)),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
+  function Fs(props) {
+    return React.createElement(AnimatedFinanceChart, props);
   }
   function Ri({ entry: e, visible: a, onClick: t }) {
     let l = e.type === "income";
@@ -1881,6 +1730,8 @@ function Hg(props){return React.createElement(AppModal,props);}
           "cardStyle",
           "calendarStyle",
           "iconStyle",
+          "motionStyle",
+          "chartAnimation",
         ])
           document.documentElement.dataset[n] = O[n];
         for (let n of [
@@ -2136,13 +1987,7 @@ function Hg(props){return React.createElement(AppModal,props);}
         switch (o.type) {
           case "account":
             L = le(
-              (S) =>
-                S.accounts.push({
-                  id: ee(),
-                  title: v(),
-                  initial: Rl(f.amount),
-                  color: f.color,
-                }),
+              (S) => addBank(S, bankFromForm(new FormData(n.currentTarget), Rl)),
               "Conta cadastrada.",
             );
             break;
@@ -2335,17 +2180,13 @@ function Hg(props){return React.createElement(AppModal,props);}
             }, "Prazo estendido.");
             break;
           case "reserve": {
-            let S = Rl(f.amount);
-            L = le((k) => {
-              ((k.reserve = k.reserve.filter(
-                (q) => q.accountId !== f.accountId,
-              )),
-                k.reserve.push({
-                  id: ee(),
-                  accountId: f.accountId,
-                  amount: S,
-                }));
-            }, "Reserva atualizada.");
+            L = le((k) => changeReserve(k, {
+              accountId: f.accountId,
+              type: f.direction,
+              amount: Rl(f.amount),
+              date: f.date,
+              note: f.note || "",
+            }), "Movimentação da reserva registrada.");
             break;
           }
           case "recurring": {
@@ -2483,7 +2324,7 @@ function Hg(props){return React.createElement(AppModal,props);}
           r.default.createElement(
             "div",
             { className: "amount-pair" },
-            P(za(n)),
+            React.createElement(AnimatedMoney,{value:za(n),visible:s,fromZero:true}),
             r.default.createElement(
               "small",
               null,
@@ -2731,15 +2572,15 @@ function Hg(props){return React.createElement(AppModal,props);}
           ),
       );
     }
-    function Yo() {
+    function Yo(allScheduled = false) {
       let n = [];
       for (let f of e.sections.filter((L) => L.kind !== "ledger")) {
-        let L = Ba(f).current;
-        L &&
+        let schedule = Ba(f), rows = allScheduled ? schedule.rows.filter(row => !row.closed && row.due > 0) : [schedule.current].filter(Boolean);
+        for (let L of rows)
           n.push({
-            id: f.id,
+            id: allScheduled ? `${f.id}-${L.index}` : f.id,
             date: L.date,
-            title: f.title,
+            title: allScheduled ? `${f.title} · parcela ${L.number}` : f.title,
             amount: L.due,
             type: f.kind,
             open: () => _l("sections", f.id),
@@ -2755,13 +2596,15 @@ function Hg(props){return React.createElement(AppModal,props);}
           open: () => _l("goals", f.id),
         });
       for (let f of e.recurring.filter((L) => L.active)) {
+        let months = allScheduled ? [-1, 0, 1].map(offset => gl(m, offset).slice(0, 7)) : [m.slice(0, 7)];
+        for (let month of months) {
         let L = Math.min(
             f.day,
-            new Date(Number(m.slice(0, 4)), Number(m.slice(5, 7)), 0).getDate(),
+            new Date(Number(month.slice(0, 4)), Number(month.slice(5, 7)), 0).getDate(),
           ),
-          y = m.slice(0, 7) + "-" + String(L).padStart(2, "0");
+          y = month + "-" + String(L).padStart(2, "0");
         e.entries.some(
-          (v) => v.recurringId === f.id && v.competence === m.slice(0, 7),
+          (v) => v.recurringId === f.id && v.competence === month,
         ) ||
           n.push({
             id: f.id,
@@ -2771,6 +2614,7 @@ function Hg(props){return React.createElement(AppModal,props);}
             type: f.type,
             open: () => ke("recurring"),
           });
+        }
       }
       return n.sort((f, L) => f.date.localeCompare(L.date));
     }
@@ -2821,7 +2665,7 @@ function Hg(props){return React.createElement(AppModal,props);}
         f = e.goals[0],
         L = "Saldo total nas contas",
         y = Te.balance,
-        v = "Inclui metas e reserva";
+        v = "Saldo real, incluindo valores já reservados.";
       return (
         n === "cashflow" &&
           ((L = "Resultado do per\xEDodo"),
@@ -2949,12 +2793,13 @@ function Hg(props){return React.createElement(AppModal,props);}
           J,
           {
             title: "Sua semana em movimento",
-            subtitle: "Atividade registrada, de segunda a domingo",
+            subtitle: "Atividade e compromissos, de segunda a domingo",
             icon: Ra,
           },
           r.default.createElement(fn, {
             data: e,
             date: m,
+            scheduled: Yo(true),
             onSelect: (f) => {
               (b(f), ke("agenda"));
             },
@@ -2989,10 +2834,17 @@ function Hg(props){return React.createElement(AppModal,props);}
             action: "Se\xE7\xF5es",
             onAction: () => ke("sections"),
           },
-          [...e.sections]
-            .sort((f, L) => +!!L.pinned - +!!f.pinned)
-            .slice(0, 3)
-            .map(Qs),
+          e.sections.length > 0 && React.createElement(SectionOrganizer, {
+            items:[...e.sections].sort((a,b)=>+!!b.pinned-+!!a.pinned).slice(0,3).map(section=>({
+              id:section.id,name:section.title,pinned:!!section.pinned,icon:ta,
+              type:section.kind==='receive'?'A receber':section.kind==='pay'?'A pagar':'Lançamentos',
+              status:'',subtitle:section.person||'Controle pessoal',
+              amount:section.kind==='ledger'?e.entries.filter(entry=>entry.sectionId===section.id).length+' registros':s?ye(Ba(section).remaining):'••••',
+              progress:section.kind==='ledger'?undefined:Ba(section).progress,action:()=>_l('sections',section.id)
+            })), grants:[],
+            onPin:(id,pinned)=>le(data=>{data.sections.find(section=>section.id===id).pinned=pinned;},pinned?'Seção fixada.':'Seção desafixada.'),
+            onShare:id=>U('share',{id})
+          }),
           !e.sections.length &&
             r.default.createElement(
               St,
@@ -3053,19 +2905,29 @@ function Hg(props){return React.createElement(AppModal,props);}
           onCreate: () => { Ma() || U("entry"); },
           onSearch: query => { ke("entries"); me(query); },
         }),
-        React.createElement(FinanceHighlights, { items: [
-          { id: "free", eyebrow: "ESPAÇO PARA SEUS PLANOS", title: s ? ye(Te.balance - Te.reserved - Te.goals) : "••••", detail: "Disponível depois de separar suas metas e reserva.", actionLabel: "Organizar minhas contas", action: () => ke("accounts") },
-          { id: "agenda", eyebrow: "SEU PRÓXIMO PASSO", title: Yo()[0]?.title || "Sua agenda está em dia", detail: Yo()[0] ? fa(Yo()[0].date) + " · " + (s ? ye(Yo()[0].amount) : "••••") : "Compromissos, recorrências e metas aparecem juntos aqui.", actionLabel: "Revisar agenda", action: () => ke("agenda") },
-          { id: "goals", eyebrow: "CADA APORTE CONTA", title: e.goals.length ? (s ? ye(Xo) : "••••") + " reservados" : "O que você quer conquistar?", detail: e.goals.length ? e.goals.length + " metas · " + e.goals.filter(goal => za(goal) >= goal.target).length + " concluídas" : "Dê um destino ao dinheiro que você quer guardar.", actionLabel: e.goals.length ? "Acompanhar metas" : "Criar uma meta", action: () => e.goals.length ? ke("goals") : U("goal") },
-        ] }),
-        r.default.createElement(
-          "div",
-          { className: "overview-grid" },
-          sa("Entradas", P(Te.income), dl),
-          sa("Sa\xEDdas", P(Te.expense), Da),
-          sa("A receber", P(_s), ta),
-          sa("A pagar", P(Xs), Ko),
-        ),
+        React.createElement(DashboardOverview, {
+          groups: [
+            { id: "flow", title: "Seu fluxo no período", kpis: [
+              {label:"Entradas",value:s?ye(Te.income):"••••",tone:"positive",icon:React.createElement(dl,{size:18})},
+              {label:"Saídas",value:s?ye(Te.expense):"••••",tone:"negative",icon:React.createElement(Da,{size:18})}
+            ], actionLabel:"Abrir extrato",onAction:()=>ke("entries") },
+            { id: "agreements", title: "Seus acordos", kpis: [
+              {label:"A receber",value:s?ye(_s):"••••",tone:"positive",icon:React.createElement(ta,{size:18})},
+              {label:"A pagar",value:s?ye(Xs):"••••",tone:"negative",icon:React.createElement(Ko,{size:18})}
+            ],actionLabel:"Ver seções",onAction:()=>ke("sections") },
+            { id:"balances", title:"Saldo real, sem somar metas futuras",kpis:[
+              {label:"Patrimônio em contas",value:s?ye(Te.balance):"••••",tone:"neutral",icon:React.createElement(Et,{size:18})},
+              {label:"Na reserva",value:s?ye(Te.reserved):"••••",tone:"positive",icon:React.createElement(Et,{size:18})}
+            ],actionLabel:"Organizar reserva",onAction:()=>ke("accounts") }
+          ],
+          taskData:{
+            title:"Metas em movimento",progress:jo?Math.min(100,Math.round(Xo/jo*100)):0,hideProgress:!s,
+            completedCount:e.goals.filter(goal=>za(goal)>=goal.target).length,totalCount:e.goals.length,
+            priority:"No seu ritmo",status:e.goals.filter(goal=>za(goal)<goal.target).length+" em andamento",assignees:[],
+            subtasks:e.goals.map(goal=>({id:goal.id,title:goal.title+" · "+(s?ye(za(goal))+" de "+ye(goal.target):"••••"),completed:za(goal)>=goal.target,action:()=>{if(za(goal)>=goal.target)_l("goals",goal.id);else Ma()||U("contribution",{id:goal.id});}}))
+          },
+          onCreateGoal:()=>U("goal")
+        }),
         r.default.createElement(
           "div",
           { className: "dashboard-stack" },
@@ -3498,7 +3360,7 @@ function Hg(props){return React.createElement(AppModal,props);}
               "div",
               null,
               r.default.createElement("small", null, "Seu progresso"),
-              r.default.createElement("div", { className: "big-value" }, P(f)),
+              r.default.createElement("div", { className: "big-value" }, React.createElement(AnimatedMoney,{value:f,visible:s,fromZero:true})),
               r.default.createElement("p", null, "Objetivo: ", P(n.target)),
             ),
             r.default.createElement(Pl, { progress: L }),
@@ -3536,6 +3398,7 @@ function Hg(props){return React.createElement(AppModal,props);}
             r.default.createElement(be, { size: 18 }),
             "Adicionar ou resgatar valor",
           ),
+          React.createElement(GoalTargetEditor,{key:n.id,target:n.target,deposited:f,parse:Rl,format:ye,onSave:value=>le(data=>{data.goals.find(goal=>goal.id===n.id).target=value;},"Valor da meta atualizado.")}),
           r.default.createElement(
             F,
             {
@@ -3753,125 +3616,16 @@ function Hg(props){return React.createElement(AppModal,props);}
       );
     }
     function Rg() {
-      return r.default.createElement(
-        r.default.Fragment,
-        null,
-        r.default.createElement(
-          "div",
-          { className: "page-intro" },
-          r.default.createElement(
-            "p",
-            null,
-            "Saiba onde est\xE1 cada parte.",
-            r.default.createElement("br", null),
-            "Saldo, reserva e objetivos sem duplica\xE7\xE3o.",
-          ),
-          r.default.createElement(
-            pe,
-            { label: "Cadastrar conta", onClick: () => U("account") },
-            r.default.createElement(be, null),
-          ),
-        ),
-        r.default.createElement(
-          "section",
-          { className: "hero" },
-          r.default.createElement(
-            "small",
-            null,
-            "Seu patrim\xF4nio nas contas",
-          ),
-          r.default.createElement(
-            "div",
-            { className: "hero-amount" },
-            P(Te.balance),
-          ),
-          r.default.createElement(
-            "p",
-            null,
-            "Reserva ",
-            P(Te.reserved),
-            " \xB7 Metas ",
-            P(Te.goals),
-          ),
-        ),
-        React.createElement(BalanceMap, {
-          format: value => s ? ye(value) : "••••",
-          accounts: e.accounts.map(account => ({ id: account.id, title: account.title, balance: Sr(e, account.id), free: Cr(e, account.id), reserved: e.reserve.filter(item => item.accountId === account.id).reduce((sum, item) => sum + item.amount, 0), goals: e.goals.reduce((sum, goal) => sum + goal.contributions.filter(item => item.accountId === account.id).reduce((total, item) => total + item.amount, 0), 0), action: () => U("reserve", { accountId: account.id }) })),
-        }),
-        e.accounts.map((n) =>
-          r.default.createElement(
-            J,
-            { key: n.id },
-            r.default.createElement(
-              "div",
-              { className: "card-heading" },
-              r.default.createElement(
-                "div",
-                null,
-                r.default.createElement(
-                  "span",
-                  { className: "bank-mark", style: { background: n.color } },
-                  r.default.createElement(lt, { size: 20 }),
-                ),
-                r.default.createElement("h2", null, n.title),
-              ),
-              r.default.createElement(
-                pe,
-                {
-                  label: "Excluir conta " + n.title,
-                  onClick: () => It("account", n.id),
-                },
-                r.default.createElement(Ge, { size: 17 }),
-              ),
-            ),
-            r.default.createElement(
-              "div",
-              { className: "big-value" },
-              P(Sr(e, n.id)),
-            ),
-            r.default.createElement(
-              "div",
-              { className: "simple-row" },
-              r.default.createElement(
-                "span",
-                null,
-                "Dispon\xEDvel para alocar",
-              ),
-              P(Cr(e, n.id)),
-            ),
-            r.default.createElement(
-              "div",
-              { className: "simple-row" },
-              r.default.createElement("span", null, "Reserva de emerg\xEAncia"),
-              P(
-                e.reserve
-                  .filter((f) => f.accountId === n.id)
-                  .reduce((f, L) => f + L.amount, 0),
-              ),
-            ),
-            r.default.createElement(
-              F,
-              {
-                variant: "secondary full",
-                onClick: () => U("reserve", { accountId: n.id }),
-              },
-              r.default.createElement(Et, { size: 18 }),
-              "Ajustar reserva nesta conta",
-            ),
-          ),
-        ),
-        !e.accounts.length &&
-          r.default.createElement(
-            St,
-            {
-              icon: lt,
-              title: "Seu dinheiro come\xE7a por aqui",
-              action: "Cadastrar conta",
-              onAction: () => U("account"),
-            },
-            "Informe o banco e o saldo inicial. Nenhuma conex\xE3o banc\xE1ria \xE9 feita.",
-          ),
-      );
+      return React.createElement(ReserveWorkspace, {
+        data: e,
+        format: value => s ? ye(value) : "••••",
+        parse: Rl,
+        balance: id => Sr(e, id),
+        free: id => Cr(e, id),
+        onDataChange: le,
+        onCreateBank: () => U("account"),
+        onDeleteBank: id => It("account", id),
+      });
     }
     function $g() {
       const selectedAccount = e.accounts.some(account => account.id === entryAccount) ? entryAccount : "all";
@@ -4083,7 +3837,7 @@ function Hg(props){return React.createElement(AppModal,props);}
     }
     function th() {
       return React.createElement(FinanceAgenda, {
-        items: Yo(), selected: m, onSelect: b, onMonth: offset => b(gl(m, offset)), format: value => s ? ye(value) : "••••",
+        items: Yo(true), selected: m, onSelect: b, onMonth: offset => b(gl(m, offset)), format: value => s ? ye(value) : "••••",
       });
     }
     function lh() {
@@ -4128,270 +3882,28 @@ function Hg(props){return React.createElement(AppModal,props);}
               ),
             ),
         ),
-        r.default.createElement(
-          "div",
-          { className: "section-label" },
-          r.default.createElement("h2", null, "Escolha sua experi\xEAncia"),
-          r.default.createElement("span", { className: "badge" }, "15 estilos + Apple"),
-        ),
-        r.default.createElement(
-          "div",
-          { className: "theme-grid" },
-          Go.map((n) =>
-            r.default.createElement(
-              "button",
-              {
-                className: "theme-option " + (O.theme === n.id ? "active" : ""),
-                key: n.id,
-                "aria-pressed": O.theme === n.id,
-                onClick: () =>
-                  ge((f) => {
-                    f.theme = n.id;
-                  }),
-              },
-              r.default.createElement(
-                "div",
-                {
-                  className: "theme-mini mini-" + n.layout,
-                  style: {
-                    background: n.bg,
-                    color: n.text,
-                    "--mini-accent": n.accent,
-                    "--mini-surface": n.surface,
-                  },
-                },
-                r.default.createElement("div", { className: "mini-heading" }),
-                r.default.createElement("div", { className: "mini-hero" }),
-                r.default.createElement(
-                  "div",
-                  { className: "mini-blocks" },
-                  r.default.createElement("i", null),
-                  r.default.createElement("i", null),
-                  r.default.createElement("i", null),
-                ),
-                r.default.createElement("div", { className: "mini-nav" }),
-              ),
-              r.default.createElement(
-                "span",
-                null,
-                r.default.createElement("strong", null, n.name),
-                O.theme === n.id && r.default.createElement(Ze, { size: 16 }),
-              ),
-              r.default.createElement("small", null, n.description),
-            ),
-          ),
-        ),
+        React.createElement(PersonalizationStudio, {
+          settings: O,
+          themes: Go,
+          onChange: next => ge(draft => Object.assign(draft, next)),
+          onPersistPresets: presets => le(data => { data.settings.customPresets = structuredClone(presets); }),
+          onOpenReference: () => U("catalog"),
+        }),
         r.default.createElement(
           J,
-          {
-            title: "Pr\xE9via interativa",
-            subtitle: "Amostra ilustrativa, sem alterar suas finan\xE7as",
-            action: "Repetir",
-            onAction: () => ka((n) => n + 1),
-          },
-          r.default.createElement(
-            "div",
-            { className: "component-preview", key: j },
-            r.default.createElement(
-              "div",
-              { className: "preview-orb" },
-              r.default.createElement(Ze, { size: 23 }),
-            ),
-            r.default.createElement(
-              "div",
-              { className: "grow" },
-              r.default.createElement(
-                "strong",
-                null,
-                "Meu pr\xF3ximo objetivo",
-              ),
-              r.default.createElement("small", null, "R$ 720 de R$ 1.000"),
-              r.default.createElement(Gl, { value: 0.72 }),
-            ),
-            r.default.createElement(Pl, { progress: 0.72, size: 64 }),
-          ),
-          r.default.createElement(Ps, null),
-          r.default.createElement(
-            F,
-            {
-              variant: "secondary full",
-              onClick: () => {
-                (ge((n) => {
-                  n.theme = Go[Math.floor(Math.random() * Go.length)].id;
-                  for (let [f, L] of Object.entries(ru))
-                    n[f] = L[Math.floor(Math.random() * L.length)][0];
-                  ((n.chart = ["area", "bars", "line"][
-                    Math.floor(Math.random() * 3)
-                  ]),
-                    (n.glass = Math.random() > 0.35),
-                    (n.texture = Math.random() > 0.5));
-                }),
-                  ka((n) => n + 1));
-              },
-            },
-            r.default.createElement(au, { size: 17 }),
-            "Combina\xE7\xE3o aleat\xF3ria",
-          ),
-          r.default.createElement(
-            F,
-            { variant: "secondary full", onClick: () => U("catalog") },
-            r.default.createElement(tu, { size: 18 }),
-            "Referência das interações",
-          ),
-        ),
-        r.default.createElement(
-          J,
-          { title: "Apar\xEAncia e composi\xE7\xE3o" },
-          r.default.createElement(
-            "div",
-            { className: "nav-style-selector" },
-            r.default.createElement(Wi, {
-              label: "Estilo da navega\xE7\xE3o",
-              value: O.nav,
-              onChange: (n) =>
-                ge((f) => {
-                  f.nav = n;
-                }),
-              options: ru.nav.map(([n, f]) => ({ value: n, label: f })),
-            }),
-          ),
-          Object.entries(hf).map(([n, f]) =>
-            r.default.createElement(X, {
-              key: n,
-              label: f,
-              name: n,
-              options: ru[n].map(([L, y]) => ({ value: L, label: y })),
-              value: O[n],
-              onChange: (L) =>
-                ge((y) => {
-                  y[n] = L.target.value;
-                }),
-            }),
-          ),
+          { title: "Composição e uso" },
           r.default.createElement(Ye, {
-            label: "Blur sob o menu flutuante",
-            description:
-              "Desfoca o conte\xFAdo atr\xE1s do menu at\xE9 a borda inferior",
-            checked: O.footerBlur,
-            onChange: (n) =>
-              ge((f) => {
-                f.footerBlur = n;
-              }),
-          }),
-          React.createElement(BlurSlider,{value:O.blurStrength,onChange:(v)=>ge(f=>{f.blurStrength=v})}),
-          r.default.createElement(Ye, {
-            label: "A\xE7\xF5es por deslize",
-            description: "Deslize se\xE7\xF5es e metas para abrir ou excluir",
+            label: "Ações por deslize",
+            description: "Deslize seções e metas para abrir ou excluir",
             checked: O.swipeActions,
-            onChange: (n) =>
-              ge((f) => {
-                f.swipeActions = n;
-              }),
+            onChange: value => ge(draft => { draft.swipeActions = value; }),
           }),
-          React.createElement(FocusDisclosure, { enabled: O.focusMode, agenda: O.components.agenda !== false, onToggle: enabled => ge(settings => { settings.focusMode = enabled; }), onAgenda: enabled => ge(settings => { settings.components.agenda = enabled; }) }),
+          React.createElement(FocusDisclosure, { enabled: O.focusMode, agenda: O.components.agenda !== false, onToggle: enabled => ge(draft => { draft.focusMode = enabled; }), onAgenda: enabled => ge(draft => { draft.components.agenda = enabled; }) }),
           r.default.createElement(
             F,
-            {
-              variant: "secondary full",
-              onClick: () => U("heroImage", { image: O.heroImage || "" }),
-            },
+            { variant: "secondary full", onClick: () => U("heroImage", { image: O.heroImage || "" }) },
             r.default.createElement(Tt, { size: 18 }),
-            "Imagem do cart\xE3o principal",
-          ),
-          r.default.createElement(X, {
-            label: "Formato dos gr\xE1ficos",
-            name: "chart",
-            options: [
-              { value: "auto", label: "Escolhido pelo tema" },
-              { value: "area", label: "\xC1rea" },
-              { value: "bars", label: "Barras" },
-              { value: "line", label: "Linha" },
-            ],
-            value: O.chart,
-            onChange: (n) =>
-              ge((f) => {
-                f.chart = n.target.value;
-              }),
-          }),
-          r.default.createElement(Ye, {
-            label: "Superf\xEDcies de vidro",
-            description: "Transpar\xEAncia em menus e navega\xE7\xE3o",
-            checked: O.glass,
-            onChange: (n) =>
-              ge((f) => {
-                f.glass = n;
-              }),
-          }),
-          r.default.createElement(Ye, {
-            label: "Texturas sutis",
-            checked: O.texture,
-            onChange: (n) =>
-              ge((f) => {
-                f.texture = n;
-              }),
-          }),
-          r.default.createElement(Ye, {
-            label: "Layout compacto",
-            checked: O.compact,
-            onChange: (n) =>
-              ge((f) => {
-                f.compact = n;
-              }),
-          }),
-        ),
-        r.default.createElement(
-          J,
-          { title: "Movimento e resposta" },
-          r.default.createElement(Ye, {
-            label: "Ativar anima\xE7\xF5es",
-            checked: O.motion,
-            onChange: (n) =>
-              ge((f) => {
-                f.motion = n;
-              }),
-            day: !0,
-          }),
-          r.default.createElement(
-            ve,
-            null,
-            "A prefer\xEAncia de movimento reduzido do Android ou navegador tem prioridade.",
-          ),
-          [
-            ["transition", "Transi\xE7\xF5es entre telas"],
-            ["reveal", "Revelar conte\xFAdo ao rolar"],
-            ["numbers", "Entrada dos valores"],
-            ["progress", "Morph de barras e an\xE9is"],
-            ["feedback", "Resposta ao tocar"],
-            ["glow", "Brilho dos controles"],
-            ["haptic", "Vibra\xE7\xE3o ao salvar"],
-          ].map(([n, f]) =>
-            r.default.createElement(Ye, {
-              key: n,
-              label: f,
-              checked: O[n],
-              onChange: (L) =>
-                ge((y) => {
-                  y[n] = L;
-                }),
-            }),
-          ),
-          r.default.createElement(
-            "label",
-            { className: "field" },
-            r.default.createElement("span", null, "Ritmo das anima\xE7\xF5es"),
-            r.default.createElement("input", {
-              "aria-label": "Ritmo das anima\xE7\xF5es",
-              type: "range",
-              min: "0.4",
-              max: "2",
-              step: "0.1",
-              value: O.intensity,
-              onChange: (n) =>
-                ge((f) => {
-                  f.intensity = Number(n.target.value);
-                }),
-            }),
-            r.default.createElement("small", null, "R\xE1pido \u27F7 suave"),
+            "Imagem do cartão principal",
           ),
         ),
         r.default.createElement(
@@ -4494,17 +4006,6 @@ function Hg(props){return React.createElement(AppModal,props);}
             { variant: "secondary full", onClick: () => U("demo") },
             r.default.createElement(Ot, { size: 18 }),
             "Carregar dados demonstrativos",
-          ),
-          r.default.createElement(
-            F,
-            {
-              variant: "secondary full",
-              onClick: () => {
-                ge((n) => Object.assign(n, structuredClone(iu)));
-              },
-            },
-            r.default.createElement(pl, { size: 17 }),
-            "Restaurar apar\xEAncia padr\xE3o",
           ),
         ),
         r.default.createElement(
@@ -4612,29 +4113,7 @@ function Hg(props){return React.createElement(AppModal,props);}
           "form",
           { onSubmit: jg, className: "form-stack" },
           n.type === "account" &&
-            r.default.createElement(
-              r.default.Fragment,
-              null,
-              r.default.createElement(X, {
-                label: "Nome do banco ou carteira",
-                name: "title",
-                required: !0,
-                maxLength: 80,
-                placeholder: "Ex.: Bradesco",
-              }),
-              Wa("Saldo inicial (R$)"),
-              r.default.createElement(X, {
-                label: "Cor de identifica\xE7\xE3o",
-                name: "color",
-                type: "color",
-                defaultValue: "#4968db",
-              }),
-              r.default.createElement(
-                ve,
-                null,
-                "Este \xE9 o saldo antes dos lan\xE7amentos que voc\xEA vai cadastrar. A conta n\xE3o se conecta ao banco.",
-              ),
-            ),
+            React.createElement(BankFields),
           n.type === "entry" &&
             r.default.createElement(
               r.default.Fragment,
@@ -4893,30 +4372,7 @@ function Hg(props){return React.createElement(AppModal,props);}
               ),
             ),
           n.type === "reserve" &&
-            r.default.createElement(
-              r.default.Fragment,
-              null,
-              r.default.createElement(X, {
-                label: "Conta",
-                name: "accountId",
-                required: !0,
-                options: js,
-                defaultValue: n.accountId,
-              }),
-              Wa(
-                "Novo valor total da reserva (R$)",
-                "amount",
-                (
-                  (e.reserve.find((v) => v.accountId === n.accountId)?.amount ||
-                    0) / 100
-                ).toFixed(2),
-              ),
-              r.default.createElement(
-                ve,
-                null,
-                "Informe o total reservado nesta conta, n\xE3o apenas o acr\xE9scimo. Zero libera a reserva.",
-              ),
-            ),
+            React.createElement(ReserveTransactionFields, { data: e, accountId: n.accountId }),
           n.type === "recurring" &&
             r.default.createElement(
               r.default.Fragment,
@@ -5077,12 +4533,14 @@ function Hg(props){return React.createElement(AppModal,props);}
                       S.goals.some((k) =>
                         k.contributions.some((q) => q.accountId === n.id),
                       ) ||
-                      S.reserve.some((k) => k.accountId === n.id && k.amount)
+                      S.reserve.some((k) => k.accountId === n.id && k.amount) ||
+                      S.reserveTransactions?.some((k) => k.accountId === n.id)
                     )
                       throw Error(
                         "Conta em uso. Remova ou mova seus v\xEDnculos antes.",
                       );
                     ((S.accounts = S.accounts.filter((k) => k.id !== n.id)),
+                      (S.reservePlans = (S.reservePlans || []).filter(k => k.accountId !== n.id)),
                       (S.reserve = S.reserve.filter(
                         (k) => k.accountId !== n.id,
                       )),
@@ -5273,6 +4731,7 @@ function Hg(props){return React.createElement(AppModal,props);}
               r.default.createElement("strong", null, k),
             ),
           ),
+          r.default.createElement(DeliveryRouteMap, { pickup: v.pickup, destination: v.destination }),
           r.default.createElement(
             F,
             { variant: "danger full", onClick: () => It("delivery", v.id) },
@@ -5529,7 +4988,7 @@ function Hg(props){return React.createElement(AppModal,props);}
               React.createElement(ThemeMorphToggle, {
                 dark: we.dark,
                 onToggle: () => {
-                  le((n) => { n.settings.theme = O.theme.startsWith("apple-") ? (we.dark ? "apple-light" : "apple-dark") : (we.dark ? "porcelana" : "obsidiana"); });
+                  le((n) => { n.settings.theme = O.theme.startsWith("apple-") ? (we.dark ? "apple-light" : "apple-dark") : (we.dark ? "apple-light" : "obsidiana"); });
                   x(null);
                 },
               }),

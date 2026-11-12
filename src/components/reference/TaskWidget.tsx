@@ -1,3 +1,4 @@
+import { MotionProgress } from "../nexo-ui";
 import React, { useState } from "react";
 import { motion, AnimatePresence, LayoutGroup } from "motion/react";
 import { MoreHorizontal, Check, ChevronDown } from "lucide-react";
@@ -118,28 +119,10 @@ export const TaskWidget: React.FC<Props> = ({ data, initialOpen = false }) => {
                   layoutId="progress-container"
                   className="relative h-2 w-16 overflow-hidden rounded-full bg-neutral-100 transition-colors sm:w-32 dark:bg-neutral-700"
                 >
-                  <motion.div
-                    layoutId="progress-fill"
-                    className="relative h-full overflow-hidden rounded-full bg-green-500"
-                    style={{
-                      width: `${data.hideProgress ? "••" : `${data.progress}%`}`,
-                    }}
-                  >
-                    <motion.div
-                      initial={{ x: "-100%" }}
-                      animate={{ x: "100%" }}
-                      transition={{
-                        repeat: Infinity,
-                        duration: 1.5,
-                        ease: "linear",
-                      }}
-                      className="absolute inset-0 h-full w-full"
-                      style={{
-                        background:
-                          "linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)",
-                      }}
-                    />
-                  </motion.div>
+                  <MotionProgress
+                    value={data.hideProgress ? 0 : data.progress / 100}
+                    label={`Progresso de ${data.title}`}
+                  />
                 </motion.div>
                 <motion.span
                   layoutId="progress-text"
@@ -256,28 +239,10 @@ export const TaskWidget: React.FC<Props> = ({ data, initialOpen = false }) => {
                   layoutId="progress-container"
                   className="mx-1 h-2 w-20 rounded-full bg-neutral-100 transition-colors sm:w-28 dark:bg-neutral-700"
                 >
-                  <motion.div
-                    layoutId="progress-fill"
-                    className="relative h-full overflow-hidden rounded-full bg-green-500"
-                    style={{
-                      width: `${data.hideProgress ? "••" : `${data.progress}%`}`,
-                    }}
-                  >
-                    <motion.div
-                      initial={{ x: "-100%" }}
-                      animate={{ x: "100%" }}
-                      transition={{
-                        repeat: Infinity,
-                        duration: 1.5,
-                        ease: "linear",
-                      }}
-                      className="absolute inset-0 h-full w-full"
-                      style={{
-                        background:
-                          "linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent)",
-                      }}
-                    />
-                  </motion.div>
+                  <MotionProgress
+                    value={data.hideProgress ? 0 : data.progress / 100}
+                    label={`Progresso de ${data.title}`}
+                  />
                 </motion.div>
                 <motion.span
                   layoutId="progress-text"

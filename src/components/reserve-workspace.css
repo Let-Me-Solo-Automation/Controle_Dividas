@@ -1,0 +1,473 @@
+.reserve-workspace {
+  display: grid;
+  gap: 28px;
+  max-width: 1200px;
+  margin-inline: auto;
+  width: 100%;
+}
+.reserve-intro,
+.reserve-section-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+.reserve-intro h2 {
+  font-size: clamp(23px, 3vw, 34px);
+  max-width: 650px;
+  line-height: 1.2;
+  margin: 6px 0 10px;
+}
+.reserve-intro p,
+.reserve-section-heading p,
+.reserve-help,
+.reserve-bank-description,
+.reserve-plan p,
+.reserve-plan small,
+.reserve-empty-copy {
+  color: var(--muted);
+  line-height: 1.55;
+}
+.reserve-eyebrow {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+}
+.reserve-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+.reserve-summary section,
+.reserve-bank-card,
+.reserve-composer,
+.reserve-ledger,
+.reserve-empty {
+  border: 1px solid var(--line);
+  border-radius: 24px;
+  background: var(--surface);
+  padding: 24px;
+}
+.reserve-summary section {
+  text-align: center;
+  display: grid;
+  gap: 8px;
+}
+.reserve-summary strong {
+  font-size: clamp(21px, 2.5vw, 32px);
+  font-variant-numeric: tabular-nums;
+}
+.reserve-summary p {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0;
+}
+.reserve-summary span {
+  font-size: 13px;
+}
+.reserve-section-heading h2 {
+  margin: 0;
+  font-size: 21px;
+}
+.reserve-section-heading p {
+  margin: 6px 0 0;
+  font-size: 13px;
+}
+.reserve-bank-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  align-items: stretch;
+}
+.reserve-bank-card {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  text-align: center;
+  min-width: 0;
+}
+.reserve-bank-heading {
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+.reserve-bank-mark {
+  height: 58px;
+  width: 58px;
+  border-radius: 18px;
+  display: grid;
+  place-items: center;
+  color: white;
+  overflow: hidden;
+}
+.reserve-bank-mark img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.reserve-delete {
+  position: absolute;
+  right: 0;
+  top: 0;
+  padding: 9px;
+  background: transparent;
+  color: var(--muted);
+  border: 0;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.reserve-bank-card h3 {
+  font-size: 21px;
+  margin: 14px 0 4px;
+}
+.reserve-bank-description {
+  font-size: 13px;
+  min-height: 40px;
+  margin: 0 0 18px;
+  overflow-wrap: anywhere;
+}
+.reserve-bank-balance {
+  font-size: 30px;
+  letter-spacing: -0.03em;
+  font-variant-numeric: tabular-nums;
+  margin: 7px 0 20px;
+}
+.reserve-bank-card dl {
+  width: 100%;
+  display: grid;
+  gap: 12px;
+  margin: 0 0 20px;
+}
+.reserve-bank-card dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 13px;
+}
+.reserve-bank-card dt {
+  color: var(--muted);
+}
+.reserve-bank-card dd {
+  margin: 0;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.reserve-plan {
+  border-top: 1px solid var(--line);
+  width: 100%;
+  padding-top: 20px;
+  margin-top: auto;
+  display: grid;
+  gap: 9px;
+}
+.reserve-plan > span {
+  font-size: 12px;
+  color: var(--muted);
+}
+.reserve-plan > strong {
+  font-size: 21px;
+}
+.reserve-plan progress {
+  width: 100%;
+  height: 7px;
+  accent-color: var(--accent);
+}
+.reserve-plan p {
+  font-size: 12px;
+  margin: 0;
+}
+.reserve-plan small {
+  display: block;
+  font-size: 11px;
+  margin: 6px 0 18px;
+}
+.reserve-plan summary {
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 9px;
+}
+.reserve-plan-form {
+  display: grid;
+  gap: 12px;
+  text-align: left;
+  padding: 10px 0;
+}
+.reserve-workspace label,
+.reserve-bank-fields label {
+  display: grid;
+  gap: 7px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.reserve-workspace label span,
+.reserve-bank-fields label span {
+  font-weight: 400;
+  color: var(--muted);
+}
+.reserve-workspace input,
+.reserve-workspace select,
+.reserve-bank-fields input,
+.reserve-bank-fields select {
+  min-width: 0;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 12px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+}
+.reserve-bank-fields {
+  display: grid;
+  gap: 16px;
+}
+.reserve-field-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+.reserve-bank-fields input[type="color"] {
+  height: 46px;
+  padding: 6px;
+}
+.reserve-help {
+  font-size: 12px;
+  margin: 0;
+}
+.reserve-composer {
+  max-width: 650px;
+  width: 100%;
+  box-sizing: border-box;
+  margin-inline: auto;
+  display: grid;
+  gap: 16px;
+}
+.reserve-composer h3 {
+  margin: 0;
+}
+.reserve-composer fieldset {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 16px;
+  min-width: 0;
+}
+.reserve-composer legend {
+  font-size: 13px;
+  padding-inline: 6px;
+}
+.reserve-icon-preview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.reserve-icon-preview img {
+  height: 44px;
+  width: 44px;
+  object-fit: cover;
+  border-radius: 12px;
+}
+.reserve-icon-preview button {
+  border: 0;
+  background: transparent;
+  color: var(--accent);
+  cursor: pointer;
+}
+.reserve-error {
+  font-size: 13px;
+  color: var(--negative);
+  line-height: 1.5;
+}
+.reserve-ledger ul {
+  padding: 0;
+  margin: 20px 0 0;
+  list-style: none;
+}
+.reserve-ledger li {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 0;
+  border-top: 1px solid var(--line);
+}
+.reserve-ledger li > div {
+  min-width: 0;
+  flex: 1;
+}
+.reserve-ledger li strong {
+  font-size: 13px;
+}
+.reserve-ledger li p {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 5px 0;
+  overflow-wrap: anywhere;
+}
+.reserve-ledger time {
+  font-size: 11px;
+  color: var(--muted);
+}
+.reserve-ledger-icon {
+  height: 36px;
+  width: 36px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+  color: var(--accent);
+  border-radius: 12px;
+}
+.reserve-ledger-amount {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.reserve-empty {
+  text-align: center;
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+}
+.reserve-empty p {
+  max-width: 380px;
+  color: var(--muted);
+  margin: 0;
+}
+.reserve-empty h3 {
+  margin: 0;
+}
+.reserve-empty-copy {
+  font-size: 13px;
+  margin: 24px 0 0;
+}
+.reserve-workspace .btn {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+.reserve-bank-card > .btn {
+  width: 100%;
+}
+@media (max-width: 680px) {
+  .reserve-intro,
+  .reserve-section-heading {
+    align-items: stretch;
+    flex-direction: column;
+  }
+  .reserve-bank-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .reserve-summary {
+    gap: 8px;
+  }
+  .reserve-summary section {
+    padding: 16px 8px;
+    border-radius: 18px;
+  }
+  .reserve-summary span {
+    font-size: 11px;
+  }
+  .reserve-summary strong {
+    font-size: 18px;
+  }
+  .reserve-summary p {
+    font-size: 10px;
+  }
+  .reserve-ledger {
+    padding: 20px;
+  }
+  .reserve-ledger li {
+    gap: 9px;
+  }
+  .reserve-ledger-amount {
+    font-size: 12px !important;
+  }
+  .reserve-field-pair {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.reserve-workspace .btn {
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.3;
+  padding: 13px 17px;
+  min-height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--text);
+}
+.reserve-workspace .btn.primary {
+  background: var(--accent);
+  color: var(--accent-text, #fff);
+  border-color: transparent;
+}
+.reserve-workspace .btn.secondary {
+  background: color-mix(in srgb, var(--accent) 7%, var(--surface));
+  color: var(--accent);
+}
+.reserve-workspace button:focus-visible,
+.reserve-workspace input:focus-visible,
+.reserve-workspace select:focus-visible,
+.reserve-bank-fields input:focus-visible,
+.reserve-bank-fields select:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+.reserve-workspace {
+  container-type: inline-size;
+}
+.reserve-summary section:nth-child(2) strong {
+  color: var(--positive);
+}
+.reserve-summary section:nth-child(3) strong {
+  color: var(--accent);
+}
+.reserve-bank-card dl > div:first-child dd {
+  color: var(--positive);
+}
+.reserve-bank-card dl > div:nth-child(2) dd {
+  color: var(--accent);
+}
+.reserve-ledger
+  [data-kind="deposit"]
+  :is(.reserve-ledger-amount, .reserve-ledger-icon) {
+  color: var(--positive);
+}
+.reserve-ledger
+  [data-kind="withdrawal"]
+  :is(.reserve-ledger-amount, .reserve-ledger-icon) {
+  color: var(--negative);
+}
+.reserve-ledger [data-kind="opening"] .reserve-ledger-amount {
+  color: var(--muted);
+}
+.reserve-summary strong,
+.reserve-bank-balance {
+  overflow-wrap: anywhere;
+}
+@container (max-width:600px) {
+  .reserve-summary,
+  .reserve-bank-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .reserve-summary section {
+    padding: 20px;
+  }
+  .reserve-summary strong {
+    font-size: 26px;
+  }
+}
+@media (max-width: 480px) {
+  .reserve-summary {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .reserve-summary strong {
+    font-size: 26px;
+  }
+}

@@ -4,11 +4,13 @@ import {
   connectAuthEmulator,
   browserLocalPersistence,
   setPersistence,
-  createUserWithEmailAndPassword,
+  signInAnonymously,
+  onAuthStateChanged,
   signInWithEmailAndPassword,
   sendPasswordResetEmail,
   signOut,
   type Auth,
+  type User,
 } from "firebase/auth";
 import {
   getFirestore,
@@ -82,16 +84,33 @@ export function connectFirebase() {
     throw e;
   }));
 }
-export async function ownerStatus() {
+export type OwnerIdentity = Pick<User, "uid" | "email" | "isAnonymous">;
+export const anonymousSetupUrl =
+  "https://console.firebase.google.com/project/marks-79823/authentication/providers";
+export async function observeOwnerStatus(
+  onChange: (owner: OwnerIdentity | null) => void,
+) {
   const { auth } = await connectFirebase();
-  return auth.currentUser?.email ?? null;
+  // Observing a viewer or opening the sharing dialog never creates an account.
+  return onAuthStateChanged(auth, onChange);
 }
-export async function login(email: string, password: string, register = false) {
+let ownerSignIn: Promise<User> | undefined;
+async function ensureOwner(auth: Auth): Promise<User> {
+  if (auth.currentUser) return auth.currentUser;
+  // Concurrent publications must all use the same persisted owner identity.
+  return (ownerSignIn ??= signInAnonymously(auth)
+    .then(({ user }) => user)
+    .catch((error) => {
+      throw Error(userError(error));
+    })
+    .finally(() => {
+      ownerSignIn = undefined;
+    }));
+}
+export async function login(email: string, password: string) {
   const { auth } = await connectFirebase();
-  const result = await (register
-    ? createUserWithEmailAndPassword(auth, email, password)
-    : signInWithEmailAndPassword(auth, email, password));
-  return result.user.email;
+  const result = await signInWithEmailAndPassword(auth, email, password);
+  return result.user;
 }
 export async function logout() {
   const { auth } = await connectFirebase();
@@ -106,8 +125,6 @@ export async function publishSection(
   id: string,
 ): Promise<FirebaseGrant> {
   const { auth, db, base } = await connectFirebase();
-  if (!auth.currentUser)
-    throw Error("Entre na sua conta de compartilhamento antes de publicar.");
   const previous = data.sharing.grants[id];
   if (previous && previous.provider !== "firebase")
     throw Error(
@@ -120,12 +137,15 @@ export async function publishSection(
     ).join("");
   if (!/^[a-f0-9]{48}$/.test(token))
     throw Error("Identificador de compartilhamento inválido.");
+  const owner = await ensureOwner(auth);
   await setDoc(doc(db, "shares", token), {
-    ownerUid: auth.currentUser.uid,
+    ownerUid: owner.uid,
     section: projectSection(data, id),
     updatedAt: serverTimestamp(),
     expiresAt: null,
     revoked: false,
+  }).catch((error) => {
+    throw Error(userError(error));
   });
   const url = new URL("compartilhar.html", base);
   url.hash = "s=" + token;
@@ -142,8 +162,7 @@ export async function publishSection(
 }
 export async function revokeShare(grant: FirebaseGrant) {
   const { db, auth } = await connectFirebase();
-  if (!auth.currentUser)
-    throw Error("Entre na conta que publicou a seção para revogar o acesso.");
+  await ensureOwner(auth);
   // Keep a small tombstone so a stale tab or restored backup cannot recreate
   // this URL. The rules permanently block republishing a revoked token.
   await updateDoc(doc(db, "shares", grant.id), {
@@ -151,6 +170,8 @@ export async function revokeShare(grant: FirebaseGrant) {
     section: deleteField(),
     expiresAt: null,
     updatedAt: serverTimestamp(),
+  }).catch((error) => {
+    throw Error(userError(error));
   });
 }
 export async function watchShare(
@@ -209,19 +230,17 @@ export function userError(error: unknown) {
     ].includes(code)
   )
     return "E-mail ou senha incorretos.";
-  if (code === "auth/email-already-in-use")
-    return "Este e-mail já tem uma conta. Use Entrar.";
-  if (code === "auth/weak-password")
-    return "Use uma senha com pelo menos 8 caracteres.";
   if (code === "auth/invalid-email") return "Informe um e-mail válido.";
   if (code === "permission-denied")
-    return "Acesso recusado. Entre na conta que publicou esta seção.";
+    return "Acesso recusado. Use o navegador que publicou este link ou entre na conta anterior. Limpar os dados do navegador pode remover o acesso para revogar.";
   if (code === "resource-exhausted")
     return "O limite gratuito foi atingido. Tente novamente quando a cota for renovada.";
-  if (code === "auth/configuration-not-found")
-    return "Ative o Authentication e o método E-mail/senha no console do seu projeto Firebase.";
-  if (code === "auth/operation-not-allowed")
-    return "O proprietário ainda precisa ativar o acesso por e-mail no Firebase.";
+  if (
+    code === "auth/configuration-not-found" ||
+    code === "auth/operation-not-allowed" ||
+    code === "auth/admin-restricted-operation"
+  )
+    return `O administrador precisa ativar Authentication → Método de login → Anônimo → Ativar → Salvar no projeto marks-79823: ${anonymousSetupUrl}. Depois, tente criar o link novamente.`;
   return error instanceof Error
     ? error.message
     : "Não foi possível concluir a operação.";

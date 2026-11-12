@@ -1,3 +1,4 @@
+import { MotionProgress } from "../nexo-ui";
 import React, { useState } from "react";
 import {
   motion,
@@ -198,22 +199,7 @@ const PlaceCard = ({
                 ? ` • ${place.status}`
                 : ""}
           </p>
-          {place.progress !== undefined && (
-            <div
-              className="pin-item-progress"
-              role="progressbar"
-              aria-label={`Quitação de ${place.name}`}
-              aria-valuemin={0}
-              aria-valuemax={100}
-              aria-valuenow={Math.round(place.progress * 100)}
-            >
-              <motion.span
-                initial={false}
-                animate={{ scaleX: Math.max(0, Math.min(1, place.progress)) }}
-                transition={springConfig}
-              />
-            </div>
-          )}
+          {place.progress !== undefined && <MotionProgress value={place.progress} label={`Quitação de ${place.name}`} />}
         </motion.div>
       </button>
 

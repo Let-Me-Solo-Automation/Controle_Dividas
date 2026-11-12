@@ -1,5 +1,27 @@
 # Validação da entrega
 
+## Versão atual — 12/11/2026
+
+Executada em Linux com Node.js 24 e Chromium/Playwright. Os resultados das versões anteriores estão preservados abaixo como histórico.
+
+- TypeScript e build do HTML autossuficiente: aprovados.
+- Suite completa de interface: **31 testes aprovados**. Após os ajustes finais, os testes direcionados de calendário e personalização também passaram.
+- KPIs reais em CarouselNavigator e FilterDisclosure, TaskWidget na página inicial e fixação persistida no PinItemComponent: aprovados.
+- Navegação com destaque em movimento, recolhimento e troca da tela; + verde com contraste e lixeira vermelha antes da confirmação: aprovados, incluindo captura de quadros intermediários.
+- Morph sol/lua termina antes de alterar a paleta; cinco temas renderizam sem erro. Contraste, alternativas opacas e movimento reduzido da família Apple: aprovados.
+- Reserva: múltiplos aportes/resgates com notas, persistência, centavos, limites, migração de saldo anterior, integridade do histórico, bancos com descrição/ícone e plano mensal: aprovados. Objetivos não alteram patrimônio; os movimentos da reserva não criam receita/despesa.
+- Planejamento mensal mantém vírgula decimal após recarregar e salvar novamente. Aporte de R$ 100,25 seguido de resgate de R$ 50,00 conserva R$ 50,25 reservados sem mudar o saldo real.
+- Meta com objetivo de R$ 1.000,00 e aporte de R$ 20,00: revelação do valor de zero até R$ 20,00; edição para R$ 1.500,00 preserva aportes e extrato.
+- Agenda mês/semana, parcelas reais e filtro de intervalos validado: aprovados. DiscreteTabs alterna dia/próximos prazos; SlotPicker filtra as datas reais.
+- Trajeto ausente com endereço incompleto e presente com coleta/destino preenchidos: aprovado. O link do Google Maps recebe os dois endereços, sem API paga; não há geocodificação ou mapa embutido de rotas.
+- Personalização: prévias com replay, gráficos reais, seis estilos de navegação, combinações nomeadas, restauração de padrão e preservação financeira: aprovados.
+- Seis testes de regras Firestore e um fluxo completo em navegador com Auth/Firestore emulados: aprovados. Proprietário anônimo persiste após recarregar, destinatário consulta sem cadastro, atualização aparece, revogação bloqueia o link e outro compartilhamento usa outro endereço.
+- Login anônimo de produção em marks-79823: confirmado após ativação pelo proprietário. As contas temporárias de validação foram removidas. A publicação sem vencimento inicialmente retornou PERMISSION_DENIED; a atualização das regras está sendo orientada ao proprietário. Esse teste recusado não criou documento compartilhado.
+- Revisão visual em 412 px: contas, prévias e calendário sem erros JavaScript ou rolagem horizontal da página. A semana pode rolar dentro do calendário. Não houve teste em aparelho físico ou execução do instalador em macOS.
+
+## Histórico das versões anteriores
+
+
 Executada em 11/11/2026, em Linux com Node.js 24 e Chromium/Playwright.
 
 - Build do HTML offline: aprovado.

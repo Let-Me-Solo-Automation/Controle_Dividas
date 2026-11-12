@@ -345,7 +345,7 @@ function Simulator() {
                             ? "apple-light"
                             : "apple-dark"
                           : selectedTheme.dark
-                            ? "porcelana"
+                            ? "apple-light"
                             : "obsidiana",
                       )
                     }
@@ -578,7 +578,7 @@ function Simulator() {
               <span className="sim-note-number">03</span>
               <h3>Encontre o seu visual.</h3>
               <p>
-                Explore os 15 temas, a família Apple e o laboratório de
+                Explore os temas Apple, Obsidiana e Rubi e as prévias de
                 componentes em <strong>Menu → Personalização</strong>.
               </p>
             </div>

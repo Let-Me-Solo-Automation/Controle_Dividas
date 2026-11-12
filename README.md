@@ -4,13 +4,13 @@ Reformulação do `Nexo-Simulador_1.html` enviado, com React, Tailwind CSS 4 e M
 
 ## Ativação na sua conta
 
-O site está publicado em https://let-me-solo-automation.github.io/Controle_Dividas/ e conectado ao Firebase `marks-79823`. Authentication e Firestore estão ativos; publicação, atualização e revogação foram validadas no site real. O repositório usado é `Let-Me-Solo-Automation/Controle_Dividas`.
+O site está publicado em https://let-me-solo-automation.github.io/Controle_Dividas/ e conectado ao Firebase `marks-79823`. Authentication e Firestore estão conectados. O fluxo anterior com e-mail/senha foi validado no site real; o compartilhamento sem cadastro usa o método Anônimo, ativado pelo administrador e verificado em 12/11/2026; veja `CONFIGURAR-ONLINE.md`. O repositório usado é `Let-Me-Solo-Automation/Controle_Dividas`.
 
 ## Site e compartilhamento gratuito
 
 O projeto está preparado para GitHub Pages + Firebase Spark, sem faturamento. O site e o código ficam no GitHub; somente os acordos escolhidos são enviados ao Firestore. O arquivo `FIREBASE-GRATUITO.md` descreve a ativação pelo `Configurar-Firebase.command` e as cotas gratuitas.
 
-Para compartilhar, abra uma seção no site, escolha **Compartilhar seção**, crie seu acesso de e-mail e senha e publique o link. O destinatário consulta o link sem criar conta. A configuração pública real já está incluída; não execute o configurador para criar outro projeto.
+Para compartilhar, abra uma seção no site, escolha **Compartilhar seção**, toque em **Criar link sem vencimento**. O acesso para atualizar e revogar fica salvo neste navegador; limpar seus dados perde esse acesso, e o backup dos acordos não o recupera. Quem já publicava com e-mail/senha pode entrar na conta anterior pela opção recolhida. O destinatário consulta o link sem criar conta. A configuração pública real já está incluída; não execute o configurador para criar outro projeto.
 
 ## Interações nas telas reais
 
@@ -18,9 +18,17 @@ Os 19 exemplos enviados estão integrados ou adaptados ao uso diário: filtros n
 
 O menu flutuante move o destaque, recolhe e então abre a opção. O controle único de aparência transforma sol em lua. Os indicadores têm espaço entre si e as linhas das seções têm contorno completo, sem o fundo das ações aparecendo nas bordas.
 
+## Reservas, metas e indicadores
+
+A página inicial usa CarouselNavigator nos KPIs reais, filtro de indicadores, TaskWidget nas metas e seções fixáveis. Os gráficos do fluxo financeiro respeitam o estilo e a animação escolhidos na personalização.
+
+Em Contas e reserva, cadastre bancos com descrição, cor e ícone próprio; registre múltiplos aportes/resgates com data e nota, inclusive criando o banco no mesmo formulário. O histórico é preservado e pode ser filtrado por banco. Objetivo e contribuição mensal são planejamento: não aumentam o patrimônio e não geram movimentos automáticos. Aportes/resgates alocam/liberam dinheiro existente; entradas/saídas reais continuam no extrato.
+
+O AdaptiveSlider ajusta o valor das metas, além do formulário de aporte. Só salvar confirma a mudança. As barras e anéis revelam de zero até o progresso já realizado ao entrar na área visível, respeitando movimento reduzido.
+
 ## Apple Liquid Glass
 
-No seletor **Tema do aplicativo**, escolha **Apple Claro**, **Apple Escuro** ou **Apple Sistema**. As mesmas opções aparecem em Menu → Personalização. Sistema acompanha a aparência do aparelho sem reiniciar a tela; a escolha é persistida. Os 15 estilos anteriores continuam disponíveis.
+No seletor **Tema do aplicativo**, escolha **Apple Claro**, **Apple Escuro** ou **Apple Sistema**. As mesmas opções aparecem em Menu → Personalização. Sistema acompanha a aparência do aparelho sem reiniciar a tela; a escolha é persistida. O catálogo foi concentrado em Apple Sistema, Apple Claro, Apple Escuro, Obsidiana e Rubi. Preferências antigas migram sem alterar seus registros. Obsidiana tem brilho sutil nos valores; Rubi usa tons bordô.
 
 A implementação web usa superfícies sólidas para saldos/extratos e vidro nos controles, fontes do sistema, cores por aparência e alternativas opacas para reduzir transparência ou aumentar contraste. A moldura do simulador acompanha o tema; o destinatário do link vê a aparência de seu próprio aparelho. A entrada com blur foi preservada. Leia `APPLE-LIQUID-GLASS.md` para as referências Apple, decisões e limites da aproximação em CSS.
 
@@ -65,6 +73,7 @@ npm run build  # gera dist/Marks-Simulador.html, autossuficiente
 npm exec playwright install chromium
 npm test       # testes de fluxos financeiros e interface
 npm run test:model     # privacidade da projeção e cálculo das parcelas
+npm run test:reserve   # saldo real, limites e histórico de aportes/resgates
 npm run test:firebase  # regras e fluxo completo em emuladores (requer Java 21+)
 ```
 
@@ -96,8 +105,8 @@ O servidor de desenvolvimento atende somente em `127.0.0.1`. Para interrompê-lo
 - Menu minimalista: o botão + translúcido expande uma bandeja com ícones para Início, Seções, Entregas, Metas e criação de registros. A bandeja se recolhe após uma ação e o menu some nas telas auxiliares.
 - Calendário: tocar novamente no ícone retorna à tela anterior, incluindo o detalhe da seção e a posição da rolagem.
 - Busca: lupa ou ⌘K/Ctrl+K dentro do app, com navegação por setas, Enter e Esc; foco suave no grupo, sem contorno verde no campo de texto.
-- Personalização: 15 temas, preferências visuais e intensidade do desfoque. As preferências têm prévia e botão Salvar.
-- Laboratório: **Menu → Personalização → Testar todos os componentes**. Os exemplos têm estado demonstrativo próprio; não alteram registros financeiros.
+- Personalização: cinco temas, quatro estilos de gráfico, animações de desenho/crescimento/sequência, ritmos de movimento e microinterações combináveis. As prévias são animadas e têm Repetir prévia. Há seis estilos de navegação, combinações nomeadas e Restaurar padrão.
+- Laboratório: **Menu → Personalização → Explorar interações**. Os exemplos têm estado demonstrativo próprio; não alteram registros financeiros.
 - Modais: entrada e saída com molas, foco contido, fechamento por Esc e retorno do foco.
 - Movimento reduzido: a preferência do sistema tem prioridade. O app também oferece controles de movimento.
 
@@ -107,7 +116,7 @@ Foi possível consultar o arquivo Figma fornecido: página **Materials**, materi
 
 Os anexos foram tratados como código de referência. O accordion duplicado foi unificado. Corrigimos os fundos inválidos do CarouselNavigator, o ciclo de navegação, rótulos dos novos botões, isolamento de `layoutId`, datas fixas de 2024 no CalendarWidget e o mapa externo da demonstração.
 
-A `ContextualAIBar` está disponível no laboratório como barra de busca demonstrativa; nenhum serviço de IA está conectado. O mapa é ilustrativo e offline. Agenda, acordos, contas, entregas e metas usam o núcleo existente; os cartões extras permanecem no laboratório para validação antes da integração específica no Android.
+A `ContextualAIBar` funciona como atalhos e busca local na tela inicial; nenhum serviço de IA está conectado. A agenda financeira alterna semana/mês e mostra compromissos reais, sem sincronização com o Google Calendar. O componente de trajeto aparece somente com coleta e destino preenchidos e abre a rota no Google Maps, sem chave de API. Não calcula coordenadas ou distâncias automaticamente.
 
 A arquitetura proposta para compartilhar seções pelo Google Drive está em `GOOGLE-DRIVE.md`. Essa integração ainda não está conectada.
 

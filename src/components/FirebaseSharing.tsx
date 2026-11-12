@@ -13,66 +13,54 @@ import {
 import {
   login,
   logout,
-  ownerStatus,
+  observeOwnerStatus,
+  type OwnerIdentity,
   resetPassword,
   userError,
 } from "../sharing/firebase";
 import type { FirebaseGrant } from "../sharing/model";
 
-export function FirebaseConnection({
-  onReady,
-}: {
-  onReady?: (email: string | null) => void;
-}) {
-  const [email, setEmail] = useState<string | null>(null),
+export function FirebaseConnection() {
+  const [owner, setOwner] = useState<OwnerIdentity | null>(null),
     [address, setAddress] = useState(""),
     [password, setPassword] = useState(""),
-    [register, setRegister] = useState(false),
     [busy, setBusy] = useState(false),
     [checking, setChecking] = useState(true),
     [message, setMessage] = useState(""),
-    [unavailable, setUnavailable] = useState(false),
-    [needsSetup, setNeedsSetup] = useState(false);
+    [unavailable, setUnavailable] = useState(false);
   useEffect(() => {
     let alive = true;
-    ownerStatus()
-      .then((v) => {
-        if (alive) {
-          setEmail(v);
-          onReady?.(v);
-        }
+    let unsubscribe: (() => void) | undefined;
+    observeOwnerStatus((value) => {
+      if (alive) {
+        setOwner(value);
+        setChecking(false);
+      }
+    })
+      .then((stop) => {
+        if (alive) unsubscribe = stop;
+        else stop();
       })
-      .catch((e) => {
+      .catch((error) => {
         if (alive) {
           setUnavailable(true);
-          setMessage(userError(e));
+          setMessage(userError(error));
+          setChecking(false);
         }
-      })
-      .finally(() => {
-        if (alive) setChecking(false);
       });
     return () => {
       alive = false;
+      unsubscribe?.();
     };
   }, []);
   async function submit() {
     setBusy(true);
     setMessage("");
     try {
-      if (register && password.length < 8)
-        throw Error("Use uma senha com pelo menos 8 caracteres.");
-      const email = await login(address, password, register);
-      setEmail(email);
-      setNeedsSetup(false);
+      await login(address, password);
       setPassword("");
-      onReady?.(email);
-    } catch (e) {
-      setMessage(userError(e));
-      setNeedsSetup(
-        ["auth/configuration-not-found", "auth/operation-not-allowed"].includes(
-          (e as { code?: string })?.code ?? "",
-        ),
-      );
+    } catch (error) {
+      setMessage(userError(error));
     } finally {
       setBusy(false);
     }
@@ -88,87 +76,88 @@ export function FirebaseConnection({
       <div className="notice">
         <Cloud size={23} />
         <p>
-          Compartilhamento pelo Firebase. Somente os dados da seção escolhida
-          são publicados.
+          Compartilhe sem cadastro. Somente os dados da seção escolhida são
+          publicados.
         </p>
       </div>
-      {email ? (
+      {owner && (
         <div className="firebase-connected">
           <span>
             <Check size={17} />
-            {email}
+            {owner.isAnonymous ? "Acesso salvo neste navegador" : owner.email}
           </span>
-          <button
-            type="button"
-            className="text-button"
-            disabled={busy}
-            onClick={async () => {
-              setBusy(true);
-              try {
-                await logout();
-                setEmail(null);
-                onReady?.(null);
-              } catch (e) {
-                setMessage(userError(e));
-              } finally {
-                setBusy(false);
-              }
-            }}
-          >
-            <LogOut size={15} />
-            Sair
-          </button>
+          {!owner.isAnonymous && (
+            <button
+              type="button"
+              className="text-button"
+              disabled={busy}
+              onClick={async () => {
+                setBusy(true);
+                try {
+                  await logout();
+                } catch (error) {
+                  setMessage(userError(error));
+                } finally {
+                  setBusy(false);
+                }
+              }}
+            >
+              <LogOut size={15} />
+              Sair
+            </button>
+          )}
         </div>
-      ) : !unavailable ? (
-        <form
-          className="form-stack"
-          onSubmit={(e) => {
-            e.preventDefault();
-            void submit();
-          }}
-        >
-          <p className="muted">
-            {register
-              ? "Crie seu acesso para publicar e gerenciar os links em qualquer aparelho."
-              : "Entre para publicar, atualizar e revogar seus links."}
-          </p>
-          <label className="field">
-            <span>E-mail</span>
-            <input
-              aria-label="E-mail de compartilhamento"
-              type="email"
-              required
-              autoComplete="email"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-            />
-          </label>
-          <label className="field">
-            <span>Senha</span>
-            <input
-              aria-label="Senha de compartilhamento"
-              type="password"
-              required
-              minLength={register ? 8 : 1}
-              autoComplete={register ? "new-password" : "current-password"}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </label>
-          <button type="submit" className="button full" disabled={busy}>
-            {busy ? "Conectando…" : register ? "Criar acesso" : "Entrar"}
-          </button>
-          <button
-            type="button"
-            className="text-button"
-            onClick={() => {
-              setRegister((v) => !v);
-              setMessage("");
+      )}
+      <p className="muted">
+        {owner && !owner.isAnonymous
+          ? "Sua conta anterior continua gerenciando os links que publicou."
+          : "Use este navegador para atualizar ou revogar seus links. Limpar os dados do navegador perde esse acesso; o backup dos acordos não o recupera."}
+      </p>
+      {!unavailable && (
+        <details>
+          <summary>Já publicava com e-mail e senha?</summary>
+          <form
+            className="form-stack"
+            onSubmit={(event) => {
+              event.preventDefault();
+              void submit();
             }}
           >
-            {register ? "Já tenho acesso" : "Criar meu acesso gratuito"}
-          </button>
-          {!register && (
+            <p className="muted">
+              Entre na conta anterior para gerenciar os links publicados por
+              ela. Novos compartilhamentos dispensam cadastro.
+            </p>
+            {owner?.isAnonymous && (
+              <p className="muted">
+                Trocar de conta substitui o acesso deste navegador. Você perderá
+                o acesso para revogar os links criados com ele.
+              </p>
+            )}
+            <label className="field">
+              <span>E-mail</span>
+              <input
+                aria-label="E-mail de compartilhamento"
+                type="email"
+                required
+                autoComplete="email"
+                value={address}
+                onChange={(event) => setAddress(event.target.value)}
+              />
+            </label>
+            <label className="field">
+              <span>Senha</span>
+              <input
+                aria-label="Senha de compartilhamento"
+                type="password"
+                required
+                autoComplete="current-password"
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
+              />
+            </label>
+            <button type="submit" className="button full" disabled={busy}>
+              {busy ? "Conectando…" : "Entrar na conta anterior"}
+            </button>
             <button
               type="button"
               className="text-button"
@@ -184,8 +173,8 @@ export function FirebaseConnection({
                   setMessage(
                     "Se o e-mail estiver cadastrado, você receberá as instruções de recuperação.",
                   );
-                } catch (e) {
-                  setMessage(userError(e));
+                } catch (error) {
+                  setMessage(userError(error));
                 } finally {
                   setBusy(false);
                 }
@@ -193,10 +182,10 @@ export function FirebaseConnection({
             >
               Esqueci minha senha
             </button>
-          )}
-        </form>
-      ) : null}
-      {(unavailable || needsSetup) && (
+          </form>
+        </details>
+      )}
+      {unavailable && (
         <a
           href={firebaseTutorialUrl}
           target="_blank"
@@ -212,8 +201,8 @@ export function FirebaseConnection({
         </p>
       )}
       <small>
-        O destinatário abre o link sem criar conta. Quem tiver o link poderá
-        consultá-lo até você revogar o acesso.
+        O destinatário abre sem cadastro. O link não vence e pode ser consultado
+        até você revogar o acesso.
       </small>
     </section>
   );
@@ -233,7 +222,6 @@ export function FirebaseSectionShare({
   onRevoke: () => void;
   onSend: (url: string) => void;
 }) {
-  const [email, setEmail] = useState<string | null>(null);
   const [previewOpen, setPreviewOpen] = useState(false);
   const previewId = useId();
   const previewUrl = new URL(
@@ -253,8 +241,8 @@ export function FirebaseSectionShare({
           </p>
         </div>
       </div>
-      <FirebaseConnection onReady={setEmail} />
-      {email && !grant && (
+      <FirebaseConnection />
+      {!grant && (
         <button
           className="button full"
           type="button"
@@ -324,8 +312,8 @@ export function FirebaseSectionShare({
           <small>
             Última sincronização:{" "}
             {new Date(grant.syncedAt).toLocaleString("pt-BR")}. Novos pagamentos
-            são sincronizados quando houver conexão e sua conta estiver
-            conectada.
+            são sincronizados quando houver conexão e este navegador mantiver o
+            acesso de publicação.
           </small>
           {grant.error && (
             <p role="alert" className="firebase-message">
@@ -340,28 +328,26 @@ export function FirebaseSectionShare({
             <Link size={17} />
             Copiar ou enviar link
           </button>
-          {email && (
-            <div className="share-link-footer">
-              <button
-                type="button"
-                className="text-button"
-                disabled={busy}
-                onClick={onPublish}
-              >
-                <RefreshCw size={14} />
-                Atualizar publicação
-              </button>
-              <button
-                type="button"
-                className="text-button share-revoke"
-                disabled={busy}
-                onClick={onRevoke}
-              >
-                <Lock size={14} />
-                Revogar acesso
-              </button>
-            </div>
-          )}
+          <div className="share-link-footer">
+            <button
+              type="button"
+              className="text-button"
+              disabled={busy}
+              onClick={onPublish}
+            >
+              <RefreshCw size={14} />
+              Atualizar publicação
+            </button>
+            <button
+              type="button"
+              className="text-button share-revoke"
+              disabled={busy}
+              onClick={onRevoke}
+            >
+              <Lock size={14} />
+              Revogar acesso
+            </button>
+          </div>
         </section>
       )}
     </div>

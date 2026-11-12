@@ -1,5 +1,10 @@
 @import "tailwindcss";
 @import "./components/production-interactions.css";
+@import "./components/reserve-workspace.css";
+@import "./components/FinanceCalendar.css";
+@import "./components/DeliveryRouteMap.css";
+@import "./components/personalization-studio.css";
+@import "./components/dashboard-overview.css";
 @source "./**/*.{tsx,jsx,ts}";
 @custom-variant dark (&:where(.dark, .dark *, [data-dark="true"], [data-dark="true"] *));
 @theme {
@@ -1247,3 +1252,45 @@ html body .swipe-open .swipe-handle { right: 117px; background: var(--surface); 
   html body .kpi-grid { gap: 10px; }
   html body .kpi-grid .kpi { padding: 14px 11px; }
 }
+
+/* High-opacity material keeps the floating control legible over any card. */
+html body .nexo-mini-dock .nexo-glass-plus { color:#18252c;background:rgba(252,253,253,.94);border:1px solid rgba(35,55,65,.28);box-shadow:inset 0 1px 1px #fff,0 6px 20px #10222b22;transition:background-color .22s,color .22s,box-shadow .22s,border-color .22s; }
+html[data-dark="true"] body .nexo-mini-dock .nexo-glass-plus {background:rgba(33,39,46,.94);color:#f6fbfa;border-color:rgba(230,255,246,.3);box-shadow:inset 0 1px 1px #ffffff26,0 7px 22px #0006;}
+html body .nexo-mini-dock .nexo-glass-plus[data-active="true"] {background:rgba(6,103,68,.94);color:#fff;border-color:#89efbda8;-webkit-backdrop-filter:blur(24px) saturate(1.4);backdrop-filter:blur(24px) saturate(1.4);box-shadow:inset 0 1px 1px #cbffe69c,inset 0 -1px 1px #073b2466,0 5px 24px #06704440;}
+.nav-variant-dock,.nav-variant-centered,.nav-variant-island {right:50%;transform:translateX(50%);}
+.nav-variant-dock {padding:6px;border:1px solid var(--line);border-radius:40px;background:var(--surface);box-shadow:0 10px 28px #0002;}
+.nav-variant-dock .nexo-mini-panel {border:0;box-shadow:none;background:transparent;}
+.nav-variant-island {bottom:max(26px,env(safe-area-inset-bottom));gap:5px;padding:5px;background:color-mix(in srgb,var(--surface) 94%,transparent);border-radius:28px;box-shadow:0 10px 35px #0003;}
+.nav-variant-island .nexo-mini-panel {border-radius:23px;}
+.nav-variant-minimal .nexo-mini-panel {box-shadow:none;border-radius:15px;background:var(--surface);}
+.nav-variant-minimal .nexo-mini-item {border-radius:12px;}
+.nav-variant-elevated {bottom:max(36px,env(safe-area-inset-bottom));padding:6px;border-radius:30px;background:color-mix(in srgb,var(--surface) 92%,transparent);box-shadow:0 14px 40px #0003;}
+.adaptive-progress {position:relative;isolation:isolate;}
+.adaptive-progress .adaptive-progress-thumb {position:absolute;top:0;bottom:0;width:8px;margin-left:-4px;border:1px solid var(--accent);border-radius:50%;background:var(--surface);box-shadow:0 0 6px #fff5;}
+.goal-target-editor {margin:18px 0;padding:15px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);}
+.goal-target-editor summary {font-size:13px;color:var(--accent);cursor:pointer;min-height:36px;}
+.goal-target-editor form {padding-top:12px;}
+.goal-target-editor form > div {width:100%;max-width:none;min-height:180px;height:auto;margin:12px 0;padding:20px;border-radius:20px;background:var(--bg);}
+.goal-target-editor form > div > div:nth-child(2) {margin-bottom:18px;}
+.goal-target-editor form > div > div:nth-child(2) > div {font-size:32px;}
+.goal-target-editor p {font-size:12px;line-height:1.7;margin:12px 0;}
+html body .liquid-danger-button[data-state="armed"],html body .button.danger:active {color:#fff;background:rgba(175,28,52,.94);border:1px solid #ffbdc59c;-webkit-backdrop-filter:blur(20px) saturate(1.4);backdrop-filter:blur(20px) saturate(1.4);box-shadow:inset 0 1px 1px #ffffff66,0 4px 18px #b91c343d;}
+html body .liquid-danger-button {transition:color .12s,background-color .12s,box-shadow .12s;}
+html[data-theme="obsidiana"] body .hero {background:linear-gradient(135deg,#111e26,#0a1119) !important;}
+html[data-theme="obsidiana"] :is(.money,.hero-amount,.big-value,.dashboard-overview-kpi dd) {text-shadow:0 0 16px #8fffc538,0 0 3px #8fffc520;}
+html[data-theme="obsidiana"] body :is(.card,.dashboard-overview-card,.reserve-bank-card):hover {border-color:#7cd7b477;box-shadow:0 0 16px #5cffb40d;}
+html[data-theme="rubi"] body .hero {background:linear-gradient(140deg,#54283b,#26121d) !important;}
+html[data-theme="rubi"] body .nexo-mini-panel {box-shadow:inset 0 1px 0 #ffdee833,0 8px 28px #5b183b33;}
+html[data-card-style="soft"] body .card {border-radius:30px;box-shadow:0 8px 25px #00000009;}
+html[data-card-style="outline"] body .card {border:1px solid var(--muted);box-shadow:none;}
+html[data-card-style="glass"] body .card {background:color-mix(in srgb,var(--surface) 96%,transparent);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);}
+html[data-card-style="textured"] body .card,html[data-texture="on"] body .card {background-image:repeating-linear-gradient(45deg,transparent,transparent 3px,#80808005 3px,#80808005 4px);}
+html[data-button-style="raised"] body .button {box-shadow:0 4px 0 color-mix(in srgb,var(--accent) 28%,var(--line));transform:translateY(-2px);}
+html[data-button-style="glass"] body .button:not(.danger) {background:color-mix(in srgb,var(--accent) 16%,var(--surface));color:var(--text);border:1px solid var(--line);}
+html[data-button-style="orbital"] body .button {border-radius:40px;box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 12%,transparent);}
+@media(prefers-reduced-motion:reduce){.nexo-glass-plus,.liquid-danger-button{transition:none !important;}}
+@media(prefers-reduced-transparency:reduce),(prefers-contrast:more){html body .nexo-mini-dock .nexo-glass-plus{background:var(--surface);color:var(--text);}html body .nexo-mini-dock .nexo-glass-plus[data-active="true"]{background:#066744;color:#fff;}html[data-card-style="glass"] body .card{background:var(--surface);-webkit-backdrop-filter:none;backdrop-filter:none;}}
+.reserve-plan .adaptive-progress {width:100%;height:10px;margin:12px 0;}
+.production-sections .pin-item-copy > .adaptive-progress {height:4px;margin-top:9px;}
+html body {transition:background-color .2s,color .2s;}
+@media(prefers-reduced-motion:reduce){html body{transition:none;}}
