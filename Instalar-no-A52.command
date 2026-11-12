@@ -48,25 +48,37 @@ read_address() {
   printf 'Digite o endereço completo, por exemplo 192.168.18.121:42603.\n'
  done
 }
-printf '\nWi-Fi: celular e Mac devem estar na mesma rede.\n'
-printf 'No A52, abra Opções do desenvolvedor → Depuração sem fio → Parear dispositivo com código. Mantenha essa janela aberta.\n'
-while true; do
- read_address 'Endereço mostrado na janela de pareamento'
- printf '\nO próprio ADB pedirá “Enter pairing code:”. Digite o código de seis dígitos do celular e pressione Enter.\n'
- # Keep the same interactive terminal input as the manually successful adb pair.
- if "$MARKS_ADB" pair "$MARKS_ADDRESS"; then break; fi
- printf '\nO pareamento falhou. Gere um novo código no celular e informe o novo IP:porta abaixo.\n'
-done
-printf '\nVolte à tela principal de Depuração sem fio. Copie o “Endereço IP e porta” de conexão, que pode ser diferente do pareamento.\n'
-read_address 'Endereço de conexão'
-"$MARKS_ADB" connect "$MARKS_ADDRESS"
-# Target only the endpoint explicitly entered, never an unrelated connected phone.
-"$MARKS_ADB" -s "$MARKS_ADDRESS" get-state >/dev/null || fail "O A52 ainda não está conectado. Confira a porta de conexão."
-MARKS_MODEL="$("$MARKS_ADB" -s "$MARKS_ADDRESS" shell getprop ro.product.model 2>/dev/null | tr -d '\r')"
-case "$MARKS_MODEL" in
- SM-A525*|SM-A526*|SM-A528*) MARKS_TARGET="$MARKS_ADDRESS"; MARKS_COUNT=1;;
- *) fail "O endereço informado não identificou um Galaxy A52. Nenhum APK foi instalado.";;
-esac
+# Reuse an authorized A52 connection, including Android mDNS serials.
+while IFS= read -r MARKS_SERIAL; do
+ [ -n "$MARKS_SERIAL" ] || continue
+ MARKS_MODEL="$("$MARKS_ADB" -s "$MARKS_SERIAL" shell getprop ro.product.model 2>/dev/null | tr -d '\r')"
+ case "$MARKS_MODEL" in
+  SM-A525*|SM-A526*|SM-A528*) MARKS_TARGET="$MARKS_SERIAL"; MARKS_COUNT=$((MARKS_COUNT + 1));;
+ esac
+done < <("$MARKS_ADB" devices | awk 'NR>1 && $2=="device" {print $1}')
+if [ "$MARKS_COUNT" -eq 0 ]; then
+ printf '\nWi-Fi: celular e Mac devem estar na mesma rede.\n'
+ printf 'No A52, abra Opções do desenvolvedor → Depuração sem fio → Parear dispositivo com código. Mantenha essa janela aberta.\n'
+ while true; do
+  read_address 'Endereço mostrado na janela de pareamento'
+  printf '\nO próprio ADB pedirá “Enter pairing code:”. Digite o código de seis dígitos do celular e pressione Enter.\n'
+  # Keep the same interactive terminal input as the manually successful adb pair.
+  if "$MARKS_ADB" pair "$MARKS_ADDRESS"; then break; fi
+  printf '\nO pareamento falhou. Gere um novo código no celular e informe o novo IP:porta abaixo.\n'
+ done
+ printf '\nVolte à tela principal de Depuração sem fio. Copie o “Endereço IP e porta” de conexão, que pode ser diferente do pareamento.\n'
+ read_address 'Endereço de conexão'
+ "$MARKS_ADB" connect "$MARKS_ADDRESS"
+ # Target only the endpoint explicitly entered, never an unrelated connected phone.
+ "$MARKS_ADB" -s "$MARKS_ADDRESS" get-state >/dev/null || fail "O A52 ainda não está conectado. Confira a porta de conexão."
+ MARKS_MODEL="$("$MARKS_ADB" -s "$MARKS_ADDRESS" shell getprop ro.product.model 2>/dev/null | tr -d '\r')"
+ case "$MARKS_MODEL" in
+  SM-A525*|SM-A526*|SM-A528*) MARKS_TARGET="$MARKS_ADDRESS"; MARKS_COUNT=1;;
+  *) fail "O endereço informado não identificou um Galaxy A52. Nenhum APK foi instalado.";;
+ esac
+elif [ "$MARKS_COUNT" -eq 1 ]; then
+ printf '\nA52 já conectado e autorizado no Mac. Pulando pareamento e conexão.\n'
+fi
 [ "$MARKS_COUNT" -ne 0 ] || fail "O A52 ainda não está conectado/autorizado neste ADB. Confira o pareamento sem fio e mantenha o celular desbloqueado."
 [ "$MARKS_COUNT" -eq 1 ] || fail "Há mais de um A52 conectado. Desconecte os outros aparelhos e execute novamente."
 MARKS_MODEL="$("$MARKS_ADB" -s "$MARKS_TARGET" shell getprop ro.product.model | tr -d '\r')"
