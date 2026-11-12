@@ -1,8 +1,8 @@
-name: Publicar Marks no GitHub Pages
+name: Retirar simulador do site público
 on:
+  workflow_dispatch:
   push:
     branches: [main]
-  workflow_dispatch:
 permissions:
   contents: read
   pages: write
@@ -11,24 +11,21 @@ concurrency:
   group: pages
   cancel-in-progress: true
 jobs:
-  publish:
+  retirar:
     runs-on: ubuntu-latest
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "24"
-          cache: npm
-      - run: npm ci --no-audit --no-fund
-      - run: npm run check
-      - run: npm run build
+      - name: Preparar página sem arquivos do aplicativo
+        run: |
+          mkdir -p dist
+          printf '%s' '<!doctype html><html lang="pt-BR"><meta charset="utf-8"><title>Conteúdo privado</title><p>O aplicativo foi retirado deste site. O projeto é disponibilizado somente pelo repositório privado.</p></html>' > dist/index.html
+          touch dist/.nojekyll
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
-      - name: Publicar
+      - name: Retirar downloads públicos
         id: deployment
         uses: actions/deploy-pages@v4
