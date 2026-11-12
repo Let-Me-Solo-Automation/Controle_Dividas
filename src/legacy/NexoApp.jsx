@@ -3915,6 +3915,7 @@ function Hg(props){return React.createElement(AppModal,props);}
         ),
         React.createElement(PersonalizationStudio, {
           settings: O,
+          onSaveGlass: () => {const ok=le(data=>{data.settings=structuredClone(O);},"Vidro salvo.");if(ok)x(null);return ok;},
           themes: Go,
           onChange: next => ge(draft => Object.assign(draft, next)),
           onPersistPresets: presets => le(data => { data.settings.customPresets = structuredClone(presets); }),

@@ -60,6 +60,7 @@ type Preferences = {
   nav?: string;
   footerBlur?: boolean;
   blurStrength?: number;
+  glassOpacity?: number;
   glass?: boolean;
   motionStyle?: string;
   chartAnimation?: string;
@@ -219,7 +220,8 @@ export function FluidNavigation({
       data-phase={phase}
       style={
         {
-          "--nav-blur": `${preferences.footerBlur === false ? 0 : (preferences.blurStrength ?? 28)}px`,
+          "--nav-blur": `${preferences.footerBlur === false ? 0 : (preferences.blurStrength ?? 20)}px`,
+          "--nav-glass-opacity": `${preferences.glassOpacity ?? 64}%`,
         } as React.CSSProperties
       }
     >

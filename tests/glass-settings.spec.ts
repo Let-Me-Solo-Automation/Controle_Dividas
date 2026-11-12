@@ -1,0 +1,20 @@
+import {test,expect} from '@playwright/test';
+import {pathToFileURL} from 'node:url';
+test('glass preview expands, applies intensity and saves the chosen values',async({page})=>{
+ await page.goto(pathToFileURL(process.cwd()+'/dist/Marks-Simulador.html').href);
+ const f=page.frameLocator('iframe[title="Marks — aplicativo interativo"]');
+ await f.getByRole('button',{name:'Abrir menu',exact:true}).click();
+ await f.locator('.menu-list').getByRole('button',{name:'Personalização',exact:true}).click();
+ const card=f.getByRole('region',{name:'Ajustar vidro do menu',exact:true});
+ await expect(card).toBeVisible();
+ const ranges=card.locator('input[type=range]');
+ await ranges.first().fill('80');
+ await ranges.nth(1).fill('25');
+ await card.getByRole('button',{name:'Expandir navegação',exact:true}).click();
+ await expect(card.getByRole('navigation')).toBeVisible();
+ await expect(card.locator('.nexo-mini-dock')).toHaveCSS('--nav-glass-opacity','80%');
+ await expect(card.locator('.nexo-mini-dock')).toHaveCSS('--nav-blur','25px');
+ await card.getByRole('button',{name:'Salvar vidro',exact:true}).click();
+ const settings=await page.evaluate(()=>JSON.parse(localStorage.getItem('nexo-simulator-v1')!).settings);
+ expect(settings.glassOpacity).toBe(80);expect(settings.blurStrength).toBe(25);
+});

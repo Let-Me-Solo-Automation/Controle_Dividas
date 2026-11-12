@@ -63,7 +63,8 @@ export const personalizationDefaults = {
   compact: false,
   nav: "capsule",
   footerBlur: true,
-  blurStrength: 16,
+  blurStrength: 20,
+  glassOpacity: 64,
   menuStyle: "popover",
   switchStyle: "soft",
   buttonStyle: "solid",
@@ -108,6 +109,7 @@ export function visualSettings(settings = {}) {
   }
   result.intensity = Math.min(2, Math.max(0.4, result.intensity));
   result.blurStrength = Math.min(28, Math.max(8, result.blurStrength));
+  result.glassOpacity = Math.min(95, Math.max(35, result.glassOpacity));
   return result;
 }
 export function normalizePersonalizationSettings(settings = {}) {

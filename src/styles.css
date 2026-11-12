@@ -1393,3 +1393,28 @@ html[data-glass="off"] body .nexo-mini-dock :is(.nexo-glass-plus,.nexo-mini-pane
 @media (prefers-reduced-transparency:reduce),(prefers-contrast:more),(forced-colors:active) {
   html body .nexo-mini-dock :is(.nexo-glass-plus,.nexo-mini-panel),html body .nexo-mini-dock .nexo-glass-plus[data-active="true"] {background:var(--surface);-webkit-backdrop-filter:none;backdrop-filter:none;}
 }
+html body .nexo-mini-dock :is(.nexo-glass-plus,.nexo-mini-panel),
+html body .nexo-mini-dock .nexo-glass-plus[data-active="true"],
+html[data-dark="true"] body .nexo-mini-dock :is(.nexo-glass-plus,.nexo-mini-panel),
+html[data-dark="true"] body .nexo-mini-dock .nexo-glass-plus[data-active="true"] {
+  background:linear-gradient(145deg,color-mix(in srgb,var(--surface) var(--nav-glass-opacity,64%),transparent),color-mix(in srgb,var(--surface) calc(var(--nav-glass-opacity,64%) - 8%),transparent));
+  -webkit-backdrop-filter:blur(var(--nav-blur,20px)) saturate(1.5);
+  backdrop-filter:blur(var(--nav-blur,20px)) saturate(1.5);
+}
+.glass-tuning-card {padding:18px;border:1px solid var(--line);border-radius:24px;margin:18px 0;min-width:0;}
+.glass-tuning-card h3 {font-size:17px;margin-bottom:8px;}
+.glass-live-preview {position:relative;height:300px;overflow:hidden;border:1px solid var(--line);border-radius:22px;margin:16px 0;background:var(--bg);}
+.glass-preview-scroll {height:100%;overflow-y:auto;padding:16px 16px 90px;overscroll-behavior:contain;}
+.glass-preview-scene {padding:14px;margin-bottom:18px;border-radius:18px;background:linear-gradient(135deg,#489de32b,#a85ad32b);}
+.glass-preview-scene p {font-size:13px;line-height:1.6;margin:8px 0;}
+.glass-preview-scene svg {width:100%;height:100px;}
+.glass-color-samples {display:flex;gap:8px;margin-bottom:12px;}
+.glass-color-samples span {flex:1;height:36px;border-radius:10px;background:#35bd8d;}
+.glass-color-samples span:nth-child(2) {background:#479ce5;}
+.glass-color-samples span:nth-child(3) {background:#d868aa;}
+.glass-color-samples span:nth-child(4) {background:#e8b247;}
+html body .glass-live-preview .nexo-mini-dock {position:absolute;right:12px;bottom:14px;left:auto;transform:none;max-width:calc(100% - 24px);z-index:2;}
+html body .glass-live-preview .nexo-mini-panel {gap:0;padding:3px;}
+html body .glass-live-preview .nexo-mini-item {width:32px;min-width:32px;}
+html[data-glass="off"] body .nexo-mini-dock :is(.nexo-glass-plus,.nexo-mini-panel) {background:var(--surface);backdrop-filter:none;-webkit-backdrop-filter:none;}
+@media(prefers-reduced-transparency:reduce),(prefers-contrast:more),(forced-colors:active) {html body .nexo-mini-dock :is(.nexo-glass-plus,.nexo-mini-panel) {background:var(--surface)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;}}

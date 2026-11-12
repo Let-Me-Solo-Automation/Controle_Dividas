@@ -1,3 +1,4 @@
+import { FluidNavigation, MotionAppRoot } from "./nexo-ui";
 import { useEffect, useId, useState, type CSSProperties } from "react";
 import { LiquidDangerButton } from "./LiquidDangerButton";
 import {
@@ -49,6 +50,7 @@ type Props = {
   onChange: (settings: Settings) => void;
   onPersistPresets: (presets: Preset[]) => boolean | void;
   onOpenReference: () => void;
+  onSaveGlass?: () => boolean;
 };
 const points = [
   [16, 91],
@@ -464,6 +466,7 @@ function Toggle({
 
 export function PersonalizationStudio({
   settings: raw,
+  onSaveGlass,
   themes,
   onChange,
   onPersistPresets,
@@ -906,6 +909,23 @@ export function PersonalizationStudio({
             </button>
           ))}
         </div>
+        <section className="glass-tuning-card" aria-label="Ajustar vidro do menu">
+          <h3>Vidro do menu flutuante</h3>
+          <p className="personal-muted">Role o conteúdo da prévia e toque no + para expandir o menu.</p>
+          <MotionAppRoot settings={settings} className="glass-live-preview">
+            <div className="glass-preview-scroll" tabIndex={0} aria-label="Conteúdo para testar o vidro">
+              {[0,1,2].map(index => <div className="glass-preview-scene" key={index}>
+                <div className="glass-color-samples"><span /><span /><span /><span /></div>
+                <h4>{["Seu dinheiro", "Suas metas", "Movimentações"][index]}</h4>
+                <strong className="positive-text">+ R$ 2.450,00</strong>
+                <p>Texto sobre uma superfície colorida para observar o contraste e o desfoque.</p>
+                <svg viewBox="0 0 300 100" role="img" aria-label="Gráfico colorido de exemplo"><path d="M0 90 Q40 10 80 50 T160 35 T240 20 L300 0 L300 100 L0 100Z" fill="#469ce833"/><path d="M0 90 Q40 10 80 50 T160 35 T240 20 L300 0" fill="none" stroke="#469ce8" strokeWidth="5"/><path d="M0 70 Q60 85 100 35 T200 55 T300 25" fill="none" stroke="#e48c67" strokeWidth="5"/></svg>
+              </div>)}
+            </div>
+            <FluidNavigation items={[["home","Início",Home],["goals","Metas",LayoutGrid],["chart","Gráficos",ChartNoAxesCombined]]} active="home" onNavigate={() => {}} onCreate={() => {}} />
+          </MotionAppRoot>
+          <label className="personal-range"><span>Opacidade do vidro <strong>{settings.glassOpacity}%</strong></span><input type="range" min="35" max="95" step="1" value={settings.glassOpacity} onChange={event => change({glassOpacity:Number(event.target.value)})}/></label>
+          <p className="personal-muted">Menor opacidade revela mais cores ao fundo. Maior opacidade destaca os ícones.</p>
         <Toggle
           label="Blur sob a navegação"
           checked={settings.footerBlur}
@@ -926,6 +946,8 @@ export function PersonalizationStudio({
             }
           />
         </label>
+          {onSaveGlass && <button type="button" className="personal-subtle-button" onClick={() => {if(onSaveGlass())setMessage("Ajustes do vidro salvos.");}}><Save size={16}/> Salvar vidro</button>}
+        </section>
         <details className="personal-details">
           <summary>Superfícies e controles</summary>
           <div className="personal-fields">
