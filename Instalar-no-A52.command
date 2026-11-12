@@ -30,36 +30,35 @@ fi
 [ -x "$MARKS_ADB" ] || fail "Não foi possível localizar o ADB executável."
 "$MARKS_ADB" start-server
 
-MARKS_WIFI_IP="192.168.18.121"
-read_port() {
- local MARKS_PROMPT="$1" MARKS_PORT_INPUT
+read_address() {
+ local MARKS_PROMPT="$1" MARKS_INPUT MARKS_HOST MARKS_PORT MARKS_OCTET MARKS_VALID
+ local -a MARKS_OCTETS
  while true; do
-  read -r -p "$MARKS_PROMPT ($MARKS_WIFI_IP:): " MARKS_PORT_INPUT
-  if [[ "$MARKS_PORT_INPUT" =~ ^[0-9]{1,5}$ ]] && [ "$((10#$MARKS_PORT_INPUT))" -ge 1 ] && [ "$((10#$MARKS_PORT_INPUT))" -le 65535 ]; then
-   MARKS_PORT="$((10#$MARKS_PORT_INPUT))"; return
+  read -r -p "$MARKS_PROMPT (IP:porta): " MARKS_INPUT
+  if [[ "$MARKS_INPUT" =~ ^([0-9]{1,3}\.){3}[0-9]{1,3}:[0-9]{1,5}$ ]]; then
+   MARKS_HOST="${MARKS_INPUT%:*}"; MARKS_PORT="${MARKS_INPUT##*:}"; MARKS_VALID=1
+   IFS=. read -r -a MARKS_OCTETS <<< "$MARKS_HOST"
+   for MARKS_OCTET in "${MARKS_OCTETS[@]}"; do
+    [ "$((10#$MARKS_OCTET))" -le 255 ] || MARKS_VALID=0
+   done
+   if [ "$MARKS_VALID" -eq 1 ] && [ "$((10#$MARKS_PORT))" -ge 1 ] && [ "$((10#$MARKS_PORT))" -le 65535 ]; then
+    MARKS_ADDRESS="$MARKS_HOST:$((10#$MARKS_PORT))"; return
+   fi
   fi
-  printf 'Digite somente a porta, de 1 a 65535. Exemplo: 42603.\n'
+  printf 'Digite o endereço completo, por exemplo 192.168.18.121:42603.\n'
  done
 }
-printf '\nWi-Fi: celular e Mac devem estar na mesma rede. IP fixo: %s\n' "$MARKS_WIFI_IP"
-printf 'No A52, abra Opções do desenvolvedor → Depuração sem fio → Parear dispositivo com código.\n'
-read_port 'Porta mostrada na janela de pareamento'
-MARKS_PAIR_ADDRESS="$MARKS_WIFI_IP:$MARKS_PORT"
+printf '\nWi-Fi: celular e Mac devem estar na mesma rede.\n'
+printf 'No A52, abra Opções do desenvolvedor → Depuração sem fio → Parear dispositivo com código. Mantenha essa janela aberta.\n'
 while true; do
- read -r -s -p 'Código de pareamento (6 dígitos): ' MARKS_PAIR_CODE
- printf '\n'
- [[ "$MARKS_PAIR_CODE" =~ ^[0-9]{6}$ ]] && break
- printf 'O código deve conter exatamente seis dígitos.\n'
+ read_address 'Endereço mostrado na janela de pareamento'
+ printf '\nO próprio ADB pedirá “Enter pairing code:”. Digite o código de seis dígitos do celular e pressione Enter.\n'
+ # Keep the same interactive terminal input as the manually successful adb pair.
+ if "$MARKS_ADB" pair "$MARKS_ADDRESS"; then break; fi
+ printf '\nO pareamento falhou. Gere um novo código no celular e informe o novo IP:porta abaixo.\n'
 done
-# Send the temporary code through stdin, without exposing it in process arguments.
-if ! printf '%s\n' "$MARKS_PAIR_CODE" | "$MARKS_ADB" pair "$MARKS_PAIR_ADDRESS"; then
- unset MARKS_PAIR_CODE
- fail "Não foi possível parear. Abra um novo código no A52 e execute novamente."
-fi
-unset MARKS_PAIR_CODE
-printf '\nVolte à tela principal de Depuração sem fio. Use agora a porta de “Endereço IP e porta”, que pode ser diferente da porta de pareamento.\n'
-read_port 'Porta de conexão'
-MARKS_ADDRESS="$MARKS_WIFI_IP:$MARKS_PORT"
+printf '\nVolte à tela principal de Depuração sem fio. Copie o “Endereço IP e porta” de conexão, que pode ser diferente do pareamento.\n'
+read_address 'Endereço de conexão'
 "$MARKS_ADB" connect "$MARKS_ADDRESS"
 # Target only the endpoint explicitly entered, never an unrelated connected phone.
 "$MARKS_ADB" -s "$MARKS_ADDRESS" get-state >/dev/null || fail "O A52 ainda não está conectado. Confira a porta de conexão."

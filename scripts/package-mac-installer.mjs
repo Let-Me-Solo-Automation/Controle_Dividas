@@ -11,6 +11,6 @@ await mkdir('entregas',{recursive:true});
 await writeFile('entregas/Instalar-Marks-no-Mac.zip',zipSync({
  'Instalar-Marks/Instalar-no-A52.command':file(strToU8(command),0o100755),
  'Instalar-Marks/Marks-Android.apk':file(apk),
- 'Instalar-Marks/LEIA-ME.txt':file(strToU8(`Marks ${version}\n\nExtraia esta pasta no Mac. Mantenha os dois arquivos juntos.\nAbra Instalar-no-A52.command. O IP fixo é 192.168.18.121.\nInforme somente a porta de pareamento e o código de seis dígitos mostrado no A52.\nDepois informe a porta de conexão da tela principal de Depuração sem fio.\nA porta de pareamento e a de conexão podem ser diferentes.\nSe o macOS bloquear, clique com o botão direito e escolha Abrir.\nO instalador atualiza sem desinstalar e verifica a integridade do APK.\nSHA256: ${sha}\n`))
+ 'Instalar-Marks/LEIA-ME.txt':file(strToU8(`Marks ${version}\n\nExtraia esta pasta no Mac. Mantenha os dois arquivos juntos.\nAbra Instalar-no-A52.command. Informe o endereço completo IP:porta.\nPrimeiro informe o IP:porta de pareamento. O próprio ADB pedirá o código de seis dígitos.\nDepois informe o IP:porta de conexão da tela principal de Depuração sem fio.\nA porta de pareamento e a de conexão podem ser diferentes.\nSe o macOS bloquear, clique com o botão direito e escolha Abrir.\nO instalador atualiza sem desinstalar e verifica a integridade do APK.\nSHA256: ${sha}\n`))
 }));
 console.log(`Instalador Mac ${version} gerado; SHA256 ${sha}`);
