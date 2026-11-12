@@ -20,3 +20,9 @@ Se o instalador continuar recusando o arquivo, use o arquivo 2.1.1 atual. Com An
 O site público do GitHub Pages foi retirado. O workflow atual só compila artefatos quando `repository.private` for verdadeiro e não publica sites. Enquanto o repositório estiver público, a assinatura privada não será enviada.
 
 O HTML do simulador deve ser baixado de `Visualizador.html` e aberto localmente. O GitHub mostra o código do HTML no navegador; use Download raw file para baixar. O arquivo ZIP completo também contém o visualizador na raiz.
+
+## Instalador para o Mac
+
+`entregas/Instalar-Marks-no-Mac.zip` contém o APK 2.1.1 e `Instalar-no-A52.command`. Extraia e execute o .command no Mac que já tem o A52 conectado ao ADB. O script verifica o SHA-256 do APK, identifica o modelo Samsung A52 (incluindo variantes 5G/A52s), atualiza com `adb install -r` e abre o app. Não desinstala nem limpa os dados.
+
+Caso o ADB não esteja nos caminhos usuais, o script baixa as Platform Tools oficiais para a pasta extraída. Caso haja mais de um A52, não escolhe um aparelho arbitrariamente. O instalador foi verificado por sintaxe e com um ADB simulado; não foi executado no Mac do proprietário a partir deste ambiente.
