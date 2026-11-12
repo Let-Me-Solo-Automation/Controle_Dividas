@@ -272,6 +272,17 @@ test("calendar switches between month and week and shows real installment dates"
   );
 });
 
+test("calendar distinguishes national holidays and does not label optional holidays", async ({ page }) => {
+  await open(page);
+  const f = app(page);
+  await f.locator(".app-header").getByRole("button", { name: "Agenda", exact: true }).click();
+  const cal = f.getByRole("region", { name: "Agenda financeira", exact: true });
+  await cal.getByLabel("Ir para a data", { exact: true }).fill("2026-10-12");
+  await expect(cal.locator('[data-date="2026-10-12"].is-national-holiday')).toHaveCount(1);
+  await cal.getByLabel("Ir para a data", { exact: true }).fill("2026-06-04");
+  await expect(cal.locator('[data-date="2026-06-04"].is-national-holiday')).toHaveCount(0);
+});
+
 test("customization has replayable examples, saves visual presets and changes real chart/nav styles", async ({
   page,
 }) => {

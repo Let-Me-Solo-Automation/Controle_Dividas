@@ -123,6 +123,42 @@ test("creating income updates balance in cents and survives reload", async ({
   ).toBe(10025);
 });
 
+test("a completed expense accepts a private receipt afterward and can remove it", async ({ page }) => {
+  await open(page);
+  const f = app(page);
+  await create(page, "Lançamento");
+  await f.getByLabel("Tipo", { exact: true }).selectOption("expense");
+  await f.getByLabel("Título", { exact: true }).fill("Pagamento com comprovante");
+  await f.getByLabel("Valor (R$)", { exact: true }).fill("18,40");
+  await f.getByLabel("Conta bancária", { exact: true }).selectOption("bradesco");
+  await f.getByRole("button", { name: "Salvar", exact: true }).click();
+  await expect(f.getByRole("dialog")).toHaveCount(0);
+  await menu(page, "Lançamentos");
+  const payment = f.getByRole("button", { name: /Pagamento com comprovante/ });
+  await expect(payment.locator(".money")).toHaveClass(/negative-text/);
+  await payment.click();
+  const detail = f.getByRole("dialog");
+  await detail.getByRole("button", { name: "Anexar comprovante", exact: true }).click();
+  const png = await f.locator("body").evaluate(() => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 4; canvas.height = 4;
+    const context = canvas.getContext("2d")!;
+    context.fillStyle = "#4b9"; context.fillRect(0, 0, 4, 4);
+    return canvas.toDataURL("image/png").split(",")[1];
+  });
+  await f.locator("#image-file").setInputFiles({
+    name: "comprovante.png",
+    mimeType: "image/png",
+    buffer: Buffer.from(png, "base64"),
+  });
+  await expect(detail.getByAltText("Comprovante deste lançamento")).toBeVisible();
+  let saved = await page.evaluate(() => JSON.parse(localStorage.getItem("nexo-simulator-v1")!));
+  expect(saved.entries.find((entry: any) => entry.title === "Pagamento com comprovante").image).toMatch(/^data:image\/jpeg;base64,/);
+  await detail.getByRole("button", { name: "Remover", exact: true }).click();
+  saved = await page.evaluate(() => JSON.parse(localStorage.getItem("nexo-simulator-v1")!));
+  expect(saved.entries.find((entry: any) => entry.title === "Pagamento com comprovante").image).toBe("");
+});
+
 test("delivery creates revenue and cost once and updates the balance", async ({
   page,
 }) => {

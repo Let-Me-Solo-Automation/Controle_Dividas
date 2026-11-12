@@ -189,6 +189,7 @@ export function FinanceCalendar({
                 return (
                   <div
                     role="cell"
+                    data-date={value}
                     className={`finance-calendar-day ${day.getMonth() !== current.getMonth() && view === "month" ? "is-outside" : ""} ${value === selected ? "is-selected" : ""} ${holiday ? "is-national-holiday" : ""}`}
                     key={value}
                   >
