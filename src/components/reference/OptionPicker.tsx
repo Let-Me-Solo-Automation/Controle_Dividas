@@ -92,32 +92,15 @@ export const OptionPicker: FC<OptionPickerProps> = ({
         <AnimatePresence>
           {isOpen && (
             <motion.div
-              initial={{
-                opacity: 0,
-                y: 10,
-                filter: "blur(4px)",
-                scale: 1.1,
-                rotateX: -70,
-              }}
-              animate={{
-                opacity: 1,
-                y: -5,
-                filter: "blur(0px)",
-                scale: 1,
-                rotateX: 0,
-              }}
-              exit={{
-                opacity: 0,
-                y: 10,
-                filter: "blur(4px)",
-                scale: 1.1,
-                rotateX: -70,
-              }}
-              className="absolute bottom-full left-1/2 z-50 mb-2 origin-bottom -translate-x-1/2 transform-3d"
+              initial={{ opacity: 0, y: 7, filter: "blur(3px)", scale: 0.985 }}
+              animate={{ opacity: 1, y: 0, filter: "blur(0px)", scale: 1 }}
+              exit={{ opacity: 0, y: 5, filter: "blur(2px)", scale: 0.99 }}
+              transition={{ type: "spring", stiffness: 300, damping: 28 }}
+              className="option-picker-menu absolute bottom-full left-1/2 z-50 mb-2 origin-bottom -translate-x-1/2"
               role="menu"
               aria-label={label}
             >
-              <div className="relative flex min-w-max gap-2 rounded-full border border-neutral-100 bg-[#F3F3F3] p-1.5 py-1 whitespace-nowrap dark:border-neutral-700 dark:bg-neutral-800">
+              <div className="option-picker-panel relative flex gap-2 rounded-[20px] border border-neutral-100 bg-[#F3F3F3] p-2 dark:border-neutral-700 dark:bg-neutral-800">
                 {data.map((option, index) => {
                   const isActive = selected.id === option.id;
                   const isFirst = index === 0;
@@ -139,12 +122,12 @@ export const OptionPicker: FC<OptionPickerProps> = ({
                       whileHover={{ y: -1 }}
                       title={`Selecionar ${option.label}`}
                       aria-label={`Selecionar ${option.label}`}
-                      className={`relative flex items-center gap-2 px-5 py-3 text-[15px] font-semibold transition-all duration-300 ${roundedClasses} bg-[#FEFEFE] dark:bg-neutral-700 ${isActive ? "text-[#010101] dark:text-white" : "text-[#6E6E6E] dark:text-neutral-400"}`}
+                      className={`relative flex min-w-0 items-center gap-2 rounded-2xl px-4 py-3 text-left text-sm font-semibold transition-colors duration-200 ${roundedClasses} bg-[#FEFEFE] dark:bg-neutral-700 ${isActive ? "text-[#010101] dark:text-white" : "text-[#6E6E6E] dark:text-neutral-300"}`}
                     >
                       <motion.span>
                         <option.icon size={22} />
                       </motion.span>
-                      <span className="text-bold relative z-10 text-lg">
+                      <span className="relative z-10 min-w-0 whitespace-normal break-words text-sm">
                         {option.label}
                       </span>
                     </motion.button>

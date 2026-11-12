@@ -269,9 +269,9 @@ export function FluidNavigation({
                 title={label}
                 aria-current={active === key ? "page" : undefined}
                 aria-disabled={phase !== "idle"}
-                className={`nexo-mini-item ${selected === key ? "is-active" : ""}`}
+                className={`nexo-mini-item nav-${key} ${selected === key ? "is-active" : ""}`}
                 onClick={() => void select(key, () => onNavigate(key))}
-                whileTap={instant ? undefined : { scale: 0.9 }}
+                whileTap={instant ? undefined : { scale: 0.97 }}
               >
                 <Icon size={19} strokeWidth={1.8} />
               </motion.button>

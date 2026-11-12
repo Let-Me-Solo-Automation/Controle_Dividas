@@ -1,6 +1,7 @@
 import themeDomain from './domain.js';
 import { DashboardOverview } from '../components/DashboardOverview';
 import { GoalTargetEditor } from '../components/GoalTargetEditor';
+import { GoalMetaEditor } from '../components/GoalMetaEditor';
 import { LiquidDangerButton } from '../components/LiquidDangerButton';
 import { AnimatedProgressRing } from '../components/nexo-ui';
 import { resolveAppleTheme, systemFontStack } from '../apple-themes.js';
@@ -1313,8 +1314,8 @@ function cn(props){return React.createElement(FluidNavigation,props);}
   var A = ReactCompat;
   function pe({ label: e, children: a, onClick: t, ...l }) {
     return A.default.createElement(
-      /excluir|remover/i.test(e || '') ? LiquidDangerButton : "button",
-      { className: "icon-button", "aria-label": e, title: e, onClick: t, ...l },
+      /excluir|remover/i.test(e || '') ? LiquidDangerButton : motion.button,
+      { className: "icon-button", "aria-label": e, title: e, onClick: t, whileHover: {scale:1.025}, whileTap: {scale:.97}, transition:{type:"spring",stiffness:360,damping:28}, ...l },
       a,
     );
   }
@@ -1445,13 +1446,13 @@ function Hg(props){return React.createElement(AppModal,props);}
     return React.createElement(AnimatedFinanceChart, props);
   }
   function Ri({ entry: e, visible: a, onClick: t }) {
-    let l = e.type === "income";
+    let l = e.type === "income", expense = e.type === "expense";
     return A.default.createElement(
       "button",
       { className: "transaction row-button", onClick: t },
       A.default.createElement(
         "span",
-        { className: "round-icon " + (l ? "positive" : "negative") },
+        { className: "round-icon " + (l ? "positive" : expense ? "negative" : "neutral") },
         l
           ? A.default.createElement(dl, { size: 20 })
           : A.default.createElement(Da, { size: 20 }),
@@ -1469,9 +1470,9 @@ function Hg(props){return React.createElement(AppModal,props);}
         ),
       ),
       A.default.createElement(Hs, {
-        value: e.type === "expense" ? -e.amount : e.amount,
+        value: expense ? -e.amount : e.amount,
         visible: a,
-        className: l ? "positive-text" : "",
+        className: l ? "positive-text" : expense ? "negative-text" : "",
       }),
     );
   }
@@ -1589,7 +1590,8 @@ function Hg(props){return React.createElement(AppModal,props);}
       Gs = (0, r.useRef)({}),
       en = (0, r.useRef)({}),
       Ja = (0, r.useRef)(e),
-      agendaOrigin = (0, r.useRef)(null);
+      agendaOrigin = (0, r.useRef)(null),
+      screenHistory = (0, r.useRef)([]);
     Ja.current = e;
     let Vs = (0, r.useRef)(),
       O = p || e.settings,
@@ -1603,10 +1605,23 @@ function Hg(props){return React.createElement(AppModal,props);}
           (Vs.current = setTimeout(() => E(""), 4500)));
       };
     function ke(n) {
+      if (n !== t && n !== 'agenda' && t !== 'agenda') {
+        screenHistory.current.push({screen:t,section:Z,period:h,date:m,query:z,scrollY:window.scrollY});
+        if (screenHistory.current.length > 30) screenHistory.current.shift();
+      }
       if (n === 'agenda' && t !== 'agenda') {
         agendaOrigin.current = { screen:t, section:Z, period:h, date:m, query:z, scrollY:window.scrollY };
       } else if (n !== 'agenda') agendaOrigin.current = null;
       (l(n), g(null), d(!1), me(""), window.scrollTo(0, 0));
+    }
+    function backScreen() {
+      if (o) { Aa(); return; }
+      if (t === 'agenda') { toggleAgenda(); return; }
+      const previous=screenHistory.current.pop();
+      if (!previous) { if (t !== 'dashboard') ke('dashboard'); return; }
+      agendaOrigin.current=null;
+      l(previous.screen);g(previous.section);C(previous.period);b(previous.date);me(previous.query);d(false);
+      requestAnimationFrame(()=>requestAnimationFrame(()=>window.scrollTo(0,previous.scrollY)));
     }
     function toggleAgenda() {
       if (t !== 'agenda') { ke('agenda'); return; }
@@ -1766,7 +1781,7 @@ function Hg(props){return React.createElement(AppModal,props);}
       }, [O, we]),
       (0, r.useEffect)(() => {
         let n = (y) => {
-            (u((v) => v && { ...v, image: y.detail }),
+            (saveEntryReceipt(y.detail),
               window.NexoNative?.clearDraft?.());
           },
           f = (y) => {
@@ -1787,7 +1802,7 @@ function Hg(props){return React.createElement(AppModal,props);}
                   : t === "agenda"
                     ? toggleAgenda()
                     : t !== "dashboard"
-                    ? ke("dashboard")
+                    ? backScreen()
                     : window.NexoNative?.finishApp();
           };
         if (
@@ -1944,6 +1959,12 @@ function Hg(props){return React.createElement(AppModal,props);}
           : (U("account"),
             Qe("Cadastre primeiro a conta para este lan\xE7amento."),
             !0);
+    function saveEntryReceipt(image) {
+      const id=o?.entry?.id;
+      if (!id) { u(value=>value?{...value,image}:value); return; }
+      if (le(data=>{const entry=data.entries.find(item=>item.id===id);if(!entry)throw Error("Este lançamento já não está disponível.");entry.image=image;},image?"Comprovante anexado ao lançamento.":"Comprovante removido."))
+        u(value=>value?.type==="entryDetail"&&value.entry.id===id?{...value,entry:{...value.entry,image}}:value);
+    }
     function tn() {
       if (window.NexoNative) {
         let n = document.querySelector(".modal form"),
@@ -2138,6 +2159,8 @@ function Hg(props){return React.createElement(AppModal,props);}
                   title: v(),
                   target: S,
                   due: f.date,
+                  deadlineLabel: f.deadlineLabel?.trim() || "Prazo",
+                  statusLabel: f.statusLabel?.trim() || "Em andamento",
                   link: f.link,
                   image: o.image || "",
                   contributions: [],
@@ -2276,8 +2299,7 @@ function Hg(props){return React.createElement(AppModal,props);}
       );
     }
     function Ys(n) {
-      let f = za(n) / n.target,
-        L = n.due < Ve() && f < 1;
+      let f = za(n) / n.target;
       return r.default.createElement(
         wr,
         {
@@ -2312,11 +2334,7 @@ function Hg(props){return React.createElement(AppModal,props);}
               r.default.createElement(
                 "small",
                 null,
-                L
-                  ? "Prazo encerrado"
-                  : f >= 1
-                    ? "Objetivo alcan\xE7ado"
-                    : fa(n.due),
+                (n.deadlineLabel || "Prazo") + ": " + fa(n.due) + " \xB7 " + (n.statusLabel || (f >= 1 ? "Concluída" : "Em andamento")),
               ),
             ),
             r.default.createElement(Pe, { size: 18 }),
@@ -2718,8 +2736,8 @@ function Hg(props){return React.createElement(AppModal,props);}
                 onClick: () => c((S) => !S),
               },
               s
-                ? r.default.createElement(Ql, { size: 19 })
-                : r.default.createElement(fl, { size: 19 }),
+                ? r.default.createElement(Ql, { size: 17 })
+                : r.default.createElement(fl, { size: 17 }),
             ),
           ),
           r.default.createElement(
@@ -2923,7 +2941,7 @@ function Hg(props){return React.createElement(AppModal,props);}
           taskData:{
             title:"Metas em movimento",progress:jo?Math.min(100,Math.round(Xo/jo*100)):0,hideProgress:!s,
             completedCount:e.goals.filter(goal=>za(goal)>=goal.target).length,totalCount:e.goals.length,
-            priority:"No seu ritmo",status:e.goals.filter(goal=>za(goal)<goal.target).length+" em andamento",assignees:[],
+            priority:e.goals.length?(e.goals[0].deadlineLabel||"Prazo"):"Prazo",status:e.goals.length?(e.goals[0].statusLabel||"Em andamento"):"Situação",assignees:[],
             subtasks:e.goals.map(goal=>({id:goal.id,title:goal.title+" · "+(s?ye(za(goal))+" de "+ye(goal.target):"••••"),completed:za(goal)>=goal.target,action:()=>{if(za(goal)>=goal.target)_l("goals",goal.id);else Ma()||U("contribution",{id:goal.id});}}))
           },
           onCreateGoal:()=>U("goal")
@@ -3292,8 +3310,8 @@ function Hg(props){return React.createElement(AppModal,props);}
           e.goals.length > 0 && React.createElement(GoalProgress, { data: {
             title: "Metas e aportes", progress: jo ? Math.min(100, Math.round(Xo / jo * 100)) : 0, hideProgress: !s,
             completedCount: e.goals.filter(goal => za(goal) >= goal.target).length, totalCount: e.goals.length,
-            priority: e.goals.some(goal => goal.due < Ve() && za(goal) < goal.target) ? "Há prazos vencidos" : "No seu ritmo",
-            status: e.goals.filter(goal => za(goal) < goal.target).length + " em andamento", assignees: [],
+            priority: e.goals.length ? (e.goals[0].deadlineLabel || "Prazo") : "Prazo",
+            status: e.goals.length ? (e.goals[0].statusLabel || "Em andamento") : "Situação", assignees: [],
             subtasks: e.goals.map(goal => ({ id: goal.id, title: goal.title + " · " + (s ? ye(za(goal)) + " de " + ye(goal.target) : "••••") + (za(goal) < goal.target ? " · Organizar aporte" : " · Concluída"), completed: za(goal) >= goal.target, action: () => { if (za(goal) >= goal.target) _l("goals", goal.id); else Ma() || U("contribution", { id: goal.id }); } })),
           } }),
           e.goals.map(Ys),
@@ -3399,6 +3417,7 @@ function Hg(props){return React.createElement(AppModal,props);}
             "Adicionar ou resgatar valor",
           ),
           React.createElement(GoalTargetEditor,{key:n.id,target:n.target,deposited:f,parse:Rl,format:ye,onSave:value=>le(data=>{data.goals.find(goal=>goal.id===n.id).target=value;},"Valor da meta atualizado.")}),
+          React.createElement(GoalMetaEditor,{key:n.id+"-meta",due:n.due,deadlineLabel:n.deadlineLabel,statusLabel:n.statusLabel,onSave:value=>le(data=>Object.assign(data.goals.find(goal=>goal.id===n.id),value),"Prazo e situação atualizados.")}),
           r.default.createElement(
             F,
             {
@@ -3634,6 +3653,12 @@ function Hg(props){return React.createElement(AppModal,props);}
         (selectedAccount === "all" || entry.accountId === selectedAccount || entry.toAccountId === selectedAccount) &&
         [entry.title, entry.category, e.accounts.find(account => account.id === entry.accountId)?.title, e.accounts.find(account => account.id === entry.toAccountId)?.title].filter(Boolean).join(" ").toLowerCase().includes(z.toLowerCase())
       ).sort((a, b) => b.date.localeCompare(a.date));
+      const chartEntries = e.entries.filter(entry => nu(entry.date, Vo) &&
+        (selectedAccount === "all" || entry.accountId === selectedAccount || entry.toAccountId === selectedAccount) &&
+        [entry.title, entry.category, e.accounts.find(account => account.id === entry.accountId)?.title, e.accounts.find(account => account.id === entry.toAccountId)?.title].filter(Boolean).join(" ").toLowerCase().includes(z.toLowerCase())
+      );
+      const incomeTotal = chartEntries.filter(entry => entry.type === "income").reduce((sum, entry) => sum + entry.amount, 0);
+      const expenseTotal = chartEntries.filter(entry => entry.type === "expense").reduce((sum, entry) => sum + entry.amount, 0);
       return r.default.createElement(
         r.default.Fragment,
         null,
@@ -3665,6 +3690,13 @@ function Hg(props){return React.createElement(AppModal,props);}
           placeholder: "T\xEDtulo, categoria ou conta",
         }),
         React.createElement(EntryFilters, { accounts: e.accounts, kind: entryKind, account: e.accounts.some(account => account.id === entryAccount) ? entryAccount : "all", onKind: setEntryKind, onAccount: setEntryAccount }),
+        r.default.createElement(J, { title: "Entradas e saídas" },
+          r.default.createElement("div", { className: "entry-summary-totals" },
+            r.default.createElement("div", null, r.default.createElement("small", null, "Entradas"), r.default.createElement("strong", {className:"positive-text"}, s ? ye(incomeTotal) : "••••")),
+            r.default.createElement("div", null, r.default.createElement("small", null, "Saídas"), r.default.createElement("strong", {className:"negative-text"}, s ? ye(expenseTotal) : "••••")),
+          ),
+          r.default.createElement(Fs, { values:[incomeTotal,expenseTotal], labels:["Entradas","Saídas"], colors:["var(--positive)","var(--negative)"], kind:"bars", visible:s }),
+        ),
         r.default.createElement(
           J,
           null,
@@ -4250,6 +4282,7 @@ function Hg(props){return React.createElement(AppModal,props);}
                 null,
                 "Pode registrar zero para carregar o valor integral. Um valor menor leva a falta \xE0 pr\xF3xima parcela; um maior reduz as seguintes.",
               ),
+              r.default.createElement(ve, null, "Depois de registrar, abra o lançamento concluído para anexar o comprovante."),
             ),
           n.type === "delivery" &&
             r.default.createElement(
@@ -4319,6 +4352,8 @@ function Hg(props){return React.createElement(AppModal,props);}
                 maxLength: 120,
                 placeholder: "Ex.: Meu pr\xF3ximo notebook",
               }),
+              r.default.createElement(X, { label: "Rótulo do prazo", name: "deadlineLabel", maxLength: 32, defaultValue: "Prazo", placeholder: "Ex.: Entrega" }),
+              r.default.createElement(X, { label: "Situação", name: "statusLabel", maxLength: 32, defaultValue: "Em andamento", placeholder: "Ex.: Pausada" }),
               Wa("Quanto quero juntar (R$)"),
               nl("Data prevista"),
               r.default.createElement(X, {
@@ -4440,7 +4475,7 @@ function Hg(props){return React.createElement(AppModal,props);}
                 "O compartilhamento exige um servidor compatível, a ser configurado na etapa do aplicativo. Nenhum dado \xE9 enviado antes de tocar em Publicar se\xE7\xE3o.",
               ),
             ),
-          ["entry", "payment"].includes(n.type) &&
+          ["entry"].includes(n.type) &&
             r.default.createElement(
               "div",
               { className: "image-picker" },
@@ -4649,7 +4684,7 @@ function Hg(props){return React.createElement(AppModal,props);}
         );
       if (n.type === 'share') return React.createElement(FirebaseSectionShare,{title:f?.title||'esta seção',grant:e.sharing.grants[n.id],busy:N,onPublish:()=>Gg(n.id),onRevoke:()=>Vg(n.id),onSend:Xg});
       if (n.type === "entryDetail") {
-        let v = n.entry;
+          let v = e.entries.find((entry) => entry.id === n.entry.id) || n.entry;
         return r.default.createElement(
           r.default.Fragment,
           null,
@@ -4664,6 +4699,22 @@ function Hg(props){return React.createElement(AppModal,props);}
               src: v.image,
               alt: "Comprovante deste lan\xE7amento",
             }),
+          r.default.createElement(
+            "div",
+            { className: "entry-receipt-actions" },
+            r.default.createElement(
+              F,
+              { type: "button", variant: "secondary", onClick: tn },
+              r.default.createElement(Tt, { size: 17 }),
+              v.image ? "Trocar comprovante" : "Anexar comprovante",
+            ),
+            v.image && r.default.createElement(
+              F,
+              { type: "button", variant: "secondary", onClick: () => saveEntryReceipt("") },
+              "Remover",
+            ),
+          ),
+          r.default.createElement(ve, null, "Comprovante salvo neste aparelho. Não é enviado junto ao link compartilhado."),
           [
             [
               "Tipo",
@@ -4935,17 +4986,17 @@ function Hg(props){return React.createElement(AppModal,props);}
           ),
         ),
       ),
-      i &&
+      r.default.createElement(AnimatePresence,{initial:false}, i &&
         r.default.createElement(
-          r.default.Fragment,
-          null,
+          motion.div,
+          {key:"profile-menu",className:"profile-menu-layer",initial:{opacity:0},animate:{opacity:1},exit:{opacity:0},transition:{duration:.18}},
           r.default.createElement("div", {
             className: "menu-scrim",
             onClick: () => d(!1),
           }),
           r.default.createElement(
-            "div",
-            { className: "profile-menu" },
+            motion.div,
+            { className: "profile-menu", initial:{opacity:0,scale:.97,y:-12,filter:"blur(5px)"}, animate:{opacity:1,scale:1,y:0,filter:"blur(0px)"}, exit:{opacity:0,scale:.985,y:-6,filter:"blur(3px)"}, transition:{type:"spring",stiffness:280,damping:28,mass:.9} },
             r.default.createElement(
               "div",
               { className: "profile-top" },
@@ -4972,10 +5023,10 @@ function Hg(props){return React.createElement(AppModal,props);}
                 ["agenda", "Agenda", Ra],
                 ["settings", "Personaliza\xE7\xE3o", eu],
                 ["help", "Ajuda e privacidade", Mt],
-              ].map(([n, f, L]) =>
+              ].map(([n, f, L],index) =>
                 r.default.createElement(
-                  "button",
-                  { key: n, "aria-label": f, title: f, onClick: () => ke(n) },
+                  motion.button,
+                  { key: n, "aria-label": f, title: f, onClick: () => ke(n), initial:{opacity:0,y:-4}, animate:{opacity:1,y:0}, transition:{delay:.035*index,duration:.18}, whileHover:{x:2}, whileTap:{scale:.985} },
                   r.default.createElement(L, { size: 20 }),
                   r.default.createElement("span", null, f),
                   r.default.createElement(Pe, { size: 17 }),
@@ -5014,15 +5065,20 @@ function Hg(props){return React.createElement(AppModal,props);}
             ),
           ),
         ),
+      ),
       r.default.createElement(
         ScreenTransition,
         { key: t + Z + j, className: "screen" },
         r.default.createElement(
           "div",
           { className: "screen-heading" },
+          t !== "dashboard" && r.default.createElement(motion.button, {
+            type:"button", className:"screen-back-button", "aria-label":"Voltar uma tela", title:"Voltar",
+            onClick:backScreen, whileHover:{x:-2}, whileTap:{scale:.94}, transition:{type:"spring",stiffness:360,damping:28}
+          }, r.default.createElement($a,{size:19,strokeWidth:1.8})),
           r.default.createElement(
             "div",
-            null,
+            { className: t !== "dashboard" ? "screen-heading-title" : "" },
             r.default.createElement(
               "p",
               null,
@@ -5045,8 +5101,8 @@ function Hg(props){return React.createElement(AppModal,props);}
                 onClick: () => c((n) => !n),
               },
               s
-                ? r.default.createElement(Ql, { size: 21 })
-                : r.default.createElement(fl, { size: 21 }),
+                ? r.default.createElement(Ql, { size: 18 })
+                : r.default.createElement(fl, { size: 18 }),
             ),
           t === "dashboard" &&
             r.default.createElement(
@@ -5128,7 +5184,7 @@ function Hg(props){return React.createElement(AppModal,props);}
               ((y.width = L.width * v),
                 (y.height = L.height * v),
                 y.getContext("2d").drawImage(L, 0, 0, y.width, y.height),
-                u((S) => ({ ...S, image: y.toDataURL("image/jpeg", 0.8) })),
+                saveEntryReceipt(y.toDataURL("image/jpeg", 0.8)),
                 L.close());
             } catch {
               Qe("N\xE3o foi poss\xEDvel ler a imagem.");

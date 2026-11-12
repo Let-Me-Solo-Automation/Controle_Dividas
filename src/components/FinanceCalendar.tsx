@@ -32,6 +32,11 @@ const category = (type: string) =>
       ? "A receber"
       : "A pagar";
 
+const nationalHoliday = (date: Date) => {
+  const fixed = new Set(["01-01", "04-21", "05-01", "09-07", "10-12", "11-02", "11-15", "11-20", "12-25"]);
+  return fixed.has(iso(date).slice(5));
+};
+
 export function FinanceCalendar({
   items,
   selected,
@@ -180,16 +185,18 @@ export function FinanceCalendar({
                 const value = iso(day);
                 const entries = eventsByDate.get(value) ?? [];
                 const max = view === "month" ? 3 : entries.length;
+                const holiday = nationalHoliday(day);
                 return (
                   <div
                     role="cell"
-                    className={`finance-calendar-day ${day.getMonth() !== current.getMonth() && view === "month" ? "is-outside" : ""} ${value === selected ? "is-selected" : ""}`}
+                    className={`finance-calendar-day ${day.getMonth() !== current.getMonth() && view === "month" ? "is-outside" : ""} ${value === selected ? "is-selected" : ""} ${holiday ? "is-national-holiday" : ""}`}
                     key={value}
                   >
                     <button
                       type="button"
                       className={`finance-calendar-day-number ${value === today ? "is-today" : ""}`}
-                      aria-label={`${day.toLocaleDateString("pt-BR", { dateStyle: "full" })}, ${entries.length} compromissos`}
+                      aria-label={`${day.toLocaleDateString("pt-BR", { dateStyle: "full" })}${holiday ? ", feriado nacional" : ""}, ${entries.length} compromissos`}
+                      title={holiday ? "Feriado nacional" : undefined}
                       aria-current={value === today ? "date" : undefined}
                       aria-pressed={value === selected}
                       onClick={() => onSelect(value)}

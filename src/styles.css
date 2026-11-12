@@ -1294,3 +1294,42 @@ html[data-button-style="orbital"] body .button {border-radius:40px;box-shadow:0 
 .production-sections .pin-item-copy > .adaptive-progress {height:4px;margin-top:9px;}
 html body {transition:background-color .2s,color .2s;}
 @media(prefers-reduced-motion:reduce){html body{transition:none;}}
+
+/* Shared spacing, responsive text, and low-amplitude navigation motion. */
+html body .profile-menu { animation: none !important; transform-origin: top right; will-change: transform, opacity; }
+html body .menu-scrim { will-change: opacity; }
+html body .screen-heading-title { flex: 1; min-width: 0; }
+html body .screen-back-button {
+  width: 36px; min-width: 36px; height: 36px; display: grid; place-items: center;
+  border: 1px solid var(--line); border-radius: 50%; background: color-mix(in srgb,var(--surface) 80%,transparent);
+  color: var(--muted); flex: 0 0 auto; backdrop-filter: blur(12px);
+}
+html body .screen-heading > div { flex: 1; min-width: 0; }
+html body .screen-heading h1 { font-size: clamp(23px,6vw,31px); }
+html body :is(.card,.goal-item,.section-item,.dashboard-overview-card,.production-surface,.finance-calendar) { min-width: 0; }
+html body :is(.card,.goal-item,.section-item) { margin-bottom: 16px; }
+html body .transaction .grow { min-width: 0; }
+html body .transaction .grow strong, html body .goal-item strong, html body .section-item strong { overflow-wrap: anywhere; }
+html body .transaction .money { white-space: nowrap; font-variant-numeric: tabular-nums; }
+html body .nexo-mini-item.is-active { color: var(--nav-selection-color, var(--accent)); }
+html body .nexo-mini-item.nav-dashboard.is-active { --nav-selection-color: #16815f; }
+html body .nexo-mini-item.nav-sections.is-active { --nav-selection-color: #6556b5; }
+html body .nexo-mini-item.nav-deliveries.is-active { --nav-selection-color: #a35d24; }
+html body .nexo-mini-item.nav-goals.is-active { --nav-selection-color: #b3435b; }
+html body .nexo-mini-item.nav-calendar.is-active { --nav-selection-color: #326db4; }
+html body .nexo-mini-panel:has(.nav-dashboard.is-active) > .nexo-moving-selection { background: color-mix(in srgb,#16815f 14%,var(--surface)); box-shadow: inset 0 0 0 1px #16815f42; }
+html body .nexo-mini-panel:has(.nav-sections.is-active) > .nexo-moving-selection { background: color-mix(in srgb,#6556b5 14%,var(--surface)); box-shadow: inset 0 0 0 1px #6556b542; }
+html body .nexo-mini-panel:has(.nav-deliveries.is-active) > .nexo-moving-selection { background: color-mix(in srgb,#a35d24 14%,var(--surface)); box-shadow: inset 0 0 0 1px #a35d2442; }
+html body .nexo-mini-panel:has(.nav-goals.is-active) > .nexo-moving-selection { background: color-mix(in srgb,#b3435b 14%,var(--surface)); box-shadow: inset 0 0 0 1px #b3435b42; }
+html body .entry-receipt-actions { display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin:14px 0 6px; }
+html body .entry-receipt-actions .button { min-height:40px; padding:9px 13px; }
+html body .entry-receipt-actions + .notice, html body .entry-receipt-actions ~ .muted { font-size:11px; }
+html body .goal-meta-editor .field { margin-bottom:12px; }
+html[data-theme="obsidiana"] body .positive-text { color:#70e1ad; text-shadow:0 0 12px #43d79540; }
+html[data-theme="obsidiana"] body .negative-text { color:#ff8995; text-shadow:0 0 12px #ff5f7040; }
+@media(max-width:390px){
+  html body .screen { padding-left:16px; padding-right:16px; }
+  html body .entry-summary-totals { gap:8px; }
+  html body .entry-summary-totals > div { padding:10px; }
+  html body .entry-summary-totals strong { font-size:13px; }
+}

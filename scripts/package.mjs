@@ -32,6 +32,7 @@ const files = [
   "VALIDACAO.md",
   "APPLE-LIQUID-GLASS.md",
   "COMPONENTES-EM-USO.md",
+  "UI-UX.md",
 ];
 export async function createProjectArchive(root = process.cwd()) {
   const contents = {};

@@ -11,6 +11,7 @@ import { motionTransition } from "../personalization.js";
 type Props = {
   values?: number[];
   labels?: string[];
+  colors?: string[];
   kind?: "area" | "bars" | "line";
   visible?: boolean;
 };
@@ -37,6 +38,7 @@ export function AnimatedFinanceChart(props: Props) {
 function VisibleFinanceChart({
   values = [],
   labels = [],
+  colors = [],
   kind = "area",
 }: Props) {
   const preferences = useMotionPreferences();
@@ -116,7 +118,7 @@ function VisibleFinanceChart({
                 width={Math.max(4, 220 / Math.max(1, values.length))}
                 height={height}
                 rx="6"
-                style={{ transformOrigin: `${x}px 108px` }}
+                style={{ transformOrigin: `${x}px 108px`, fill: colors[index] || "var(--accent)" }}
                 initial={active ? { scaleY: 0, opacity: 0.3 } : false}
                 animate={{ scaleY: shown ? 1 : 0, opacity: shown ? 1 : 0.3 }}
                 transition={

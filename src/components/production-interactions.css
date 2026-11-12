@@ -43,21 +43,49 @@
   max-width: 100%;
 }
 .production-filters [role="menu"] {
+  width: min(340px, calc(100vw - 40px));
   max-width: calc(100vw - 40px);
-  left: 0;
-  transform: none;
 }
-.production-filters [role="menu"] > div {
-  flex-wrap: wrap;
-  white-space: normal;
+.production-filters .option-picker-menu {
+  left: 50%;
+  transform: translateX(-50%);
+}
+.production-filters .option-picker-panel {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  max-height: min(55vh, 360px);
+  overflow-y: auto;
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  border-color: var(--line);
+  box-shadow: 0 16px 44px #0002;
+  backdrop-filter: blur(20px) saturate(1.15);
 }
 .production-filters [role="menu"] button {
-  padding: 10px 13px;
+  min-width: 0;
+  padding: 10px;
   font-size: 12px;
+  border-radius: 14px;
 }
 .production-filters [role="menu"] button span {
   font-size: 13px;
 }
+.production-filters [role="menu"] button svg { flex: 0 0 auto; }
+.entry-summary-totals {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 0 0 12px;
+}
+.entry-summary-totals > div {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: color-mix(in srgb, var(--bg) 65%, var(--surface));
+}
+.entry-summary-totals strong { overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
 .production-activities {
   border: 1px solid var(--line);
   border-radius: 24px;

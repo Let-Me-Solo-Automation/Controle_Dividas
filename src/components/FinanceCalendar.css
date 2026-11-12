@@ -115,6 +115,17 @@
   border-top: 1px solid var(--line);
   border-right: 1px solid var(--line);
 }
+.finance-calendar-day.is-national-holiday .finance-calendar-day-number {
+  color: #b43b48;
+  box-shadow: inset 0 -2px 0 #cf5a67;
+}
+.finance-calendar-day.is-national-holiday.is-selected .finance-calendar-day-number {
+  background: color-mix(in srgb, #cf5a67 12%, var(--surface));
+}
+html[data-dark="true"] .finance-calendar-day.is-national-holiday .finance-calendar-day-number {
+  color: #ff9ca7;
+  box-shadow: inset 0 -2px 0 #ff7887;
+}
 .finance-calendar-day:last-child {
   border-right: 0;
 }
