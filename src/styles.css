@@ -1367,3 +1367,29 @@ html body .dashboard-overview .period-controls {margin-bottom:18px;}
 html body .app-header > .screen-back-button {top:16px;left:max(8px,calc((100vw - 540px)/2 + 8px));width:34px;height:34px;min-width:34px;}
 html body .app-header:has(> .screen-back-button) .brand {margin-left:32px;}
 .personal-default-actions {display:flex;flex-wrap:wrap;gap:10px;margin:12px 0;}
+/* Frosted navigation samples the actual content underneath while scrolling. */
+html body .nexo-mini-dock :is(.nexo-glass-plus,.nexo-mini-panel),
+html body .nexo-mini-dock .nexo-glass-plus[data-active="true"] {
+  background:linear-gradient(145deg,color-mix(in srgb,var(--surface) 74%,transparent),color-mix(in srgb,var(--surface) 54%,transparent));
+  -webkit-backdrop-filter:blur(20px) saturate(1.5);
+  backdrop-filter:blur(20px) saturate(1.5);
+  color:var(--text);
+  border:1px solid color-mix(in srgb,var(--surface) 68%,transparent);
+  box-shadow:inset 0 1px 1px #ffffff80,inset 0 -1px 1px #ffffff20,0 5px 20px #0002;
+}
+html[data-dark="true"] body .nexo-mini-dock :is(.nexo-glass-plus,.nexo-mini-panel),
+html[data-dark="true"] body .nexo-mini-dock .nexo-glass-plus[data-active="true"] {
+  background:linear-gradient(145deg,color-mix(in srgb,var(--surface) 76%,transparent),color-mix(in srgb,var(--surface) 60%,transparent));
+  border-color:#ffffff2b;
+  box-shadow:inset 0 1px 1px #ffffff35,inset 0 -1px 1px #ffffff0d,0 5px 20px #0003;
+}
+html body .nexo-mini-dock .nexo-mini-panel > .nexo-moving-selection {
+  background:color-mix(in srgb,var(--surface) 60%,transparent);
+}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))) {
+  html body .nexo-mini-dock :is(.nexo-glass-plus,.nexo-mini-panel) {background:var(--surface);}
+}
+html[data-glass="off"] body .nexo-mini-dock :is(.nexo-glass-plus,.nexo-mini-panel) {background:var(--surface);-webkit-backdrop-filter:none;backdrop-filter:none;}
+@media (prefers-reduced-transparency:reduce),(prefers-contrast:more),(forced-colors:active) {
+  html body .nexo-mini-dock :is(.nexo-glass-plus,.nexo-mini-panel),html body .nexo-mini-dock .nexo-glass-plus[data-active="true"] {background:var(--surface);-webkit-backdrop-filter:none;backdrop-filter:none;}
+}
