@@ -34,7 +34,7 @@ A implementação web usa superfícies sólidas para saldos/extratos e vidro nos
 
 ## Links sem vencimento
 
-Publique as regras atualizadas do tutorial, conforme `CONFIGURAR-ONLINE.md`. Os links novos ficam ativos até Revogar acesso. A tela mostra o endereço, uma prévia dentro do app e a ação discreta de revogação. Compartilhar novamente cria um endereço diferente; o antigo permanece bloqueado, inclusive contra tentativas de atualização por abas antigas.
+As regras atualizadas foram publicadas e verificadas no Firebase real. Para outro ambiente, siga `CONFIGURAR-ONLINE.md`. Os links novos ficam ativos até Revogar acesso. A tela mostra o endereço, uma prévia dentro do app e a ação discreta de revogação. Compartilhar novamente cria um endereço diferente; o antigo permanece bloqueado, inclusive contra tentativas de atualização por abas antigas.
 
 ## Abrir a prévia agora
 

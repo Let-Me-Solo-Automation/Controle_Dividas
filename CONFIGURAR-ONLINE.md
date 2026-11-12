@@ -26,7 +26,7 @@ O destinatário não precisa criar conta; abrir o link não cria usuário anôni
 
 ## Validação
 
-O fluxo sem cadastro é validado com os emuladores locais de Authentication e Firestore (`npm run test:firebase`): publicação sem formulário, persistência após recarregar, atualização, consulta sem autenticar o destinatário, revogação e novo endereço. As regras continuam exigindo o UID proprietário para gravar e preservam o bloqueio definitivo dos links revogados. Em produção, o login anônimo foi confirmado e a conta temporária foi removida. O primeiro teste de publicação sem vencimento retornou PERMISSION_DENIED; a validação depende da atualização das regras descrita no fim desta página.
+O fluxo sem cadastro é validado com os emuladores locais de Authentication e Firestore (`npm run test:firebase`): publicação sem formulário, persistência após recarregar, atualização, consulta sem autenticar o destinatário, revogação e novo endereço. As regras continuam exigindo o UID proprietário para gravar e preservam o bloqueio definitivo dos links revogados. Em 12/11/2026, após o proprietário publicar as regras, as APIs reais de Authentication/Firestore confirmaram login anônimo, publicação sem vencimento e leitura sem login, revogação e bloqueio do link antigo, inclusive contra reativação. As contas temporárias foram removidas; o teste deixou apenas o marcador de revogação, sem dados financeiros. O fluxo completo da interface foi testado separadamente com emuladores.
 
 No fluxo anterior com e-mail/senha, em 11/11/2026, o teste no site real confirmou criação de acesso, publicação, persistência da sessão após recarregar, consulta sem login, atualização de pagamento e revogação. Os dados financeiros usados foram os de demonstração em um navegador isolado. A conta temporária do teste precisa ser excluída no console Authentication; seu e-mail começa com `marks-validation-` e termina em `@example.invalid`. O link do teste foi revogado.
 
@@ -38,6 +38,6 @@ O tutorial https://let-me-solo-automation.github.io/Controle_Dividas/tutorial-fi
 
 ## Atualização para links sem vencimento
 
-Publique as regras atuais de `firebase/firestore.rules` na aba Regras do Firestore. O botão Copiar regras em https://let-me-solo-automation.github.io/Controle_Dividas/tutorial-firebase.html#regras contém a versão atualizada. Essa mudança exige acesso administrativo ao console do proprietário; o site não pode alterar regras usando a configuração pública do SDK.
+As regras atuais de `firebase/firestore.rules` foram publicadas pelo proprietário e verificadas em 12/11/2026. Para outro ambiente, publique esse arquivo em Criação/Build → Firestore Database → Regras. O botão Copiar regras em https://let-me-solo-automation.github.io/Controle_Dividas/tutorial-firebase.html#regras contém a versão atualizada. Essa mudança exige acesso administrativo ao console do proprietário; o site não pode alterar regras usando a configuração pública do SDK.
 
 Depois de publicar, recarregue o Marks. Para links anteriores, use Atualizar publicação: o mesmo endereço passa a não vencer. O aplicativo identifica links antigos até a atualização concluir. Visualizar link abre uma prévia dentro do app; Revogar acesso bloqueia o endereço definitivamente. Um novo compartilhamento usa um novo link. O acompanhamento consulta o servidor e não mostra cópias locais sem confirmar o acesso.
