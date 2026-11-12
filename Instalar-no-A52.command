@@ -30,25 +30,44 @@ fi
 [ -x "$MARKS_ADB" ] || fail "Não foi possível localizar o ADB executável."
 "$MARKS_ADB" start-server
 
-find_a52() {
- MARKS_TARGET=""; MARKS_COUNT=0
- while IFS= read -r MARKS_SERIAL; do
-  [ -n "$MARKS_SERIAL" ] || continue
-  MARKS_MODEL="$("$MARKS_ADB" -s "$MARKS_SERIAL" shell getprop ro.product.model 2>/dev/null | tr -d '\r')"
-  case "$MARKS_MODEL" in
-   SM-A525*|SM-A526*|SM-A528*) MARKS_TARGET="$MARKS_SERIAL"; MARKS_COUNT=$((MARKS_COUNT + 1));;
-  esac
- done < <("$MARKS_ADB" devices | awk 'NR>1 && $2=="device" {print $1}')
+MARKS_WIFI_IP="192.168.18.121"
+read_port() {
+ local MARKS_PROMPT="$1" MARKS_PORT_INPUT
+ while true; do
+  read -r -p "$MARKS_PROMPT ($MARKS_WIFI_IP:): " MARKS_PORT_INPUT
+  if [[ "$MARKS_PORT_INPUT" =~ ^[0-9]{1,5}$ ]] && [ "$((10#$MARKS_PORT_INPUT))" -ge 1 ] && [ "$((10#$MARKS_PORT_INPUT))" -le 65535 ]; then
+   MARKS_PORT="$((10#$MARKS_PORT_INPUT))"; return
+  fi
+  printf 'Digite somente a porta, de 1 a 65535. Exemplo: 42603.\n'
+ done
 }
-find_a52
-if [ "$MARKS_COUNT" -eq 0 ]; then
- printf '\nNenhum Galaxy A52 autorizado foi encontrado no ADB deste usuário do Mac.\n'
- MARKS_ADDRESS="${1:-}"
- if [ -z "$MARKS_ADDRESS" ]; then read -r -p 'Digite o IP:porta mostrado em Depuração sem fio no A52: ' MARKS_ADDRESS; fi
- [[ "$MARKS_ADDRESS" =~ ^[0-9.]+:[0-9]+$ ]] || fail "Endereço inválido. Use IP:porta, por exemplo 192.168.1.10:40000."
- "$MARKS_ADB" connect "$MARKS_ADDRESS" || true
- find_a52
+printf '\nWi-Fi: celular e Mac devem estar na mesma rede. IP fixo: %s\n' "$MARKS_WIFI_IP"
+printf 'No A52, abra Opções do desenvolvedor → Depuração sem fio → Parear dispositivo com código.\n'
+read_port 'Porta mostrada na janela de pareamento'
+MARKS_PAIR_ADDRESS="$MARKS_WIFI_IP:$MARKS_PORT"
+while true; do
+ read -r -s -p 'Código de pareamento (6 dígitos): ' MARKS_PAIR_CODE
+ printf '\n'
+ [[ "$MARKS_PAIR_CODE" =~ ^[0-9]{6}$ ]] && break
+ printf 'O código deve conter exatamente seis dígitos.\n'
+done
+# Send the temporary code through stdin, without exposing it in process arguments.
+if ! printf '%s\n' "$MARKS_PAIR_CODE" | "$MARKS_ADB" pair "$MARKS_PAIR_ADDRESS"; then
+ unset MARKS_PAIR_CODE
+ fail "Não foi possível parear. Abra um novo código no A52 e execute novamente."
 fi
+unset MARKS_PAIR_CODE
+printf '\nVolte à tela principal de Depuração sem fio. Use agora a porta de “Endereço IP e porta”, que pode ser diferente da porta de pareamento.\n'
+read_port 'Porta de conexão'
+MARKS_ADDRESS="$MARKS_WIFI_IP:$MARKS_PORT"
+"$MARKS_ADB" connect "$MARKS_ADDRESS"
+# Target only the endpoint explicitly entered, never an unrelated connected phone.
+"$MARKS_ADB" -s "$MARKS_ADDRESS" get-state >/dev/null || fail "O A52 ainda não está conectado. Confira a porta de conexão."
+MARKS_MODEL="$("$MARKS_ADB" -s "$MARKS_ADDRESS" shell getprop ro.product.model 2>/dev/null | tr -d '\r')"
+case "$MARKS_MODEL" in
+ SM-A525*|SM-A526*|SM-A528*) MARKS_TARGET="$MARKS_ADDRESS"; MARKS_COUNT=1;;
+ *) fail "O endereço informado não identificou um Galaxy A52. Nenhum APK foi instalado.";;
+esac
 [ "$MARKS_COUNT" -ne 0 ] || fail "O A52 ainda não está conectado/autorizado neste ADB. Confira o pareamento sem fio e mantenha o celular desbloqueado."
 [ "$MARKS_COUNT" -eq 1 ] || fail "Há mais de um A52 conectado. Desconecte os outros aparelhos e execute novamente."
 MARKS_MODEL="$("$MARKS_ADB" -s "$MARKS_TARGET" shell getprop ro.product.model | tr -d '\r')"
