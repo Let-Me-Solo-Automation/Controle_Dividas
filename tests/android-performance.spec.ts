@@ -8,7 +8,7 @@ test('Android automatically uses balanced rendering without full-page blur',asyn
  await page.goto(pathToFileURL(process.cwd()+'/android/app/src/main/assets/index.html').href);
  await expect(page.locator('.app')).toHaveAttribute('data-performance','balanced');
  await expect(page.locator('.screen')).toHaveCSS('filter','none');
- await expect(page.locator('.app-header')).toHaveCSS('backdrop-filter','none');
+ await expect(page.locator('.app-header')).toHaveCSS('backdrop-filter','blur(16px) saturate(1.12)');
  await expect(page.getByRole('heading',{name:'Visão geral',exact:true})).toBeVisible();
  await expect(page.locator('.hero')).toHaveCSS('filter','none');
  await page.locator('.card').first().scrollIntoViewIfNeeded();

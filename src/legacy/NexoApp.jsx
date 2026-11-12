@@ -267,21 +267,6 @@ const ReactCompat = { ...React, default: React };
       },
     ],
   ]);
-  var at = M("Lock", [
-    [
-      "rect",
-      {
-        width: "18",
-        height: "11",
-        x: "3",
-        y: "11",
-        rx: "2",
-        ry: "2",
-        key: "1w4ew1",
-      },
-    ],
-    ["path", { d: "M7 11V7a5 5 0 0 1 10 0v4", key: "fwvmzm" }],
-  ]);
   var Wo = M("MapPin", [
     [
       "path",
@@ -362,16 +347,6 @@ const ReactCompat = { ...React, default: React };
       { d: "M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8", key: "1357e3" },
     ],
     ["path", { d: "M3 3v5h5", key: "1xhq8a" }],
-  ]);
-  var Jl = M("Settings", [
-    [
-      "path",
-      {
-        d: "M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z",
-        key: "1qme2f",
-      },
-    ],
-    ["circle", { cx: "12", cy: "12", r: "3", key: "1v7zrd" }],
   ]);
   var tt = M("Share2", [
     ["circle", { cx: "18", cy: "5", r: "3", key: "gq8acd" }],
@@ -780,7 +755,6 @@ const ReactCompat = { ...React, default: React };
     appIconY: 50,
     chart: "auto",
     intensity: 1,
-    lock: !1,
     notifications: !0,
     components: {
       consistency: !0,
@@ -1553,7 +1527,7 @@ function Hg(props){return React.createElement(AppModal,props);}
       entries: "Lan\xE7amentos",
       recurring: "Recorr\xEAncias",
       agenda: "Minha agenda",
-      settings: "Seu jeito de usar",
+      settings: "Personalização",
       help: "Sobre o Marks",
     },
     Fg = [
@@ -2758,7 +2732,11 @@ function Hg(props){return React.createElement(AppModal,props);}
               r.default.createElement(
                 "div",
                 { className: "hero-amount", key: s + y },
-                P(y),
+                React.createElement(AnimatedMoney, {
+                  value: ["expense", "agenda"].includes(n) ? -Math.abs(y) : y,
+                  visible: s, signed: true, fromZero: true,
+                  className: (["expense", "agenda"].includes(n) || y < 0) ? "negative-text" : "positive-text",
+                }),
               ),
               r.default.createElement("p", null, v),
             ),
@@ -2791,13 +2769,13 @@ function Hg(props){return React.createElement(AppModal,props);}
               r.default.createElement(
                 "b",
                 null,
-                P(
-                  n === "expense"
-                    ? Te.income
-                    : n === "goal"
-                      ? Math.max(0, jo - Xo)
-                      : Te.balance - Te.reserved - Te.goals,
-                ),
+                n === "goal"
+                  ? P(Math.max(0, jo - Xo))
+                  : React.createElement(AnimatedMoney, {
+                      value: n === "expense" ? Te.income : Te.balance - Te.reserved - Te.goals,
+                      visible: s, signed: true, fromZero: true,
+                      className: (n === "expense" ? Te.income : Te.balance - Te.reserved - Te.goals) < 0 ? "negative-text" : "positive-text",
+                    }),
               ),
             ),
             r.default.createElement(
@@ -2837,8 +2815,8 @@ function Hg(props){return React.createElement(AppModal,props);}
         goals: r.default.createElement(
           J,
           {
-            title: "Seus pr\xF3ximos cap\xEDtulos",
-            action: "Metas",
+            title: "Metas",
+            action: "Ver metas",
             onAction: () => ke("goals"),
           },
           e.goals.slice(0, 2).map(Ys),
@@ -2847,17 +2825,17 @@ function Hg(props){return React.createElement(AppModal,props);}
               St,
               {
                 icon: Pa,
-                title: "Um plano come\xE7a aqui",
+                title: "Nenhuma meta cadastrada",
                 action: "Criar meta",
                 onAction: () => U("goal"),
               },
-              "Guarde para algo que importa para voc\xEA.",
+              "Cadastre o valor e o prazo da sua meta.",
             ),
         ),
         sections: r.default.createElement(
           J,
           {
-            title: "Cada acordo no seu lugar",
+            title: "Se\xE7\xF5es",
             action: "Se\xE7\xF5es",
             onAction: () => ke("sections"),
           },
@@ -2887,8 +2865,8 @@ function Hg(props){return React.createElement(AppModal,props);}
         reserve: r.default.createElement(
           J,
           {
-            title: "Sua tranquilidade",
-            subtitle: "Reserva de emerg\xEAncia",
+            title: "Reserva de emerg\xEAncia",
+            subtitle: "Valores separados nas suas contas",
             icon: Et,
             action: "Gerenciar",
             onAction: () => ke("accounts"),
@@ -2970,7 +2948,7 @@ function Hg(props){return React.createElement(AppModal,props);}
             .map((f) =>
               r.default.createElement(
                 "div",
-                { className: "dashboard-module module-" + f, key: f },
+                { className: "dashboard-module module-" + f, key: f, role: "region", "aria-label": ({goals:"Metas",activity:"Últimas movimentações",sections:"Seções",reserve:"Reserva de emergência",agenda:"Agenda",platforms:"Entregas",consistency:"Atividade da semana",trend:"Evolução financeira"})[f] || f },
                 n[f],
               ),
             ),
@@ -3891,7 +3869,7 @@ function Hg(props){return React.createElement(AppModal,props);}
         r.default.createElement(
           "p",
           { className: "page-description" },
-          "Escolha seu estilo. Apple acompanha a aparência do aparelho ou fica sempre claro ou escuro.",
+          "Ajuste temas, animações e navegação. O tema Apple pode acompanhar a aparência do aparelho.",
         ),
         r.default.createElement(
           "div",
@@ -3914,7 +3892,6 @@ function Hg(props){return React.createElement(AppModal,props);}
               React.createElement(SaveToggleButton, {disabled:!p,onSave:()=>{if(!p)return false;const ok=le(data=>{data.settings=structuredClone(p);},"Preferências salvas.");if(ok)x(null);return ok;}}),
             ),
         ),
-        React.createElement(TrashPanel,{items:e.trash||[],policy:e.trashPolicy||{amount:0,unit:"days"},onPolicy:policy=>le(data=>{data.trashPolicy=policy;purgeExpired(data);},"Prazo da lixeira salvo."),onRestore:id=>le(data=>restoreDeleted(data,id),"Registro restaurado."),onEmpty:()=>le(data=>{data.trash=[];},"Lixeira esvaziada.")}),
         React.createElement(PersonalizationStudio, {
           settings: O,
           onSaveGlass: () => {const ok=le(data=>{data.settings=structuredClone(O);},"Vidro salvo.");if(ok)x(null);return ok;},
@@ -3923,6 +3900,7 @@ function Hg(props){return React.createElement(AppModal,props);}
           onPersistPresets: presets => le(data => { data.settings.customPresets = structuredClone(presets); }),
           onOpenReference: () => U("catalog"),
         }),
+        React.createElement(TrashPanel,{items:e.trash||[],policy:e.trashPolicy||{amount:0,unit:"days"},onPolicy:policy=>le(data=>{data.trashPolicy=policy;purgeExpired(data);},"Prazo da lixeira salvo."),onRestore:id=>le(data=>restoreDeleted(data,id),"Registro restaurado."),onEmpty:()=>le(data=>{data.trash=[];},"Lixeira esvaziada.")}),
         r.default.createElement(
           J,
           { title: "Composição e uso" },
@@ -3978,26 +3956,6 @@ function Hg(props){return React.createElement(AppModal,props);}
               ge((f) => {
                 f.showOnOpen = n;
               }),
-          }),
-          r.default.createElement(Ye, {
-            label: "Bloquear com credencial do aparelho",
-            description: "Senha, PIN ou biometria configurados no Android",
-            checked: O.lock,
-            onChange: (n) => {
-              if (n) {
-                if (!window.NexoNative) {
-                  Qe("Dispon\xEDvel no aplicativo Android.");
-                  return;
-                }
-                if (!window.NexoNative.canLock()) {
-                  Qe("Configure uma senha ou PIN no Android primeiro.");
-                  return;
-                }
-              }
-              ge((f) => {
-                f.lock = n;
-              });
-            },
           }),
           r.default.createElement(Ye, {
             label: "Lembretes de metas",
@@ -4676,7 +4634,7 @@ function Hg(props){return React.createElement(AppModal,props);}
                     "Sem anota\xE7\xE3o privada nesta se\xE7\xE3o.",
                 }),
             },
-            r.default.createElement(at, null),
+            r.default.createElement(cl, null),
             "Anota\xE7\xE3o privada",
             r.default.createElement(Pe, null),
           ),
@@ -5011,7 +4969,6 @@ function Hg(props){return React.createElement(AppModal,props);}
             r.default.createElement(
               "div",
               { className: "profile-top" },
-              r.default.createElement("div", { className: "avatar" }, "K"),
               r.default.createElement(
                 "div",
                 null,
@@ -5054,25 +5011,6 @@ function Hg(props){return React.createElement(AppModal,props);}
                   x(null);
                 },
               }),
-              r.default.createElement(
-                pe,
-                {
-                  label: "Bloquear agora",
-                  onClick: () => {
-                    window.NexoNative?.canLock()
-                      ? (d(!1), window.NexoNative.lockNow())
-                      : Qe(
-                          "Ative uma credencial no Android para bloquear o aplicativo.",
-                        );
-                  },
-                },
-                r.default.createElement(at, { size: 21 }),
-              ),
-              r.default.createElement(
-                pe,
-                { label: "Configura\xE7\xF5es", onClick: () => ke("settings") },
-                r.default.createElement(Jl, null),
-              ),
             ),
           ),
         ),
@@ -5095,7 +5033,7 @@ function Hg(props){return React.createElement(AppModal,props);}
                     day: "numeric",
                     month: "long",
                   })
-                : "Seu espa\xE7o, seu ritmo",
+                : "Finanças pessoais",
             ),
             r.default.createElement("h1", null, rv[t]),
           ),
@@ -5110,16 +5048,6 @@ function Hg(props){return React.createElement(AppModal,props);}
               s
                 ? r.default.createElement(Ql, { size: 18 })
                 : r.default.createElement(fl, { size: 18 }),
-            ),
-          t === "dashboard" &&
-            r.default.createElement(
-              "button",
-              {
-                className: "avatar",
-                onClick: () => ke("settings"),
-                "aria-label": "Abrir personaliza\xE7\xE3o",
-              },
-              "K",
             ),
         ),
         t === 'dashboard' && React.createElement(DashboardTools,{data:e,onNavigate:ke,onCreate:U}),
@@ -5222,7 +5150,7 @@ function Hg(props){return React.createElement(AppModal,props);}
       r.default.createElement(
         "div",
         { className: "catalog-buttons" },
-        [be, Da, Ze, at, sl].map((c, h) =>
+        [be, Da, Ze, cl, sl].map((c, h) =>
           r.default.createElement(
             pe,
             {
@@ -5248,7 +5176,6 @@ function Hg(props){return React.createElement(AppModal,props);}
             [tt, "Compartilhar"],
             [Zl, "Abrir link"],
             [Kl, "Fixar"],
-            [at, "Proteger"],
             [Ge, "Excluir"],
           ].map(([c, h]) =>
             r.default.createElement(

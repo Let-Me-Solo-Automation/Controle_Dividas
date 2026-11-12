@@ -875,6 +875,11 @@ export function PersonalizationStudio({
             Mais rápido <span>Mais suave</span>
           </small>
         </label>
+        <label className="personal-range">
+          <span>Tempo do blur ao revelar <strong>{Number(settings.revealDuration).toFixed(1)} s</strong></span>
+          <input aria-label="Tempo do blur ao revelar" type="range" min="0.5" max="1.6" step="0.1" value={settings.revealDuration} onChange={event => change({revealDuration:Number(event.target.value)})}/>
+          <small>Revelação curta <span>Revelação prolongada</span></small>
+        </label>
       </section>
 
       <section
@@ -955,6 +960,24 @@ export function PersonalizationStudio({
           />
         </label>
           {onSaveGlass && <SaveToggleButton label="Salvar vidro" revision={`${settings.glassOpacity}-${settings.blurStrength}-${settings.footerBlur}`} onSave={onSaveGlass} />}
+        </section>
+        <section className="glass-tuning-card" aria-label="Ajustar vidro do cabeçalho">
+          <h3>Vidro da faixa superior</h3>
+          <p className="personal-muted">Ajuste o cabeçalho sem alterar o + ou o menu flutuante. Role a prévia para comparar o vidro sobre cores e texto.</p>
+          <MotionAppRoot settings={settings} className="header-glass-preview" >
+            <div className="header-glass-sample"><strong>Marks</strong><span aria-hidden="true"><Plus size={18}/><Menu size={18}/></span></div>
+            {[0,1,2].map(index => <div className="glass-preview-scene" key={index}>
+              <div className="glass-color-samples"><span/><span/><span/><span/></div>
+              <h4>{["Saldo nas contas", "Lançamentos", "Metas"][index]}</h4>
+              <strong className="positive-text">+ R$ 2.450,00</strong>
+              <p>Role este conteúdo por trás do cabeçalho para ver o desfoque escolhido.</p>
+            </div>)}
+          </MotionAppRoot>
+          <Toggle label="Blur sob a faixa superior" checked={settings.headerBlur} onChange={value => change({headerBlur:value})}/>
+          <label className="personal-range"><span>Blur do cabeçalho <strong>{settings.headerBlurStrength}px</strong></span><input aria-label="Blur do cabeçalho" type="range" min="0" max="28" step="1" value={settings.headerBlurStrength} onChange={event => change({headerBlurStrength:Number(event.target.value)})}/></label>
+          <label className="personal-range"><span>Opacidade do cabeçalho <strong>{settings.headerOpacity}%</strong></span><input aria-label="Opacidade do cabeçalho" type="range" min="35" max="95" step="1" value={settings.headerOpacity} onChange={event => change({headerOpacity:Number(event.target.value)})}/></label>
+          <p className="personal-muted">Blur em 0 remove o desfoque. A opacidade controla o contraste do texto e dos ícones.</p>
+          {onSaveGlass && <SaveToggleButton label="Salvar cabeçalho" revision={`${settings.headerBlur}-${settings.headerBlurStrength}-${settings.headerOpacity}`} onSave={onSaveGlass}/>}
         </section>
         <details className="personal-details">
           <summary>Superfícies e controles</summary>

@@ -397,7 +397,7 @@ test("calendar icon toggles back to the exact section detail and scroll position
     .getByRole("button", { name: "Agenda", exact: true })
     .click();
   await expect(
-    f.getByRole("heading", { name: "Seu jeito de usar", exact: true }),
+    f.getByRole("heading", { name: "Personalização", exact: true }),
   ).toBeVisible();
 });
 
@@ -458,7 +458,7 @@ test("screen entry and scrolling reveal content from blur to a clear final state
   await expect(f.locator(".screen")).toHaveCSS("filter", "blur(0px)");
   const lastCard = f.locator(".dashboard-stack .card").last();
   await lastCard.scrollIntoViewIfNeeded();
-  await expect(lastCard).toHaveCSS("filter", "blur(0px)");
+  await expect(lastCard).toHaveCSS("filter", "none");
   await expect(lastCard).toHaveCSS("opacity", "1");
 });
 

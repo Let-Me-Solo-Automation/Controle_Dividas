@@ -1,6 +1,6 @@
 # Marks — documentação do projeto, operação e manutenção
 
-Versão da entrega: **2.1.2**. Este documento descreve o que existe no código e como gerar, operar, testar e continuar o projeto. Leia também os documentos de Firebase e os comentários nas funções financeiras antes de alterar regras de saldo.
+Versão da entrega: **2.1.3**. Este documento descreve o que existe no código e como gerar, operar, testar e continuar o projeto. Leia também os documentos de Firebase e os comentários nas funções financeiras antes de alterar regras de saldo.
 
 ## 1. Conteúdo da entrega
 
@@ -157,7 +157,7 @@ Não edite `src/generated`, `dist`, o APK nem o HTML empacotado para uma correç
 
 ## 9. Compilar e instalar Android
 
-Identidade do pacote: `app.marks.finance`. Versão atual desta embalagem: `versionCode=3`, `versionName=2.1.2`. Plataforma de compilação e alvo: API 35. Versão mínima: API 26, Android 8.0.
+Identidade do pacote: `app.marks.finance`. Versão atual desta embalagem: `versionCode=4`, `versionName=2.1.3`. Plataforma de compilação e alvo: API 35. Versão mínima: API 26, Android 8.0.
 
 Requisitos: JDK 21 (ou um JDK compatível com o compilador Java 8 usado), Android SDK com `platforms;android-35` e `build-tools;35.0.0`, Python 3 e Node/npm. Aceite as licenças do SDK na sua máquina.
 
@@ -276,3 +276,8 @@ Veja `docs/CORRECAO-APK-2.1.1.md`: a assinatura válida não bastava para identi
 ## 15. Desempenho Android 2.1.2
 
 O perfil automático detecta o contêiner Android e usa renderização equilibrada. O blur de entrada permanece por card visível, com limpeza do filtro ao terminar. O vidro do menu conserva os controles de intensidade. Veja `docs/DESEMPENHO-ANDROID-2.1.2.md`.
+
+
+## 16. Refinamento de UI e UX 2.1.3
+
+Veja [UI-UX-2.1.3.md](docs/UI-UX-2.1.3.md) para a referência Figma consultada, hierarquia de módulos, controles independentes do vidro no cabeçalho, revelação mais longa e remoção do bloqueio e atalho K. O APK preserva pacote, assinatura e dados.

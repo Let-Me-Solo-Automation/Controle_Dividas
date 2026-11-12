@@ -47,14 +47,16 @@ import {
 function Surface({
   children,
   className = "",
+  label,
 }: {
   children: ReactNode;
   className?: string;
+  label?: string;
 }) {
   const id = useId();
   return (
     <LayoutGroup id={id}>
-      <div className={`production-surface ${className}`}>{children}</div>
+      <section className={`production-surface ${className}`} aria-label={label}>{children}</section>
     </LayoutGroup>
   );
 }
@@ -115,14 +117,14 @@ export function RecentActivity({
   onOpenAll: () => void;
 }) {
   return (
-    <Surface className="production-activities">
+    <Surface className="production-activities" label="Movimentações recentes">
       <ActivitiesCard
         headerIcon={<ArrowLeftRight size={24} />}
         title="Últimos movimentos"
         subtitle={
           activities.length
             ? `${activities.length} registros recentes · toque para ver`
-            : "Seu histórico começa com um lançamento"
+            : "Nenhum lançamento registrado"
         }
         activities={activities}
       />
@@ -139,8 +141,8 @@ export function RecentActivity({
 
 export function GoalProgress({ data }: { data: TaskData }) {
   return (
-    <Surface className="production-goals">
-      <p className="eyebrow">SEU PLANO EM MOVIMENTO</p>
+    <Surface className="production-goals" label="Acompanhamento das metas">
+      <p className="eyebrow">PROGRESSO DAS METAS</p>
       <TaskWidget data={data} />
       <p className="production-hint">
         Expanda para organizar um aporte ou acompanhar uma meta. O progresso

@@ -55,7 +55,7 @@ export function DashboardOverview({
           {periodControl}
           <header className="dashboard-overview-heading">
             <div>
-              <p className="eyebrow">SEU DINHEIRO, COM CLAREZA</p>
+              <p className="eyebrow">RESUMO DO PERÍODO</p>
               <h2>Indicadores</h2>
             </div>
             <div className="dashboard-overview-filter">
@@ -159,12 +159,12 @@ export function DashboardOverview({
         >
           <div className="dashboard-overview-goals-heading">
             <Target size={17} />
-            <h2>Seus planos em movimento</h2>
+            <h2>Metas</h2>
           </div>
           <TaskWidget data={taskData} initialOpen />
           {taskData.totalCount === 0 ? (
             <div className="dashboard-overview-goals-empty">
-              <p>Seu próximo plano começa com uma meta.</p>
+              <p>Nenhuma meta cadastrada.</p>
               <button
                 type="button"
                 className="dashboard-overview-action"

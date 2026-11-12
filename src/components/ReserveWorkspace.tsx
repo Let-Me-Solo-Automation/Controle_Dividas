@@ -311,7 +311,7 @@ export function ReserveWorkspace({
       <div className="reserve-intro">
         <div>
           <p className="reserve-eyebrow">CONTAS E RESERVA</p>
-          <h2>Um lugar para cada parte do seu dinheiro.</h2>
+          <h2>Saldo e reserva por banco</h2>
           <p>
             Veja seu saldo real e acompanhe cada aporte, resgate e plano por
             banco.
@@ -325,17 +325,17 @@ export function ReserveWorkspace({
       <div className="reserve-summary">
         <section>
           <span>Patrimônio real nas contas</span>
-          <strong>{format(totalBalance)}</strong>
+          <strong className={totalBalance < 0 ? "money-out" : "money-in"}>{(totalBalance < 0 ? "−" : "+") + format(Math.abs(totalBalance))}</strong>
           <p>O dinheiro que você tem hoje.</p>
         </section>
         <section>
           <span>Separado na reserva</span>
-          <strong>{format(totalReserved)}</strong>
+          <strong className="money-in">+{format(totalReserved)}</strong>
           <p>Já faz parte do patrimônio.</p>
         </section>
         <section>
           <span>Disponível para alocar</span>
-          <strong>{format(totalFree)}</strong>
+          <strong className={totalFree < 0 ? "money-out" : "money-in"}>{(totalFree < 0 ? "−" : "+") + format(Math.abs(totalFree))}</strong>
           <p>Após as reservas e metas.</p>
         </section>
       </div>

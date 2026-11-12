@@ -9,6 +9,7 @@ import {
   useRef,
   useState,
   type ComponentType,
+  type CSSProperties,
   type ReactNode,
 } from "react";
 import {
@@ -63,6 +64,10 @@ type Preferences = {
   nav?: string;
   footerBlur?: boolean;
   blurStrength?: number;
+  headerBlur?: boolean;
+  headerBlurStrength?: number;
+  headerOpacity?: number;
+  revealDuration?: number;
   glassOpacity?: number;
   glass?: boolean;
   motionStyle?: string;
@@ -100,7 +105,10 @@ export function MotionAppRoot({
         reducedMotion={settings.motion === false ? "always" : "user"}
         transition={preferenceTransition(settings)}
       >
-        <div {...props} data-performance={preferences.efficient?"balanced":"full"}>{children}</div>
+        <div {...props} data-performance={preferences.efficient?"balanced":"full"} style={{
+          "--header-blur": `${settings.headerBlur === false ? 0 : (settings.headerBlurStrength ?? 16)}px`,
+          "--header-tint": `${settings.headerOpacity ?? 82}%`,
+        } as CSSProperties}>{children}</div>
       </MotionConfig>
     </MotionPreferences.Provider>
   );
@@ -703,15 +711,31 @@ function revealDuration(value: number | undefined, base: number) {
   return base * Math.min(2, Math.max(0.4, value ?? 1));
 }
 export function MotionCard(props: HTMLMotionProps<"section">) {
-  const pref = useContext(MotionPreferences), reduce = useReducedMotion();
-  const efficient=!!pref.efficient;
+  const pref = useContext(MotionPreferences);
+  const reduce = useReducedMotion();
+  const efficient = !!pref.efficient;
   const disabled = pref.motion === false || pref.reveal === false || !!reduce;
-  const clear = efficient ? {...revealedContent,transitionEnd:{filter:"none"}} : revealedContent;
-  return <motion.section {...props}
-    initial={disabled ? false : {opacity:0,y:pref.motionStyle==="quiet"?0:efficient?8:18,filter:pref.motionStyle==="quiet"?"blur(0px)":efficient?"blur(4px)":"blur(11px)"}}
-    animate={disabled ? (efficient?{opacity:1,y:0,filter:"none"}:revealedContent) : undefined}
-    whileInView={clear} viewport={{once:true,amount:.06}}
-    transition={{duration:disabled?0:revealDuration(pref.intensity,efficient?.28:pref.motionStyle==="snappy"?.24:pref.motionStyle==="quiet"?.2:.62),ease:revealEase}}/>;
+  const blur = pref.motionStyle === "quiet" ? "blur(0px)" : efficient ? "blur(4px)" : "blur(8px)";
+  const duration = revealDuration(pref.intensity, pref.revealDuration ?? 0.9);
+  const revealed = { opacity: 1, y: 0, filter: "none" };
+  return (
+    <motion.section
+      {...props}
+      data-reveal-duration={disabled ? 0 : duration}
+      initial={disabled ? false : { opacity: 0, y: pref.motionStyle === "quiet" ? 0 : 10, filter: blur }}
+      animate={disabled ? revealed : undefined}
+      whileInView={disabled ? revealed : {
+        opacity: 1, y: 0, filter: [blur, blur, "blur(0px)"],
+        transitionEnd: { filter: "none" },
+      }}
+      viewport={{ once: true, amount: 0.08, margin: "0px 0px -16px 0px" }}
+      transition={{
+        opacity: { duration: disabled ? 0 : Math.min(duration, 0.32), ease: "easeOut" },
+        y: { duration: disabled ? 0 : Math.min(duration, 0.48), ease: revealEase },
+        filter: { duration: disabled ? 0 : duration, times: [0, 0.16, 1], ease: [0.32, 0, 0.2, 1] },
+      }}
+    />
+  );
 }
 export function ScreenTransition(props: HTMLMotionProps<"main">) {
   const pref=useContext(MotionPreferences),reduce=useReducedMotion();

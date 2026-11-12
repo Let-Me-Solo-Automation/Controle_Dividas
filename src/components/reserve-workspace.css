@@ -434,7 +434,7 @@
   color: var(--positive);
 }
 .reserve-summary section:nth-child(3) strong {
-  color: var(--accent);
+  color: var(--positive);
 }
 .reserve-bank-card dl > div:first-child dd {
   color: var(--positive);
@@ -482,3 +482,5 @@
     font-size: 26px;
   }
 }
+
+.reserve-summary section strong.money-out { color: var(--negative); }

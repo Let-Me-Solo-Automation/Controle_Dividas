@@ -65,6 +65,10 @@ export const personalizationDefaults = {
   nav: "capsule",
   footerBlur: true,
   blurStrength: 20,
+  headerBlur: true,
+  headerBlurStrength: 16,
+  headerOpacity: 82,
+  revealDuration: 0.9,
   glassOpacity: 64,
   menuStyle: "popover",
   switchStyle: "soft",
@@ -112,6 +116,9 @@ export function visualSettings(settings = {}) {
   }
   result.intensity = Math.min(2, Math.max(0.4, result.intensity));
   result.blurStrength = Math.min(28, Math.max(0, result.blurStrength));
+  result.headerBlurStrength = Math.min(28, Math.max(0, result.headerBlurStrength));
+  result.headerOpacity = Math.min(95, Math.max(35, result.headerOpacity));
+  result.revealDuration = Math.min(1.6, Math.max(0.5, result.revealDuration));
   result.glassOpacity = Math.min(95, Math.max(35, result.glassOpacity));
   return result;
 }
@@ -142,6 +149,7 @@ export function normalizePersonalizationSettings(settings = {}) {
     }));
   const normalized = { ...safe, ...visualSettings(safe), customPresets };
   delete normalized.chromaticEdges;
+  delete normalized.lock;
   return normalized;
 }
 export function motionTransition(settings = {}, reduced = false) {
