@@ -1,3 +1,4 @@
+import { SaveToggleButton } from "./SaveToggleButton";
 import { FluidNavigation, MotionAppRoot } from "./nexo-ui";
 import { useEffect, useId, useState, type CSSProperties } from "react";
 import { LiquidDangerButton } from "./LiquidDangerButton";
@@ -937,7 +938,7 @@ export function PersonalizationStudio({
           </span>
           <input
             type="range"
-            min="8"
+            min="0"
             max="28"
             step="1"
             value={settings.blurStrength}
@@ -946,7 +947,8 @@ export function PersonalizationStudio({
             }
           />
         </label>
-          {onSaveGlass && <button type="button" className="personal-subtle-button" onClick={() => {if(onSaveGlass())setMessage("Ajustes do vidro salvos.");}}><Save size={16}/> Salvar vidro</button>}
+          <Toggle label="Aberração cromática nas bordas internas" checked={settings.chromaticEdges} onChange={value=>change({chromaticEdges:value})} />
+          {onSaveGlass && <SaveToggleButton label="Salvar vidro" revision={`${settings.glassOpacity}-${settings.blurStrength}-${settings.chromaticEdges}-${settings.footerBlur}`} onSave={onSaveGlass} />}
         </section>
         <details className="personal-details">
           <summary>Superfícies e controles</summary>

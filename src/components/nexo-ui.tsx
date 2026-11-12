@@ -61,6 +61,7 @@ type Preferences = {
   footerBlur?: boolean;
   blurStrength?: number;
   glassOpacity?: number;
+  chromaticEdges?: boolean;
   glass?: boolean;
   motionStyle?: string;
   chartAnimation?: string;
@@ -218,6 +219,7 @@ export function FluidNavigation({
       ref={root}
       className={`nexo-mini-dock nav-variant-${preferences.nav ?? "capsule"}`}
       data-phase={phase}
+      data-chromatic={!!preferences.chromaticEdges}
       style={
         {
           "--nav-blur": `${preferences.footerBlur === false ? 0 : (preferences.blurStrength ?? 20)}px`,

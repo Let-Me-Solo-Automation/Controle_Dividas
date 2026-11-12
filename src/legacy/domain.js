@@ -7,7 +7,9 @@ import { validateReserveMetadata } from '../lib/reserve-model';
 
 const sharedThemes = curatedThemes;
 function validateData(data) {
+  const requestedBlur=data.settings?.blurStrength;
   const validated = NexoSimulatorDomain.validateData(data);
+  if(typeof requestedBlur==="number"&&Number.isFinite(requestedBlur))validated.settings.blurStrength=requestedBlur;
   validated.settings = normalizePersonalizationSettings(validated.settings);
   return validateReserveMetadata(validated);
 }

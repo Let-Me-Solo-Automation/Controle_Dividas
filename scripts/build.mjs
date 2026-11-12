@@ -119,6 +119,7 @@ if (!process.argv.includes("--app-only")) {
   await copyFile("dist/Nexo-Simulador_1.html", "dist/index.html");
   await copyFile("dist/Nexo-Simulador_1.html", "dist/Marks-Simulador.html");
   await writeFile("dist/Marks-Metas-Demo.html", (await readFile("dist/Nexo-Simulador_1.html", "utf8")).replaceAll("nexo-simulator-v1", "marks-goals-demo-v1"));
+  await writeFile("dist/Marks-Teste-Visual.html", (await readFile("dist/Nexo-Simulador_1.html", "utf8")).replaceAll("nexo-simulator-v1", "marks-stress-preview-v1"));
   await copyFile("src/assets/marks-icon.png", "dist/marks-icon.png");
   await copyFile("public/firebase-config.json", "dist/firebase-config.json");
   await writeFile("dist/.nojekyll", "");

@@ -1,3 +1,4 @@
+import {populateVisualPreview} from "./stress-preview";
 import { BrandIcon } from "./components/BrandIcon";
 import { ThemeMorphToggle } from "./components/nexo-ui";
 import {
@@ -43,7 +44,7 @@ function initialData() {
     const raw = localStorage.getItem(KEY);
     if (raw) return domain.validateData(JSON.parse(raw));
   } catch {}
-  const data = domain.demoData();
+  const data = window.location.pathname.endsWith("Marks-Teste-Visual.html") ? populateVisualPreview(domain.demoData()) : domain.demoData();
   data.settings.showOnOpen = true;
   return data;
 }
@@ -208,7 +209,7 @@ function Simulator() {
     setConfirm(kind);
   }
   function applyReset() {
-    const next = confirm === "demo" ? domain.demoData() : domain.freshData();
+    const next = confirm === "demo" ? (window.location.pathname.endsWith("Marks-Teste-Visual.html") ? populateVisualPreview(domain.demoData()) : domain.demoData()) : domain.freshData();
     next.settings = { ...store.current.settings };
     save(JSON.stringify(next));
     setVersion((x) => x + 1);

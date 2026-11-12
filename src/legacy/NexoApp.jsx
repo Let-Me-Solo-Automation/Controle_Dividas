@@ -1,3 +1,4 @@
+import { SaveToggleButton } from "../components/SaveToggleButton";
 import themeDomain from './domain.js';
 import { DashboardOverview } from '../components/DashboardOverview';
 import { GoalTargetEditor } from '../components/GoalTargetEditor';
@@ -531,7 +532,7 @@ const ReactCompat = { ...React, default: React };
     if (
       ((e.blurStrength = Math.min(
         28,
-        Math.max(8, Number(e.blurStrength) || 16),
+        Math.max(0, Number.isFinite(Number(e.blurStrength)) ? Number(e.blurStrength) : 20),
       )),
       (e.intensity = Math.min(2, Math.max(0.4, Number(e.intensity) || 1))),
       e.heroImage &&
@@ -3223,6 +3224,7 @@ function Hg(props){return React.createElement(AppModal,props);}
                         " seguem para a pr\xF3xima",
                       ),
                   ),
+                  y.closed && y.payment && e.entries.some(entry=>entry.paymentId===y.payment.id) && React.createElement("button", {type:"button",className:"installment-receipt", "aria-label":"Comprovante da parcela "+y.number,onClick:()=>U("entryDetail",{entry:e.entries.find(entry=>entry.paymentId===y.payment.id)})},React.createElement(cl,{size:17}),e.entries.find(entry=>entry.paymentId===y.payment.id)?.image?"Ver comprovante":"Anexar comprovante"),
                   r.default.createElement(
                     "div",
                     { className: "installment-values" },
@@ -3890,8 +3892,7 @@ function Hg(props){return React.createElement(AppModal,props);}
               ? "Altera\xE7\xF5es em pr\xE9via"
               : "Suas prefer\xEAncias est\xE3o salvas",
           ),
-          p &&
-            r.default.createElement(
+          r.default.createElement(
               "div",
               null,
               r.default.createElement(
@@ -3899,18 +3900,7 @@ function Hg(props){return React.createElement(AppModal,props);}
                 { className: "text-button", onClick: () => x(null) },
                 "Cancelar",
               ),
-              r.default.createElement(
-                F,
-                {
-                  onClick: () => {
-                    le((n) => {
-                      n.settings = structuredClone(p);
-                    }, "Prefer\xEAncias salvas.") && x(null);
-                  },
-                },
-                r.default.createElement(Ze, { size: 16 }),
-                "Salvar",
-              ),
+              React.createElement(SaveToggleButton, {disabled:!p,onSave:()=>{if(!p)return false;const ok=le(data=>{data.settings=structuredClone(p);},"Preferências salvas.");if(ok)x(null);return ok;}}),
             ),
         ),
         React.createElement(PersonalizationStudio, {
