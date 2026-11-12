@@ -15,6 +15,7 @@ test('glass preview expands, applies intensity and saves the chosen values',asyn
  await expect(card.locator('.nexo-mini-dock')).toHaveCSS('--nav-glass-opacity','80%');
  await expect(card.locator('.nexo-mini-dock')).toHaveCSS('--nav-blur','25px');
  await card.getByRole('button',{name:'Salvar vidro',exact:true}).click();
+ await expect(card.getByRole('button',{name:'Salvo',exact:true})).toBeVisible();
  const settings=await page.evaluate(()=>JSON.parse(localStorage.getItem('nexo-simulator-v1')!).settings);
  expect(settings.glassOpacity).toBe(80);expect(settings.blurStrength).toBe(25);
 });

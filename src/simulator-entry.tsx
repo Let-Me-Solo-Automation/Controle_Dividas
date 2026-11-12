@@ -44,7 +44,7 @@ function initialData() {
     const raw = localStorage.getItem(KEY);
     if (raw) return domain.validateData(JSON.parse(raw));
   } catch {}
-  const data = window.location.pathname.endsWith("Marks-Teste-Visual.html") ? populateVisualPreview(domain.demoData()) : domain.demoData();
+  const data = window.location.pathname.endsWith("Marks-Vazio-Demo.html") ? domain.freshData() : window.location.pathname.endsWith("Marks-Teste-Visual.html") ? populateVisualPreview(domain.demoData()) : domain.demoData();
   data.settings.showOnOpen = true;
   return data;
 }
@@ -251,6 +251,7 @@ function Simulator() {
             </span>
           </a>
           <div className="sim-header-right">
+            <label className="sim-scenario-picker">Cenário<select aria-label="Cenário da visualização" value={window.location.pathname.endsWith("Marks-Vazio-Demo.html")?"empty":window.location.pathname.endsWith("Marks-Teste-Visual.html")?"stress":window.location.pathname.endsWith("Marks-Metas-Demo.html")?"goals":"normal"} onChange={event=>{const file=event.target.value==="empty"?"Marks-Vazio-Demo.html":event.target.value==="stress"?"Marks-Teste-Visual.html":event.target.value==="goals"?"Marks-Metas-Demo.html":"Marks-Simulador.html";window.location.href=new URL((window.location.pathname.endsWith("Visualizador.html")?"dist/":"")+file,window.location.href).href;}}><option value="normal">Dados atuais</option><option value="empty">Sem registros</option><option value="goals">Metas: 100%, 50%, 2%</option><option value="stress">Muitos dados e textos longos</option></select></label>
             <span className="sim-prototype-badge">
               <span />
               Protótipo interativo

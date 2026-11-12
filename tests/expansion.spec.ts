@@ -51,11 +51,11 @@ test("income and outgoing summary uses animated signed comparison bars", async (
   await expect(chart).toContainText("Entradas");
   await expect(chart).toContainText("Saídas");
   await expect(chart).toContainText("+");
-  await expect(chart).toContainText("−");
+  await expect(chart).toContainText(/[-−]/);
   await expect(chart.locator(".finance-comparison-fill")).toHaveCount(2);
 });
 
-test("green glass plus resets after selecting and the icon morph completes before the palette changes", async ({
+test("frosted glass plus resets after selecting and the icon morph completes before the palette changes", async ({
   page,
 }) => {
   await open(page);
@@ -78,7 +78,8 @@ test("green glass plus resets after selecting and the icon morph completes befor
     exact: true,
   });
   await expect(active).toHaveAttribute("data-active", "true");
-  await expect(active).toHaveCSS("background-color", "rgba(6, 103, 68, 0.94)");
+  await expect(active).toHaveCSS("backdrop-filter", /blur\(.+\)/);
+  await expect(active).not.toHaveCSS("background-color", "rgba(6, 103, 68, 0.94)");
   await f
     .getByRole("navigation", { name: "Navegação principal" })
     .getByRole("button", { name: "Metas", exact: true })
@@ -334,10 +335,7 @@ test("customization has replayable examples, saves visual presets and changes re
           document.querySelector(".personal-live-preview .personal-chart"),
       ),
   ).toBe(true);
-  await studio
-    .locator(".personal-chart-types button")
-    .filter({ hasText: "Barras" })
-    .click();
+  await studio.getByRole("button", { name: "Barras", exact: true }).click();
   await studio
     .locator(".personal-animation-grid button")
     .filter({ hasText: "Em sequência" })
@@ -353,6 +351,7 @@ test("customization has replayable examples, saves visual presets and changes re
     .getByRole("button", { name: "Salvar combinação", exact: true })
     .click();
   await f.getByRole("button", { name: "Salvar", exact: true }).click();
+  await expect(f.locator(".settings-sticky").getByRole("button",{name:"Salvo",exact:true})).toBeVisible();
   let data = await saved(page);
   expect(data.settings).toMatchObject({
     chart: "bars",
@@ -376,6 +375,7 @@ test("customization has replayable examples, saves visual presets and changes re
     .getByRole("button", { name: "Restaurar padrão", exact: true })
     .click();
   await app(page).getByRole("button", { name: "Salvar", exact: true }).click();
+  await expect(app(page).locator(".settings-sticky").getByRole("button",{name:"Salvo",exact:true})).toBeVisible();
   data = await saved(page);
   expect(data.settings.nav).toBe("capsule");
   expect(data.settings.chart).toBe("auto");

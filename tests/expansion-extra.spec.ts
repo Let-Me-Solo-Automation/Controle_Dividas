@@ -55,9 +55,7 @@ test("home uses actual KPI slides, a working filter, expandable goals and persis
     name: "Metas em movimento",
     exact: true,
   });
-  await widget
-    .getByRole("button", { name: "Expandir Metas em movimento", exact: true })
-    .click();
+  await expect(widget.getByRole("button", { name: "Recolher Metas em movimento", exact: true })).toBeVisible();
   await expect(
     widget.locator("button").filter({ hasText: /R\$/ }).first(),
   ).toBeVisible();
@@ -174,7 +172,7 @@ test("delivery route is offered only with both addresses and trash pulses red be
   });
   await trash.click();
   await expect(f.getByRole("dialog")).toBeVisible();
-  const dangerFrames = await trash.evaluate(
+  const dangerFrames = await f.locator("html").evaluate(
     () => (window as any).__dangerFrames,
   );
   expect(

@@ -1,6 +1,6 @@
 import { createProjectArchive } from "./package.mjs";
 import { build } from "esbuild";
-import { readFile, writeFile, mkdir, copyFile } from "node:fs/promises";
+import { readFile, writeFile, mkdir, copyFile, access } from "node:fs/promises";
 import { execFileSync } from "node:child_process";
 await mkdir("src/generated", { recursive: true });
 await mkdir("dist", { recursive: true });
@@ -50,6 +50,7 @@ const [base, fonts, css] = await Promise.all(
 const escapeScript = (s) => s.replace(/<\/script/gi, "<\\/script");
 const appHTML = `<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#f4f5f2"><title>Marks — prévia</title><style>${fonts}\n@layer theme,base,legacy,components,utilities;\n@layer legacy{${base}}\n${css}</style></head><body><div id="root"></div><script>${escapeScript(app.outputFiles[0].text)}</script></body></html>`;
 await writeFile("src/generated/app.html", appHTML);
+await import("./prepare-android.mjs");
 if (!process.argv.includes("--app-only")) {
   const outer = await build({
     entryPoints: ["src/simulator-entry.tsx"],
@@ -119,6 +120,7 @@ if (!process.argv.includes("--app-only")) {
   await copyFile("dist/Nexo-Simulador_1.html", "dist/index.html");
   await copyFile("dist/Nexo-Simulador_1.html", "dist/Marks-Simulador.html");
   await writeFile("dist/Marks-Metas-Demo.html", (await readFile("dist/Nexo-Simulador_1.html", "utf8")).replaceAll("nexo-simulator-v1", "marks-goals-demo-v1"));
+  await writeFile("dist/Marks-Vazio-Demo.html", (await readFile("dist/Nexo-Simulador_1.html", "utf8")).replaceAll("nexo-simulator-v1", "marks-empty-preview-v1"));
   await writeFile("dist/Marks-Teste-Visual.html", (await readFile("dist/Nexo-Simulador_1.html", "utf8")).replaceAll("nexo-simulator-v1", "marks-stress-preview-v1"));
   await copyFile("src/assets/marks-icon.png", "dist/marks-icon.png");
   await copyFile("public/firebase-config.json", "dist/firebase-config.json");
@@ -136,5 +138,7 @@ if (!process.argv.includes("--app-only")) {
     "dist/tutorial-firebase.html",
     tutorialTemplate.replace("__FIRESTORE_RULES__", () => escapedRules),
   );
+  await copyFile("dist/Nexo-Simulador_1.html", "Visualizador.html");
+  try { await access("public/Marks-Android.apk"); await mkdir("dist/downloads",{recursive:true}); await copyFile("public/Marks-Android.apk","dist/downloads/Marks-Android.apk"); await copyFile("public/Marks-Android.apk","Marks-Android.apk"); } catch(error) { if(error.code!=="ENOENT")throw error; }
   await createProjectArchive();
 }

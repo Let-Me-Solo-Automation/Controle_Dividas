@@ -1,0 +1,34 @@
+import {test,expect} from '@playwright/test';
+import {archiveDeleted,normalizeTrash,purgeExpired,restoreDeleted} from '../src/features/trash/model';
+import {pathToFileURL} from 'node:url';
+test('trash expiry honors retention and restore reconnects detached installment records',()=>{
+ const before:any={accounts:[{id:'bank'}],entries:[{id:'entry',sectionId:'section',paymentId:'payment'}],sections:[{id:'section',title:'Acordo',payments:[{id:'payment'}]}],goals:[],trash:[],trashPolicy:{amount:0,unit:'days'}};
+ const after=structuredClone(before);after.sections=[];delete after.entries[0].sectionId;delete after.entries[0].paymentId;
+ archiveDeleted(before,after,'Exclusão');expect(after.trash).toHaveLength(1);
+ restoreDeleted(after,after.trash[0].id);expect(after.sections).toEqual(before.sections);expect(after.entries).toEqual(before.entries);
+ archiveDeleted(before,{...after,sections:[],trash:[]} as any,'Acordo');
+ const data:any={trash:[{id:'old',deletedAt:'2026-01-01T12:00:00Z',records:{},links:[]}],trashPolicy:{amount:30,unit:'days'}};
+ purgeExpired(data,Date.parse('2026-02-02T12:00:00Z'));expect(data.trash).toHaveLength(0);
+ const manual:any={trash:[{id:'old',deletedAt:'2020-01-01T12:00:00Z',records:{},links:[]}],trashPolicy:{amount:0,unit:'months'}};
+ normalizeTrash(manual);expect(manual.trash).toHaveLength(1);
+ const monthly:any={trash:[{id:'month',deletedAt:'2026-01-31T12:00:00Z',records:{},links:[]}],trashPolicy:{amount:1,unit:'months'}};
+ purgeExpired(monthly,Date.parse('2026-02-28T12:00:01Z'));expect(monthly.trash).toHaveLength(0);
+});
+test('deleted ledger entry can be restored; neon and distinct chart styles persist',async({page})=>{
+ await page.goto(pathToFileURL(process.cwd()+'/dist/Marks-Simulador.html').href);
+ const f=page.frameLocator('iframe[title="Marks — aplicativo interativo"]');
+ await f.getByRole('button',{name:'Abrir menu',exact:true}).click();await f.locator('.menu-list').getByRole('button',{name:'Lançamentos',exact:true}).click();
+ await f.locator('.transaction').filter({hasText:'Mercado da semana'}).click();
+ await f.getByRole('button',{name:'Excluir lançamento',exact:true}).click();
+ await f.getByRole('dialog').getByRole('button',{name:'Excluir registro',exact:true}).click();
+ await expect(f.getByRole('dialog')).toHaveCount(0);
+ let data=await page.evaluate(()=>JSON.parse(localStorage.getItem('nexo-simulator-v1')!));
+ expect(data.trash.length).toBe(1);expect(data.entries.some((entry:any)=>entry.title==='Mercado da semana')).toBe(false);
+ await f.getByRole('button',{name:'Abrir menu',exact:true}).click();await f.locator('.menu-list').getByRole('button',{name:'Personalização',exact:true}).click();
+ const trash=f.getByRole('region',{name:'Lixeira',exact:true});await trash.getByRole('button',{name:'Restaurar',exact:true}).click();
+ data=await page.evaluate(()=>JSON.parse(localStorage.getItem('nexo-simulator-v1')!));expect(data.trash.length).toBe(0);expect(data.entries.some((entry:any)=>entry.title==='Mercado da semana')).toBe(true);
+ await f.getByRole('button',{name:'Vidro neon',exact:true}).click();await f.getByRole('button',{name:'Rosca',exact:true}).click();
+ await f.locator('.settings-sticky').getByRole('button',{name:'Salvar',exact:true}).click();
+ await expect(f.locator('.settings-sticky').getByRole('button',{name:'Salvo',exact:true})).toBeVisible();
+ data=await page.evaluate(()=>JSON.parse(localStorage.getItem('nexo-simulator-v1')!));expect(data.settings.nav).toBe('neon');expect(data.settings.chart).toBe('donut');expect(data.settings).not.toHaveProperty('chromaticEdges');
+});

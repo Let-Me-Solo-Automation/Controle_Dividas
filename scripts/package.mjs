@@ -1,8 +1,10 @@
-import { readdir, readFile, writeFile, mkdir } from "node:fs/promises";
+import { readdir, readFile, writeFile, mkdir, access } from "node:fs/promises";
 import path from "node:path";
 import { zipSync } from "fflate";
 const roots = [
   "src",
+  "android",
+  "docs",
   "scripts",
   "tests",
   "firebase",
@@ -25,6 +27,8 @@ const files = [
   "Instalar-na-Mesa.command",
   "Configurar-Firebase.command",
   "README.md",
+  "PROJETO-MARKS.md",
+  "Visualizador.html",
   "FIREBASE-GRATUITO.md",
   "TUTORIAL-FIREBASE.md",
   "CONFIGURAR-ONLINE.md",
@@ -57,8 +61,8 @@ export async function createProjectArchive(root = process.cwd()) {
       withFileTypes: true,
     })) {
       if (
-        ["generated", "node_modules", ".git", ".runtime"].includes(item.name) ||
-        item.name.endsWith(".log")
+        ["generated", "node_modules", ".git", ".runtime", "build", ".gradle", ".signing"].includes(item.name) ||
+        item.name.endsWith(".log") || /\.(jks|keystore)$/.test(item.name)
       )
         continue;
       const name = rel + "/" + item.name;
@@ -68,8 +72,12 @@ export async function createProjectArchive(root = process.cwd()) {
   }
   for (const rel of roots) await walk(rel);
   for (const rel of files) await add(rel);
+  try {await access(path.join(root,"Marks-Android.apk"));await add("Marks-Android.apk");}catch(error){if(error.code!=="ENOENT")throw error;}
   for (const rel of [
     "dist/Marks-Simulador.html",
+    "dist/Marks-Metas-Demo.html",
+    "dist/Marks-Teste-Visual.html",
+    "dist/Marks-Vazio-Demo.html",
     "dist/compartilhar.html",
     "dist/tutorial-firebase.html",
     "dist/firebase-config.json",

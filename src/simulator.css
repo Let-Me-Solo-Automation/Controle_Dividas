@@ -993,3 +993,6 @@ html[data-theme-family="apple"] :is(button, a, select):focus-visible { outline-c
 @media (max-width: 700px) {
   .sim-notice { top: max(76px, env(safe-area-inset-top)); bottom: auto; }
 }
+.sim-scenario-picker {display:flex;align-items:center;gap:7px;font-size:12px;flex-wrap:wrap;}
+.sim-scenario-picker select {max-width:190px;padding:8px;border-radius:10px;border:1px solid var(--line);color:var(--text);background:var(--surface);}
+@media(max-width:640px){.sim-scenario-picker{width:100%;}.sim-header-right{flex-wrap:wrap;}}

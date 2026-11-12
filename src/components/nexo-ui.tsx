@@ -61,11 +61,10 @@ type Preferences = {
   footerBlur?: boolean;
   blurStrength?: number;
   glassOpacity?: number;
-  chromaticEdges?: boolean;
   glass?: boolean;
   motionStyle?: string;
   chartAnimation?: string;
-  chart?: "auto" | "area" | "bars" | "line";
+  chart?: "auto" | "area" | "bars" | "line" | "donut" | "horizontal";
 };
 const MotionPreferences = createContext<Preferences>({});
 export const useMotionPreferences = () => useContext(MotionPreferences);
@@ -219,7 +218,6 @@ export function FluidNavigation({
       ref={root}
       className={`nexo-mini-dock nav-variant-${preferences.nav ?? "capsule"}`}
       data-phase={phase}
-      data-chromatic={!!preferences.chromaticEdges}
       style={
         {
           "--nav-blur": `${preferences.footerBlur === false ? 0 : (preferences.blurStrength ?? 20)}px`,
@@ -567,7 +565,7 @@ export function AnimatedMoney({
       previous.current = value;
       return;
     }
-    if (!seen && !noCount) { previous.current = 0; ref.current.textContent = format(0); return; }
+    if (!seen && !noCount) { previous.current = 0; ref.current.textContent = format(value); return; }
     if (noCount) {
       ref.current.textContent = format(value);
       previous.current = value;
@@ -771,6 +769,14 @@ export function ScreenTransition(props: HTMLMotionProps<"main">) {
   );
 }
 
+let modalOverflowRestore:string|null=null;
+function syncModalBackground(){
+ const background=document.querySelector<HTMLElement>(".app");
+ const open=!!document.querySelector(".modal-backdrop");
+ if(background){background.inert=open;if(open)background.setAttribute("aria-hidden","true");else background.removeAttribute("aria-hidden");}
+ if(open){if(modalOverflowRestore===null)modalOverflowRestore=document.body.style.overflow;document.body.style.overflow="hidden";}
+ else if(modalOverflowRestore!==null){document.body.style.overflow=modalOverflowRestore;modalOverflowRestore=null;}
+}
 export function AppModal({
   title,
   children,
@@ -788,9 +794,10 @@ export function AppModal({
   close.current = onClose;
   useEffect(() => {
     const old = document.activeElement as HTMLElement | null;
-    const overflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
     ref.current?.focus();
+    syncModalBackground();
+    const backgroundObserver=new MutationObserver(syncModalBackground);
+    backgroundObserver.observe(document.body,{childList:true});
     const key = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
         e.preventDefault();
@@ -823,7 +830,8 @@ export function AppModal({
     };
     document.addEventListener("keydown", key);
     return () => {
-      document.body.style.overflow = overflow;
+      backgroundObserver.disconnect();
+      requestAnimationFrame(syncModalBackground);
       document.removeEventListener("keydown", key);
       if (old?.isConnected && old !== document.body) old.focus();
       else

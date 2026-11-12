@@ -19,3 +19,10 @@ Nexo-backup*.json
 Marks-backup*.json
 
 /node_modules
+/android/build/
+/android/app/src/main/assets/*.html
+/android/app/src/main/assets/*.json
+*.jks
+*.keystore
+/Visualizador.html
+/Marks-Android.apk

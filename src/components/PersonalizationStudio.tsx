@@ -82,6 +82,9 @@ export function PreviewChart({
   const active = settings.motion !== false && !reduced && animation !== "none";
   const transition = motionTransition(settings, !active) as Transition;
   const grow = animation === "grow";
+  if(kind==="donut") return <motion.svg key={replay} className="personal-chart" viewBox="0 0 284 120" role="img" aria-label="Exemplo de gráfico de rosca"><circle cx="142" cy="60" r="43" fill="none" stroke="var(--line)" strokeWidth="17"/>{[.5,.3,.2].map((value,index)=><motion.circle key={index} cx="142" cy="60" r="43" fill="none" stroke={["#479ce8","#35b88e","#cf78b1"][index]} strokeWidth="17" strokeDasharray={`${value*270} 270`} strokeDashoffset={-[0,.5,.8][index]*270} transform="rotate(-90 142 60)" initial={active?{opacity:0}:false} animate={{opacity:1}} transition={transition}/>)}</motion.svg>;
+  if(kind==="horizontal")return <svg key={replay} className="personal-chart" viewBox="0 0 284 120" role="img" aria-label="Exemplo de barras horizontais">{[.85,.55,.7,.35].map((value,index)=><motion.rect key={index} x="16" y={12+index*26} width={250*value} height="15" rx="7" fill={["#479ce8","#35b88e","#cf78b1","#e8ae42"][index]} style={{transformOrigin:"16px center"}} initial={active?{scaleX:0}:false} animate={{scaleX:1}} transition={transition}/>)}</svg>;
+
   return (
     <svg
       key={`${replay}-${kind}-${animation}-${settings.motionStyle}-${settings.motion}-${settings.intensity}`}
@@ -744,11 +747,14 @@ export function PersonalizationStudio({
             ["area", "Área"],
             ["bars", "Barras"],
             ["line", "Linha"],
+            ["donut", "Rosca"],
+            ["horizontal", "Barras horizontais"],
           ].map(([id, label]) => (
             <button
               type="button"
               key={id}
               className={`personal-choice ${settings.chart === id ? "is-selected" : ""}`}
+              aria-label={label}
               aria-pressed={settings.chart === id}
               onClick={() => change({ chart: id })}
             >
@@ -947,8 +953,7 @@ export function PersonalizationStudio({
             }
           />
         </label>
-          <Toggle label="Aberração cromática nas bordas internas" checked={settings.chromaticEdges} onChange={value=>change({chromaticEdges:value})} />
-          {onSaveGlass && <SaveToggleButton label="Salvar vidro" revision={`${settings.glassOpacity}-${settings.blurStrength}-${settings.chromaticEdges}-${settings.footerBlur}`} onSave={onSaveGlass} />}
+          {onSaveGlass && <SaveToggleButton label="Salvar vidro" revision={`${settings.glassOpacity}-${settings.blurStrength}-${settings.footerBlur}`} onSave={onSaveGlass} />}
         </section>
         <details className="personal-details">
           <summary>Superfícies e controles</summary>

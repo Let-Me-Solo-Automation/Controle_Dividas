@@ -1,3 +1,6 @@
+import {CashflowForecast} from "../features/forecast/CashflowForecast";
+import {TrashPanel} from "../features/trash/TrashPanel";
+import {normalizeTrash,archiveDeleted,restoreDeleted,purgeExpired} from "../features/trash/model";
 import { SaveToggleButton } from "../components/SaveToggleButton";
 import themeDomain from './domain.js';
 import { DashboardOverview } from '../components/DashboardOverview';
@@ -482,7 +485,7 @@ const ReactCompat = { ...React, default: React };
         ["drawer", "Gaveta"],
         ["compact", "Barra de \xEDcones"],
       ],
-      nav: [
+      nav: [["neon", "Vidro neon"],
         ["capsule", "C\xE1psula"],
         ["dock", "Dock"],
         ["island", "Ilha"],
@@ -948,7 +951,7 @@ const ReactCompat = { ...React, default: React };
       if (o.extensions === void 0) o.extensions = [];
       else if (!Array.isArray(o.extensions))
         throw Error("Hist\xF3rico da meta inv\xE1lido.");
-    return (xf(e.settings), e.settings = normalizePersonalizationSettings(e.settings), validateReserveMetadata(e), e);
+    return (normalizeTrash(e), xf(e.settings), e.settings = normalizePersonalizationSettings(e.settings), validateReserveMetadata(e), e);
   }
   function bf() {
     let e = du(),
@@ -1248,7 +1251,8 @@ function cn(props){return React.createElement(FluidNavigation,props);}
       let e = window.NexoNative
         ? window.NexoNative.load()
         : localStorage.getItem("nexo-v1");
-      return e ? $l(JSON.parse(e)) : du();
+      if(!e)return du();
+      const loaded=$l(JSON.parse(e));Ng(loaded);return loaded;
     } catch (e) {
       return ((window.nexoLoadError = e.message), null);
     }
@@ -1566,6 +1570,7 @@ function Hg(props){return React.createElement(AppModal,props);}
     ];
   function iv() {
     const systemDark = useSystemDark();
+    const [entryLimit,setEntryLimit]=React.useState(50);
     const [entryKind, setEntryKind] = React.useState("all");
     const [entryAccount, setEntryAccount] = React.useState("all");
     let [e, a] = (0, r.useState)($i || du()),
@@ -1602,6 +1607,8 @@ function Hg(props){return React.createElement(AppModal,props);}
           (Vs.current = setTimeout(() => E(""), 4500)));
       };
     r.default.useEffect(() => { document.title = `${O.appName || "Marks"} · Organização financeira`; }, [O.appName]);
+    React.useEffect(()=>{const timer=setInterval(()=>{const next=structuredClone(Ja.current);const count=next.trash?.length||0;purgeExpired(next);if((next.trash?.length||0)!==count)le(data=>{data.trash=next.trash;});},60000);return()=>clearInterval(timer);},[]);
+    React.useEffect(()=>setEntryLimit(50),[entryKind,entryAccount,z,h,m]);
     function ke(n) {
       if (n !== t && n !== 'agenda' && t !== 'agenda') {
         screenHistory.current.push({screen:t,section:Z,period:h,date:m,query:z,scrollY:window.scrollY});
@@ -1648,6 +1655,8 @@ function Hg(props){return React.createElement(AppModal,props);}
           );
         let v = structuredClone(y);
         n(v);
+        normalizeTrash(v);
+        if(o?.type==="delete"&&!L.replaceData)archiveDeleted(y,v,"Registro excluído");
         for (let [S, k] of Object.entries(en.current))
           if (!v.sections.some((q) => q.id === S) || v.sharing.url !== k)
             throw Error(
@@ -2946,6 +2955,7 @@ function Hg(props){return React.createElement(AppModal,props);}
           },
           onCreateGoal:()=>U("goal")
         }),
+        React.createElement(CashflowForecast,{balance:Te.balance,items:Yo(true),visible:s}),
         r.default.createElement(
           "div",
           { className: "dashboard-stack" },
@@ -3701,7 +3711,7 @@ function Hg(props){return React.createElement(AppModal,props);}
         r.default.createElement(
           J,
           null,
-          visibleEntries
+          visibleEntries.slice(0,entryLimit)
             .map((n) =>
               r.default.createElement(Ri, {
                 key: n.id,
@@ -3710,6 +3720,7 @@ function Hg(props){return React.createElement(AppModal,props);}
                 onClick: () => U("entryDetail", { entry: n }),
               }),
             ),
+          visibleEntries.length>entryLimit&&React.createElement("button",{type:"button",className:"button secondary full",onClick:()=>setEntryLimit(limit=>limit+50)},"Mostrar mais 50 lançamentos"),
           !visibleEntries.length &&
             r.default.createElement(
               St,
@@ -3903,6 +3914,7 @@ function Hg(props){return React.createElement(AppModal,props);}
               React.createElement(SaveToggleButton, {disabled:!p,onSave:()=>{if(!p)return false;const ok=le(data=>{data.settings=structuredClone(p);},"Preferências salvas.");if(ok)x(null);return ok;}}),
             ),
         ),
+        React.createElement(TrashPanel,{items:e.trash||[],policy:e.trashPolicy||{amount:0,unit:"days"},onPolicy:policy=>le(data=>{data.trashPolicy=policy;purgeExpired(data);},"Prazo da lixeira salvo."),onRestore:id=>le(data=>restoreDeleted(data,id),"Registro restaurado."),onEmpty:()=>le(data=>{data.trash=[];},"Lixeira esvaziada.")}),
         React.createElement(PersonalizationStudio, {
           settings: O,
           onSaveGlass: () => {const ok=le(data=>{data.settings=structuredClone(O);},"Vidro salvo.");if(ok)x(null);return ok;},
@@ -4691,7 +4703,7 @@ function Hg(props){return React.createElement(AppModal,props);}
             r.default.createElement("img", {
               className: "goal-cover",
               src: v.image,
-              alt: "Comprovante deste lan\xE7amento",
+              alt: "Comprovante deste lan\xE7amento", loading:"lazy", decoding:"async",
             }),
           r.default.createElement(
             "div",
@@ -5143,6 +5155,7 @@ function Hg(props){return React.createElement(AppModal,props);}
           { className: "toast", role: "status" },
           r.default.createElement(At, { size: 18 }),
           r.default.createElement("span", null, D),
+          /exclu/i.test(D)&&e.trash?.length>0&&React.createElement("button",{type:"button",onClick:()=>le(data=>restoreDeleted(data,e.trash[e.trash.length-1].id),"Exclusão desfeita.")},"Desfazer"),
         ),
       r.default.createElement("input", {
         id: "backup-file",

@@ -42,6 +42,7 @@ export const chartAnimations = [
 ];
 export const navStyles = [
   ["capsule", "Cápsula"],
+  ["neon", "Vidro neon"],
   ["dock", "Dock"],
   ["island", "Ilha"],
   ["centered", "Central"],
@@ -65,7 +66,6 @@ export const personalizationDefaults = {
   footerBlur: true,
   blurStrength: 20,
   glassOpacity: 64,
-  chromaticEdges: false,
   menuStyle: "popover",
   switchStyle: "soft",
   buttonStyle: "solid",
@@ -79,7 +79,7 @@ export const personalizationDefaults = {
 };
 const enums = {
   theme: curatedThemes.map((theme) => theme.id),
-  chart: ["auto", "area", "bars", "line"],
+  chart: ["auto", "area", "bars", "line", "donut", "horizontal"],
   nav: navStyles.map(([id]) => id),
   motionStyle: motionStyles.map((style) => style.id),
   chartAnimation: chartAnimations.map((animation) => animation.id),
@@ -138,7 +138,9 @@ export function normalizePersonalizationSettings(settings = {}) {
       name: preset.name.trim().slice(0, 48),
       settings: visualSettings(preset.settings),
     }));
-  return { ...safe, ...visualSettings(safe), customPresets };
+  const normalized = { ...safe, ...visualSettings(safe), customPresets };
+  delete normalized.chromaticEdges;
+  return normalized;
 }
 export function motionTransition(settings = {}, reduced = false) {
   if (reduced || settings.motion === false) return { duration: 0 };

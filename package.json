@@ -1,7 +1,7 @@
 {
   "name": "marks-simulador",
   "private": true,
-  "version": "2.0.0",
+  "version": "2.1.0",
   "type": "module",
   "scripts": {
     "dev": "node scripts/dev.mjs",
@@ -11,7 +11,8 @@
     "preview": "vite preview --host 127.0.0.1",
     "test:model": "node scripts/test-model.mjs",
     "test:firebase": "firebase emulators:exec --only auth,firestore --project demo-nexo-simulador \"node --test tests/firebase.rules.mjs && playwright test --config playwright.firebase.config.ts\"",
-    "test:reserve": "node scripts/test-reserve-model.mjs"
+    "test:reserve": "node scripts/test-reserve-model.mjs",
+    "build:android": "bash scripts/build-android.sh"
   },
   "dependencies": {
     "@hugeicons/core-free-icons": "^4.4.0",

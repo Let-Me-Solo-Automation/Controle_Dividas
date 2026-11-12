@@ -155,6 +155,7 @@ test("a completed expense accepts a private receipt afterward and can remove it"
   let saved = await page.evaluate(() => JSON.parse(localStorage.getItem("nexo-simulator-v1")!));
   expect(saved.entries.find((entry: any) => entry.title === "Pagamento com comprovante").image).toMatch(/^data:image\/jpeg;base64,/);
   await detail.getByRole("button", { name: "Remover", exact: true }).click();
+  await expect(detail.getByAltText("Comprovante deste lançamento")).toHaveCount(0);
   saved = await page.evaluate(() => JSON.parse(localStorage.getItem("nexo-simulator-v1")!));
   expect(saved.entries.find((entry: any) => entry.title === "Pagamento com comprovante").image).toBe("");
 });
@@ -352,7 +353,7 @@ test("navigation stays minimal, expands to icons and disappears on auxiliary scr
     "Ajuda e privacidade",
   ]) {
     await menu(page, name);
-    await expect(f.locator(".nexo-mini-dock")).toHaveCount(0);
+    await expect(f.locator(".app > .nexo-mini-dock")).toHaveCount(0);
   }
 });
 
@@ -372,7 +373,7 @@ test("calendar icon toggles back to the exact section detail and scroll position
   await expect(
     f.getByRole("heading", { name: "Minha agenda", exact: true }),
   ).toBeVisible();
-  await expect(f.locator(".nexo-mini-dock")).toHaveCount(0);
+  await expect(f.locator(".app > .nexo-mini-dock")).toHaveCount(0);
   await f
     .locator(".app-header")
     .getByRole("button", { name: "Agenda", exact: true })

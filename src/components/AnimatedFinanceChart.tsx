@@ -12,7 +12,7 @@ type Props = {
   values?: number[];
   labels?: string[];
   colors?: string[];
-  kind?: "area" | "bars" | "line";
+  kind?: "area" | "bars" | "line" | "donut" | "horizontal";
   visible?: boolean;
 };
 
@@ -60,6 +60,9 @@ function VisibleFinanceChart({
     delay: active && animation === "stagger" ? index * 0.08 * rhythm : 0,
   });
 
+  const total = values.reduce((sum,value)=>sum+Math.max(0,value),0);
+  const isFlow = labels[0]==="Entradas" && labels[1]==="Saídas";
+  const palette=["#479ce8","#35b88e","#cf78b1","#e8ae42","#887adc","#e58968"];
   const maximum = Math.max(1, ...values);
   const points = values.map((value, index) => [
     12 + (index * 276) / Math.max(1, values.length - 1),
@@ -79,12 +82,12 @@ function VisibleFinanceChart({
 
   return (
     <motion.div ref={root} className={`chart chart-${kind}`} data-chart-animation={animation} initial={active ? {opacity:0,filter:"blur(4px)",y:6} : false} animate={{opacity:shown?1:0,filter:shown?"blur(0px)":"blur(4px)",y:shown?0:6}} transition={{duration:active ? .35 : 0,ease:[.22,1,.36,1]}}>
-      {kind === "bars" && values.length === 2 ? (
+      {kind === "donut" ? <div className="finance-donut"><svg viewBox="0 0 300 155" role="img" aria-label={description}><circle cx="78" cy="76" r="53" fill="none" stroke="var(--line)" strokeWidth="16"/>{values.map((value,index)=>{const circumference=2*Math.PI*53;const length=total?Math.max(0,value)/total*circumference:0;const offset=values.slice(0,index).reduce((sum,value)=>sum+Math.max(0,value),0)/Math.max(1,total)*circumference;return <motion.circle key={index} cx="78" cy="76" r="53" fill="none" stroke={colors[index]||palette[index%palette.length]} strokeWidth="16" transform="rotate(-90 78 76)" strokeDashoffset={-offset} initial={active?{strokeDasharray:`0 ${circumference}`} : false} animate={{strokeDasharray:`${shown?length:0} ${circumference}`}} transition={delayed(index)}/>;})}<text x="78" y="72" textAnchor="middle" fill="var(--muted)" fontSize="10">Total</text><text x="78" y="89" textAnchor="middle" fill="var(--text)" fontSize="12">{money(total)}</text></svg><div className="finance-donut-legend">{values.map((value,index)=><div key={index}><i style={{background:colors[index]||palette[index%palette.length]}}/><span>{period(index)}</span><b>{total?Math.round(value/total*100):0}%</b></div>)}</div></div> : (kind === "horizontal" || kind === "bars" && values.length === 2) ? (
         <div className="finance-comparison" role="img" aria-label={description}>
           {values.map((value, index) => {
             const ratio = value / maximum;
             return <div className="finance-comparison-row" key={index}>
-              <div className="finance-comparison-copy"><span><i style={{ background: colors[index] || "var(--accent)" }} />{labels[index] || `Período ${index + 1}`}</span><strong className={index === 0 ? "positive-text" : "negative-text"}><AnimatedMoney value={index===0?Math.abs(value):-Math.abs(value)} signed fromZero /></strong></div>
+              <div className="finance-comparison-copy"><span><i style={{ background: colors[index] || "var(--accent)" }} />{labels[index] || `Período ${index + 1}`}</span><strong className={isFlow ? index === 0 ? "positive-text" : "negative-text" : ""}><AnimatedMoney value={isFlow&&index===1?-Math.abs(value):Math.abs(value)} signed={isFlow} fromZero /></strong></div>
               <div className="finance-comparison-track"><motion.div className="finance-comparison-fill" style={{ background: colors[index] || "var(--accent)", transformOrigin: "left" }} initial={active ? { scaleX: 0 } : false} animate={{ scaleX: shown ? ratio : 0 }} transition={delayed(index)} /></div>
             </div>;
           })}
@@ -229,7 +232,7 @@ function VisibleFinanceChart({
           </>
         )}
       </svg>}
-      {!(kind === "bars" && values.length === 2) && <div
+      {!(kind === "donut" || kind === "horizontal" || kind === "bars" && values.length === 2) && <div
         className={`chart-labels${labels.length > 8 ? " dense-labels" : ""}`}
       >
         {labels.map((label, index) => (

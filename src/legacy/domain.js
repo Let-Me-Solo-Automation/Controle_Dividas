@@ -1,3 +1,4 @@
+import {normalizeTrash} from "../features/trash/model";
 import { curatedThemes } from '../apple-themes.js';
 import { normalizePersonalizationSettings } from '../personalization.js';
 import { validateReserveMetadata } from '../lib/reserve-model';
@@ -8,10 +9,14 @@ import { validateReserveMetadata } from '../lib/reserve-model';
 const sharedThemes = curatedThemes;
 function validateData(data) {
   const requestedBlur=data.settings?.blurStrength;
+  const requestedNav=data.settings?.nav;
+  const requestedChart=data.settings?.chart;
   const validated = NexoSimulatorDomain.validateData(data);
   if(typeof requestedBlur==="number"&&Number.isFinite(requestedBlur))validated.settings.blurStrength=requestedBlur;
+  if(requestedNav==="neon")validated.settings.nav="neon";
+  if(["donut","horizontal"].includes(requestedChart))validated.settings.chart=requestedChart;
   validated.settings = normalizePersonalizationSettings(validated.settings);
-  return validateReserveMetadata(validated);
+  return normalizeTrash(validateReserveMetadata(validated));
 }
 export default {
   ...NexoSimulatorDomain,
