@@ -75,6 +75,7 @@ export const personalizationDefaults = {
   chart: "auto",
   intensity: 1,
   motionStyle: "smooth",
+  performanceMode: "auto",
   chartAnimation: "draw",
 };
 const enums = {
@@ -82,6 +83,7 @@ const enums = {
   chart: ["auto", "area", "bars", "line", "donut", "horizontal"],
   nav: navStyles.map(([id]) => id),
   motionStyle: motionStyles.map((style) => style.id),
+  performanceMode: ["auto", "balanced", "full"],
   chartAnimation: chartAnimations.map((animation) => animation.id),
   menuStyle: ["popover", "drawer", "compact"],
   switchStyle: ["soft", "sculpted", "daynight", "glass"],

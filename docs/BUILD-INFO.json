@@ -1,15 +1,15 @@
 {
-  "version": "2.1.1",
-  "builtAtUTC": "2026-11-12T15:11:15.894693+00:00",
+  "version": "2.1.2",
+  "builtAtUTC": "2026-11-12T16:39:15.922111+00:00",
   "androidPackage": "app.marks.finance",
   "minSdk": 26,
   "targetSdk": 35,
   "buildTools": "35.0.0",
-  "apkSHA256": "e19c96a8caa2ecdac553b78f982a3314e16ed54f259fd0f18204829585c55085",
-  "embeddedAppSHA256": "2626edc9ad81f61f7a31ef3bb50cb1ab0063639e76ff28587a41189f273d0b42",
+  "apkSHA256": "49962201b69f1f50b0a58de1d09a0ee65ede2ceff5afdf871495ce92b02e7e84",
+  "embeddedAppSHA256": "71924a606a6945907b49ceea117b1170c52ba2c368ffd64d33779ef7d2193462",
   "hardwareDeviceTested": false,
-  "javaSourceSHA256": "56c38cdcf346097c9f0c4fcf7105d8952ea9c1cdc5ccb33048b8781aabc5a47d",
-  "androidVersionCode": 2,
+  "javaSourceSHA256": "f7170348c435d724b844ccede8ed7b4e9acfc55d569b718fe4778c2a4bfcaf9e",
+  "androidVersionCode": 3,
   "resourcesArscCompression": "ZIP_STORED",
   "resourcesArscAlignment": 4
 }

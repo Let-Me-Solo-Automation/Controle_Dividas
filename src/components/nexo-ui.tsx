@@ -5,6 +5,7 @@ import {
   useEffect,
   useId,
   useLayoutEffect,
+  useMemo,
   useRef,
   useState,
   type ComponentType,
@@ -51,6 +52,8 @@ export const spring = {
 } as const;
 type Preferences = {
   motion?: boolean;
+  performanceMode?: "auto" | "balanced" | "full";
+  efficient?: boolean;
   transition?: boolean;
   reveal?: boolean;
   numbers?: boolean;
@@ -90,13 +93,14 @@ export function MotionAppRoot({
   children: ReactNode;
   className?: string;
 }) {
+  const preferences=useMemo(()=>({...settings,efficient:settings.performanceMode==="balanced"||(settings.performanceMode!=="full"&&typeof window!=="undefined"&&!!(window as any).MarksFiles)}),[settings]);
   return (
-    <MotionPreferences.Provider value={settings}>
+    <MotionPreferences.Provider value={preferences}>
       <MotionConfig
         reducedMotion={settings.motion === false ? "always" : "user"}
         transition={preferenceTransition(settings)}
       >
-        <div {...props}>{children}</div>
+        <div {...props} data-performance={preferences.efficient?"balanced":"full"}>{children}</div>
       </MotionConfig>
     </MotionPreferences.Provider>
   );
@@ -539,6 +543,7 @@ export function ContinuousTabs({
   );
 }
 
+const moneyFormatter=new Intl.NumberFormat("pt-BR",{style:"currency",currency:"BRL"});
 export function AnimatedMoney({
   value,
   visible = true,
@@ -553,13 +558,13 @@ export function AnimatedMoney({
   signed?: boolean;
 }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const seen = useInView(ref, { once: false, amount: 0.1 });
+  const preferences = useContext(MotionPreferences);
+  const seen = useInView(ref, { once: !!preferences.efficient, amount: 0.1 });
   const previous = useRef(0);
   const reduce = useReducedMotion();
-  const preferences = useContext(MotionPreferences);
   const noCount =
     reduce || preferences.motion === false || preferences.numbers === false;
-  const format = (v: number) => `${signed && v >= 0 ? "+" : ""}${(v / 100).toLocaleString("pt-BR", { style: "currency", currency: "BRL" })}`;
+  const format = (v: number) => `${signed && v >= 0 ? "+" : ""}${moneyFormatter.format(Math.round(v)/100)}`;
   useEffect(() => {
     if (!visible || !ref.current) {
       previous.current = value;
@@ -574,14 +579,14 @@ export function AnimatedMoney({
     const from = previous.current;
     previous.current = value;
     const animation = animate(from, value, {
-      duration: 0.65,
+      duration: preferences.efficient ? 0.32 : 0.65,
       ease: [0.22, 1, 0.36, 1],
       onUpdate: (v) => {
-        if (ref.current) ref.current.textContent = format(v);
+        if (ref.current) { const text=format(v);if(ref.current.textContent!==text)ref.current.textContent=text; }
       },
     });
     return () => animation.stop();
-  }, [value, visible, noCount, fromZero, seen]);
+  }, [value, visible, noCount, fromZero, seen, signed, preferences.efficient]);
   return (
     <span
       className={`money tabular-nums ${className}`}
@@ -603,7 +608,7 @@ export function MotionProgress({
   const pref = useMotionPreferences(),
     reduced = useReducedMotion();
   const root = useRef<HTMLDivElement>(null),
-    seen = useInView(root, { once: false, amount: 0.15 });
+    seen = useInView(root, { once: !!pref.efficient, amount: 0.15 });
   const p = Math.max(0, Math.min(1, value)),
     instant = !!reduced || pref.motion === false || pref.progress === false;
   const target = instant || seen ? p : 0;
@@ -646,8 +651,9 @@ export function MotionProgress({
 }
 
 export function AnimatedProgressRing({progress=0,size=90,label,children}:{progress?:number;size?:number;label?:string;children?:ReactNode}) {
- const root=useRef<HTMLDivElement>(null),seen=useInView(root,{once:false,amount:.15});
- const pref=useMotionPreferences(),reduce=useReducedMotion(),p=Math.max(0,Math.min(1,progress));
+ const pref=useMotionPreferences();
+ const root=useRef<HTMLDivElement>(null),seen=useInView(root,{once:!!pref.efficient,amount:.15});
+ const reduce=useReducedMotion(),p=Math.max(0,Math.min(1,progress));
  const instant=!!reduce||pref.motion===false||pref.progress===false;
  const length=2*Math.PI*40;
  return <div ref={root} className="ring" style={{width:size,height:size}} role="img" aria-label={label??`${Math.round(p*100)}% concluído`}>
@@ -697,76 +703,25 @@ function revealDuration(value: number | undefined, base: number) {
   return base * Math.min(2, Math.max(0.4, value ?? 1));
 }
 export function MotionCard(props: HTMLMotionProps<"section">) {
-  const pref = useContext(MotionPreferences);
-  const reduce = useReducedMotion();
+  const pref = useContext(MotionPreferences), reduce = useReducedMotion();
+  const efficient=!!pref.efficient;
   const disabled = pref.motion === false || pref.reveal === false || !!reduce;
-  return (
-    <motion.section
-      {...props}
-      initial={
-        disabled
-          ? false
-          : {
-              opacity: 0,
-              y: pref.motionStyle === "quiet" ? 0 : 18,
-              filter: pref.motionStyle === "quiet" ? "blur(0px)" : "blur(11px)",
-            }
-      }
-      animate={disabled ? revealedContent : undefined}
-      whileInView={revealedContent}
-      viewport={{ once: true, amount: 0.06 }}
-      transition={{
-        duration: disabled
-          ? 0
-          : revealDuration(
-              pref.intensity,
-              pref.motionStyle === "snappy"
-                ? 0.24
-                : pref.motionStyle === "quiet"
-                  ? 0.2
-                  : 0.62,
-            ),
-        ease: revealEase,
-      }}
-    />
-  );
+  const clear = efficient ? {...revealedContent,transitionEnd:{filter:"none"}} : revealedContent;
+  return <motion.section {...props}
+    initial={disabled ? false : {opacity:0,y:pref.motionStyle==="quiet"?0:efficient?8:18,filter:pref.motionStyle==="quiet"?"blur(0px)":efficient?"blur(4px)":"blur(11px)"}}
+    animate={disabled ? (efficient?{opacity:1,y:0,filter:"none"}:revealedContent) : undefined}
+    whileInView={clear} viewport={{once:true,amount:.06}}
+    transition={{duration:disabled?0:revealDuration(pref.intensity,efficient?.28:pref.motionStyle==="snappy"?.24:pref.motionStyle==="quiet"?.2:.62),ease:revealEase}}/>;
 }
 export function ScreenTransition(props: HTMLMotionProps<"main">) {
-  const pref = useContext(MotionPreferences);
-  const reduce = useReducedMotion();
-  const disabled =
-    pref.motion === false || pref.transition === false || !!reduce;
-  return (
-    <motion.main
-      {...props}
-      initial={
-        disabled
-          ? false
-          : {
-              opacity: 0,
-              y: pref.motionStyle === "quiet" ? 0 : 12,
-              filter: pref.motionStyle === "quiet" ? "blur(0px)" : "blur(16px)",
-            }
-      }
-      animate={revealedContent}
-      exit={
-        disabled ? revealedContent : { opacity: 0, y: -8, filter: "blur(7px)" }
-      }
-      transition={{
-        duration: disabled
-          ? 0
-          : revealDuration(
-              pref.intensity,
-              pref.motionStyle === "snappy"
-                ? 0.26
-                : pref.motionStyle === "quiet"
-                  ? 0.2
-                  : 0.7,
-            ),
-        ease: revealEase,
-      }}
-    />
-  );
+  const pref=useContext(MotionPreferences),reduce=useReducedMotion();
+  const disabled=pref.motion===false||pref.transition===false||!!reduce;
+  const efficient=!!pref.efficient;
+  return <motion.main {...props}
+    initial={disabled?false:efficient?{opacity:.5,y:4,filter:"none"}:{opacity:0,y:pref.motionStyle==="quiet"?0:12,filter:pref.motionStyle==="quiet"?"blur(0px)":"blur(16px)"}}
+    animate={efficient?{opacity:1,y:0,filter:"none"}:revealedContent}
+    exit={disabled?revealedContent:efficient?{opacity:0,y:-4,filter:"none"}:{opacity:0,y:-8,filter:"blur(7px)"}}
+    transition={{duration:disabled?0:revealDuration(pref.intensity,efficient?.22:pref.motionStyle==="snappy"?.26:pref.motionStyle==="quiet"?.2:.7),ease:revealEase}}/>;
 }
 
 let modalOverflowRestore:string|null=null;

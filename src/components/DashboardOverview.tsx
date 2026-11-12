@@ -2,7 +2,7 @@ import { useId, useState, type ReactNode } from "react";
 import { AnimatePresence, LayoutGroup, motion } from "motion/react";
 import { ArrowUpRight, Plus, Target } from "lucide-react";
 import { FaLayerGroup, FaChartPie } from "react-icons/fa";
-import { CarouselNavigator, AnimatedMoney } from "./nexo-ui";
+import { CarouselNavigator, AnimatedMoney, MotionCard } from "./nexo-ui";
 import { FilterDisclosure } from "./reference/FilterDisclosure";
 import { TaskWidget, type TaskData } from "./reference/TaskWidget";
 
@@ -48,7 +48,7 @@ export function DashboardOverview({
   return (
     <LayoutGroup id={scope}>
       <div className="dashboard-overview">
-        <section
+        <MotionCard
           className="dashboard-overview-card"
           aria-label="Seus indicadores financeiros"
         >
@@ -152,8 +152,8 @@ export function DashboardOverview({
               />
             </footer>
           ) : null}
-        </section>
-        <section
+        </MotionCard>
+        <MotionCard
           className="dashboard-overview-goals"
           aria-label="Progresso das metas"
         >
@@ -175,7 +175,7 @@ export function DashboardOverview({
               </button>
             </div>
           ) : null}
-        </section>
+        </MotionCard>
       </div>
     </LayoutGroup>
   );

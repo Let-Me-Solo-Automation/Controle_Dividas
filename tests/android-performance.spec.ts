@@ -1,0 +1,31 @@
+import {test,expect} from '@playwright/test';
+import {pathToFileURL} from 'node:url';
+test('Android automatically uses balanced rendering without full-page blur',async({page})=>{
+ const errors:string[]=[];page.on('pageerror',error=>errors.push(error.message));
+ await page.addInitScript(()=>{(window as any).MarksFiles={saveBackup:()=>{}};
+ (window as any).__cardBlurSeen=false;
+ const watch=()=>{const card=document.querySelector('.hero');if(card && parseFloat(getComputedStyle(card).filter.match(/blur\(([\d.]+)/)?.[1]||'0')>0)(window as any).__cardBlurSeen=true;requestAnimationFrame(watch);};requestAnimationFrame(watch);});
+ await page.goto(pathToFileURL(process.cwd()+'/android/app/src/main/assets/index.html').href);
+ await expect(page.locator('.app')).toHaveAttribute('data-performance','balanced');
+ await expect(page.locator('.screen')).toHaveCSS('filter','none');
+ await expect(page.locator('.app-header')).toHaveCSS('backdrop-filter','none');
+ await expect(page.getByRole('heading',{name:'Visão geral',exact:true})).toBeVisible();
+ await expect(page.locator('.hero')).toHaveCSS('filter','none');
+ await page.locator('.card').first().scrollIntoViewIfNeeded();
+ await expect(page.locator('.card').first()).toHaveCSS('filter','none');
+ const glass=await page.locator('.nexo-glass-plus').evaluate(node=>getComputedStyle(node).backdropFilter);
+ expect(glass).toContain('blur(');expect(glass).not.toBe('none');
+ expect(await page.evaluate(()=>(window as any).__cardBlurSeen)).toBe(true);
+ expect(errors).toEqual([]);
+});
+test('performance mode can be changed and saved without disabling animations',async({page})=>{
+ await page.goto(pathToFileURL(process.cwd()+'/dist/Marks-Simulador.html').href);
+ const f=page.frameLocator('iframe[title="Marks — aplicativo interativo"]');
+ await f.getByRole('button',{name:'Abrir menu',exact:true}).click();await f.locator('.menu-list').getByRole('button',{name:'Personalização',exact:true}).click();
+ await f.getByLabel('Perfil de desempenho',{exact:true}).selectOption('balanced');
+ await expect(f.locator('.app')).toHaveAttribute('data-performance','balanced');
+ await f.locator('.settings-sticky').getByRole('button',{name:'Salvar',exact:true}).click();
+ await expect(f.locator('.settings-sticky').getByRole('button',{name:'Salvo',exact:true})).toBeVisible();
+ const settings=await page.evaluate(()=>JSON.parse(localStorage.getItem('nexo-simulator-v1')!).settings);
+ expect(settings.performanceMode).toBe('balanced');expect(settings.motion).toBe(true);
+});

@@ -1,6 +1,6 @@
 # Marks — documentação do projeto, operação e manutenção
 
-Versão da entrega: **2.1.1**. Este documento descreve o que existe no código e como gerar, operar, testar e continuar o projeto. Leia também os documentos de Firebase e os comentários nas funções financeiras antes de alterar regras de saldo.
+Versão da entrega: **2.1.2**. Este documento descreve o que existe no código e como gerar, operar, testar e continuar o projeto. Leia também os documentos de Firebase e os comentários nas funções financeiras antes de alterar regras de saldo.
 
 ## 1. Conteúdo da entrega
 
@@ -157,7 +157,7 @@ Não edite `src/generated`, `dist`, o APK nem o HTML empacotado para uma correç
 
 ## 9. Compilar e instalar Android
 
-Identidade do pacote: `app.marks.finance`. Versão inicial desta embalagem: `versionCode=2`, `versionName=2.1.1`. Plataforma de compilação e alvo: API 35. Versão mínima: API 26, Android 8.0.
+Identidade do pacote: `app.marks.finance`. Versão atual desta embalagem: `versionCode=3`, `versionName=2.1.2`. Plataforma de compilação e alvo: API 35. Versão mínima: API 26, Android 8.0.
 
 Requisitos: JDK 21 (ou um JDK compatível com o compilador Java 8 usado), Android SDK com `platforms;android-35` e `build-tools;35.0.0`, Python 3 e Node/npm. Aceite as licenças do SDK na sua máquina.
 
@@ -271,3 +271,8 @@ A documentação anterior foi preservada em `docs/README-anterior.md` para rastr
 ## 14. Correção do APK 2.1.1
 
 Veja `docs/CORRECAO-APK-2.1.1.md`: a assinatura válida não bastava para identificar a compressão indevida de resources.arsc. O build agora preserva a forma ZIP_STORED e verifica o alinhamento em 4 bytes. O código de versão foi incrementado mantendo a mesma chave. A instalação em um aparelho físico continua pendente.
+
+
+## 15. Desempenho Android 2.1.2
+
+O perfil automático detecta o contêiner Android e usa renderização equilibrada. O blur de entrada permanece por card visível, com limpeza do filtro ao terminar. O vidro do menu conserva os controles de intensidade. Veja `docs/DESEMPENHO-ANDROID-2.1.2.md`.

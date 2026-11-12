@@ -2,7 +2,9 @@
 
 Aplicativo pessoal de finanças com contas, lançamentos, acordos parcelados, comprovantes, metas, reserva, entregas, agenda, lixeira e personalização visual.
 
-**Android 2.1.1:** substitui o APK 2.1.0 e corrige a compressão de recursos que impedia a instalação em Android 11+. Mesma chave de assinatura; código de versão incrementado. Veja [a correção](docs/CORRECAO-APK-2.1.1.md).
+**Android 2.1.2:** perfil automático de desempenho no Android, mantendo o blur de entrada dos cards e o vidro do menu. Veja [as otimizações](docs/DESEMPENHO-ANDROID-2.1.2.md).
+
+**Correção anterior, 2.1.1:** substitui o APK 2.1.0 e corrige a compressão de recursos que impedia a instalação em Android 11+. Mesma chave de assinatura; código de versão incrementado. Veja [a correção](docs/CORRECAO-APK-2.1.1.md).
 
 O site público foi retirado. O workflow só gera artefatos autenticados quando o repositório está privado. Baixe `Visualizador.html` para abrir a simulação no computador.
 

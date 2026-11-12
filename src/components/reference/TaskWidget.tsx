@@ -1,4 +1,4 @@
-import { MotionProgress } from "../nexo-ui";
+import { MotionProgress, useMotionPreferences } from "../nexo-ui";
 import React, { useState } from "react";
 import { motion, AnimatePresence, LayoutGroup } from "motion/react";
 import { MoreHorizontal, Check, ChevronDown } from "lucide-react";
@@ -46,6 +46,7 @@ interface Props {
 }
 
 export const TaskWidget: React.FC<Props> = ({ data, initialOpen = false }) => {
+  const {efficient}=useMotionPreferences();
   const [isOpen, setIsOpen] = useState(initialOpen);
   const [selectedId, setSelectedId] = useState(data.subtasks[0]?.id ?? "");
   const selectedTask = data.subtasks.find((task) => task.id === selectedId) ?? data.subtasks[0];
@@ -58,7 +59,7 @@ export const TaskWidget: React.FC<Props> = ({ data, initialOpen = false }) => {
   return (
     <LayoutGroup>
       <motion.div
-        layout
+        layout={!efficient}
         initial={false}
         role="group"
         aria-label={data.title}
@@ -83,12 +84,12 @@ export const TaskWidget: React.FC<Props> = ({ data, initialOpen = false }) => {
             }}
           />
           <motion.div
-            layout="position"
+            layout={efficient?false:"position"}
             transition={Transition}
             className={`flex items-center gap-2 ${isOpen ? "bg-transparent" : "bg-neutral-50 dark:bg-neutral-900"} rounded-lg py-0.5 pr-2 pl-1.5 transition-colors sm:pr-2 sm:pl-1.5`}
           >
             <motion.div
-              layout
+              layout={!efficient}
               transition={Transition}
               className={`my-0.5 flex items-center justify-center rounded-lg border-[1.7px] border-neutral-200 bg-white transition-colors dark:border-neutral-700 dark:bg-neutral-900 ${isOpen ? "h-10 w-10 sm:h-12 sm:w-12" : "size-7 sm:size-8"}`}
             >
@@ -106,7 +107,7 @@ export const TaskWidget: React.FC<Props> = ({ data, initialOpen = false }) => {
               />
             </motion.div>
             <motion.h2
-              layout
+              layout={!efficient}
               transition={Transition}
               className={`origin-left font-sans font-semibold text-neutral-800 transition-colors dark:text-neutral-100 ${isOpen ? "text-xl sm:text-3xl" : "text-sm whitespace-nowrap sm:text-base"}`}
             >
@@ -125,7 +126,7 @@ export const TaskWidget: React.FC<Props> = ({ data, initialOpen = false }) => {
                 className="flex items-center gap-3"
               >
                 <motion.div
-                  layoutId="progress-container"
+                  layoutId={efficient?undefined:"progress-container"}
                   className="relative h-2 w-16 overflow-hidden rounded-full bg-neutral-100 transition-colors sm:w-32 dark:bg-neutral-700"
                 >
                   <MotionProgress
@@ -134,7 +135,7 @@ export const TaskWidget: React.FC<Props> = ({ data, initialOpen = false }) => {
                   />
                 </motion.div>
                 <motion.span
-                  layoutId="progress-text"
+                  layoutId={efficient?undefined:"progress-text"}
                   className="text-xs font-medium text-neutral-500 transition-colors sm:text-base dark:text-neutral-400"
                 >
                   {data.hideProgress ? "••" : `${data.progress}%`}
@@ -159,7 +160,7 @@ export const TaskWidget: React.FC<Props> = ({ data, initialOpen = false }) => {
         <AnimatePresence mode="popLayout">
           {!isOpen && (
             <motion.div
-              layout
+              layout={!efficient}
               initial={{ opacity: 0, y: 5 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 5 }}
@@ -169,7 +170,7 @@ export const TaskWidget: React.FC<Props> = ({ data, initialOpen = false }) => {
               <div className="flex items-center gap-3 text-xs font-medium sm:gap-4 sm:text-sm">
                 <div className="flex items-center gap-1 text-neutral-500 sm:gap-1.5 dark:text-neutral-400">
                   <motion.div
-                    layoutId="priority-icon"
+                    layoutId={efficient?undefined:"priority-icon"}
                     className="flex items-center"
                   >
                     <HugeiconsIcon
@@ -189,18 +190,18 @@ export const TaskWidget: React.FC<Props> = ({ data, initialOpen = false }) => {
                       strokeWidth={1.5}
                     />
                   </motion.div>
-                  <motion.span layoutId="priority-text">
+                  <motion.span layoutId={efficient?undefined:"priority-text"}>
                     {data.priority}
                   </motion.span>
                 </div>
                 <div className="flex items-center gap-1 text-neutral-500 sm:gap-1.5 dark:text-neutral-400">
                   <motion.div
-                    layoutId="status-icon"
+                    layoutId={efficient?undefined:"status-icon"}
                     className="flex items-center"
                   >
                     <BiSolidHourglassBottom className="h-4 w-4 text-neutral-400 sm:h-[22px] sm:w-[22px]" />
                   </motion.div>
-                  <motion.span layoutId="status-text">
+                  <motion.span layoutId={efficient?undefined:"status-text"}>
                     {data.status}
                   </motion.span>
                 </div>
@@ -208,7 +209,7 @@ export const TaskWidget: React.FC<Props> = ({ data, initialOpen = false }) => {
               <div className="flex -space-x-2">
                 {data.assignees.map((u, i) => (
                   <motion.img
-                    layoutId={`avatar-${u.name}`}
+                    layoutId={efficient?undefined:`avatar-${u.name}`}
                     key={i}
                     src={u.avatar}
                     className="h-7 w-7 rounded-full border-2 border-neutral-200 shadow-lg sm:h-8 sm:w-8 dark:border-neutral-700"
@@ -223,7 +224,7 @@ export const TaskWidget: React.FC<Props> = ({ data, initialOpen = false }) => {
         <AnimatePresence mode="popLayout">
           {isOpen && (
             <motion.div
-              layout
+              layout={!efficient}
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20, transition: { duration: 0.1 } }}
@@ -245,7 +246,7 @@ export const TaskWidget: React.FC<Props> = ({ data, initialOpen = false }) => {
                   de {data.totalCount}
                 </span>
                 <motion.div
-                  layoutId="progress-container"
+                  layoutId={efficient?undefined:"progress-container"}
                   className="mx-1 h-2 w-20 rounded-full bg-neutral-100 transition-colors sm:w-28 dark:bg-neutral-700"
                 >
                   <MotionProgress
@@ -254,7 +255,7 @@ export const TaskWidget: React.FC<Props> = ({ data, initialOpen = false }) => {
                   />
                 </motion.div>
                 <motion.span
-                  layoutId="progress-text"
+                  layoutId={efficient?undefined:"progress-text"}
                   className="text-sm font-semibold text-neutral-600 dark:text-neutral-200"
                 >
                   {data.hideProgress ? "••" : `${data.progress}%`}
@@ -351,7 +352,7 @@ export const TaskWidget: React.FC<Props> = ({ data, initialOpen = false }) => {
                   >
                     <div className="flex min-w-[80px] items-center gap-3 text-neutral-600 transition-colors sm:min-w-[100px] dark:text-neutral-200">
                       <motion.div
-                        layoutId={`${item.layoutId}-icon`}
+                        layoutId={efficient?undefined:`${item.layoutId}-icon`}
                         className="flex items-center"
                       >
                         {item.icon}
@@ -386,7 +387,7 @@ export const TaskWidget: React.FC<Props> = ({ data, initialOpen = false }) => {
                     className="flex items-center gap-2 rounded-full border-[1.58px] border-neutral-200 py-1 pr-4 pl-1.5 shadow-sm transition-colors dark:border-neutral-700 dark:bg-neutral-800"
                   >
                     <motion.img
-                      layoutId={`avatar-${user.name}`}
+                      layoutId={efficient?undefined:`avatar-${user.name}`}
                       title="avatar"
                       src={user.avatar}
                       className="h-7 w-7 rounded-full object-cover"

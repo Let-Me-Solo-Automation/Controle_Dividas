@@ -71,5 +71,7 @@ public final class MainActivity extends Activity {
  @Override public void onBackPressed(){navigateBack();}
  private void navigateBack(){web.evaluateJavascript("(()=>{const menu=document.querySelector('.menu-scrim');if(menu){menu.click();return true;}const close=document.querySelector('.modal [aria-label=\"Fechar\"]');const back=document.querySelector('.screen-back-button');if(close){close.click();return true;}if(back){back.click();return true;}return false;})()",value->{if(!"true".equals(value))finish();});}
  @Override protected void onSaveInstanceState(Bundle state){super.onSaveInstanceState(state);web.saveState(state);}
+ @Override protected void onPause(){if(web!=null)web.onPause();super.onPause();}
+ @Override protected void onResume(){super.onResume();if(web!=null)web.onResume();}
  @Override protected void onDestroy(){if(fileCallback!=null)fileCallback.onReceiveValue(null);web.removeJavascriptInterface("MarksFiles");web.destroy();super.onDestroy();}
 }

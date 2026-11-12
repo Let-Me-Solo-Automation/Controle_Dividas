@@ -809,6 +809,7 @@ export function PersonalizationStudio({
             <h2 id="personal-motion-title">Movimento e microinterações</h2>
           </div>
         </div>
+        <label className="field"><span>Desempenho</span><select aria-label="Perfil de desempenho" value={settings.performanceMode} onChange={event=>change({performanceMode:event.target.value})}><option value="auto">Automático — otimizado no Android</option><option value="balanced">Equilibrado — mais leve</option><option value="full">Efeitos completos</option></select><small>O perfil leve mantém o vidro do menu, reduz blur em grandes áreas e anima números e gráficos uma vez por entrada na tela.</small></label>
         <Toggle
           label="Ativar animações"
           description="A preferência de movimento reduzido do aparelho tem prioridade."

@@ -2719,7 +2719,7 @@ function Hg(props){return React.createElement(AppModal,props);}
           (y = Xo),
           (v = "Guardado nos seus objetivos")),
         r.default.createElement(
-          "section",
+          MotionCard,
           {
             className: "hero hero-" + n + (O.heroImage ? " has-photo" : ""),
             style: O.heroImage
