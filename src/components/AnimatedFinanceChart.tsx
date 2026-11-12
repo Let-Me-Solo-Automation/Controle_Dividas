@@ -5,7 +5,7 @@ import {
   useReducedMotion,
   type Transition,
 } from "motion/react";
-import { useMotionPreferences } from "./nexo-ui";
+import { useMotionPreferences, AnimatedMoney } from "./nexo-ui";
 import { motionTransition } from "../personalization.js";
 
 type Props = {
@@ -78,13 +78,13 @@ function VisibleFinanceChart({
     : "Nenhuma receita neste período.";
 
   return (
-    <div ref={root} className={`chart chart-${kind}`} data-chart-animation={animation}>
+    <motion.div ref={root} className={`chart chart-${kind}`} data-chart-animation={animation} initial={active ? {opacity:0,filter:"blur(4px)",y:6} : false} animate={{opacity:shown?1:0,filter:shown?"blur(0px)":"blur(4px)",y:shown?0:6}} transition={{duration:active ? .35 : 0,ease:[.22,1,.36,1]}}>
       {kind === "bars" && values.length === 2 ? (
         <div className="finance-comparison" role="img" aria-label={description}>
           {values.map((value, index) => {
             const ratio = value / maximum;
             return <div className="finance-comparison-row" key={index}>
-              <div className="finance-comparison-copy"><span><i style={{ background: colors[index] || "var(--accent)" }} />{labels[index] || `Período ${index + 1}`}</span><strong className={index === 0 ? "positive-text" : "negative-text"}>{index === 0 ? "+" : "−"}{money(Math.abs(value))}</strong></div>
+              <div className="finance-comparison-copy"><span><i style={{ background: colors[index] || "var(--accent)" }} />{labels[index] || `Período ${index + 1}`}</span><strong className={index === 0 ? "positive-text" : "negative-text"}><AnimatedMoney value={index===0?Math.abs(value):-Math.abs(value)} signed fromZero /></strong></div>
               <div className="finance-comparison-track"><motion.div className="finance-comparison-fill" style={{ background: colors[index] || "var(--accent)", transformOrigin: "left" }} initial={active ? { scaleX: 0 } : false} animate={{ scaleX: shown ? ratio : 0 }} transition={delayed(index)} /></div>
             </div>;
           })}
@@ -255,6 +255,6 @@ function VisibleFinanceChart({
           </tbody>
         </table>
       </details>
-    </div>
+    </motion.div>
   );
 }
