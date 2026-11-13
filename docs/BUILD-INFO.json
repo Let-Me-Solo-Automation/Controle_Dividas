@@ -14,7 +14,9 @@
   "resourcesArscAlignment": 4,
   "uiScenariosValidated": 15,
   "validationScope": "Targeted release regressions; accounting, reserve and delivery models",
-  "figmaHTMLBytes": 354,
-  "figmaArchiveBytes": 995162,
-  "figmaUploadStatus": "blocked-connect-tunnel-http-403"
+  "figmaHTMLBytes": 376,
+  "figmaArchiveBytes": 854025,
+  "figmaUploadStatus": "blocked-connect-tunnel-http-403",
+  "figmaLargestFileBytes": 725370,
+  "figmaLargestJavaScriptBytes": 725370
 }

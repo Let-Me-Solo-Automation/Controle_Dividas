@@ -20,7 +20,7 @@ Apple permanece o padrão e suas três definições originais não foram alterad
 
 ## Exportação para Figma
 
-`Marks-Figma.zip` é uma exportação estática completa do app interativo: `index.html` de 354 bytes, `app.js` e `styles.css` separados. É necessário manter os três arquivos juntos. O HTML pequeno não significa que todo o app pese menos de 1 MB. Os dados de demonstração usam chave isolada `marks-figma-review-v1`. Não exporta dados pessoais.
+`Marks-Figma.zip` é uma exportação estática completa do app interativo: `index.html` de 376 bytes, módulos JavaScript e CSS separados. Cada arquivo individual tem menos de 1.000.000 bytes e o ZIP também está abaixo desse limite. Preserve todas as pastas: os módulos são carregados por demanda em HTTP/HTTPS, como na prévia do Figma. Para abrir diretamente por file://, use o visualizador independente, que continua em Marks-Visualizador.zip. Os dados de demonstração usam chave isolada `marks-figma-review-v1`. Não exporta dados pessoais.
 
 O projeto completo com fontes React/TypeScript, regras, Android, scripts e documentação continua em `Marks-projeto.zip`. A exportação para Figma Make é código executável, não um arquivo .fig de camadas vetoriais. Importação no Figma não equivale a publicar um site nem comprova a execução remota da prévia.
 
@@ -31,3 +31,5 @@ A integração não fornece o consumo real desta conversa, saldo de cota semanal
 Estado do envio ao Figma: arquivo Make criado, mas upload bloqueado pela conexão (CONNECT HTTP 403), antes da importação. A exportação ZIP foi validada localmente; não há prévia importada ou publicada no Figma para confirmar. Use o ZIP para importar/analisar o app. Arquivo reservado: https://www.figma.com/make/YqjLhKztQbxHSQrqE2WfQy .
 
 Validação desta versão: 15 cenários de interface relevantes, modelos financeiros, reserva e repasses; inclui recebimento pendente, repasse parcial e desfazimento, distância opcional, favoritos, imagens grandes e preservação do Apple. Build Android com assinatura e alinhamento verificados. `npm run build` gera também o ZIP para Figma; `node scripts/test-delivery.mjs` verifica as regras de repasse.
+
+A exportação agora divide o aplicativo em módulos reais via esbuild (ES modules), preserva a tela de links compartilhados e inclui TAMANHOS.json. Fontes de temas antigos sem uso foram excluídas apenas desta exportação. Há teste automatizado de tamanho do ZIP e de todos os arquivos, navegação e importação dos módulos por HTTP.
