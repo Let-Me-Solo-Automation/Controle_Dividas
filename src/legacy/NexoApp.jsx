@@ -1,3 +1,4 @@
+import { PlatformPicker, PlatformIconField } from "../features/delivery/PlatformPicker";
 import {validateDeliveryMetadata} from "../features/delivery/model";
 import {DeliveryWorkspace} from "../features/delivery/DeliveryWorkspace";
 import { resizeIcon } from "../lib/image-resize";
@@ -2133,6 +2134,7 @@ function Hg(props){return React.createElement(AppModal,props);}
               if (S.platforms.includes(k))
                 throw Error("Essa plataforma j\xE1 existe.");
               S.platforms.push(k);
+              if (f.platformIcon) (S.deliveryPlatformSettings ??= {})[k] = {mode:"manual", icon:f.platformIcon};
             }, "Plataforma adicionada.");
             break;
           case "goal": {
@@ -4134,12 +4136,7 @@ function Hg(props){return React.createElement(AppModal,props);}
             r.default.createElement(
               r.default.Fragment,
               null,
-              r.default.createElement(X, {
-                label: "Plataforma",
-                name: "platform",
-                required: !0,
-                options: e.platforms.map((v) => ({ value: v, label: v })),
-              }),
+              r.default.createElement(PlatformPicker, { names: e.platforms, settings: e.deliveryPlatformSettings || {} }),
               r.default.createElement(X, {
                 label: "Recebimento", name: "receiptStatus", options:[{value:"received",label:"Já recebi na conta"},{value:"pending",label:"A receber na plataforma"}],
               }),
@@ -4160,7 +4157,7 @@ function Hg(props){return React.createElement(AppModal,props);}
                 name: "destination",
                 maxLength: 240,
               }),
-              Wa("Valor recebido (R$)"),
+              Wa("Valor da entrega (R$)"),
               r.default.createElement(X, {
                 label: "Distância percorrida (km, opcional)",
                 name: "km",
@@ -4182,13 +4179,13 @@ function Hg(props){return React.createElement(AppModal,props);}
               ),
             ),
           n.type === "platform" &&
-            r.default.createElement(X, {
+            r.default.createElement(r.default.Fragment, null, r.default.createElement(X, {
               label: "Nome da plataforma",
               name: "title",
               required: !0,
               maxLength: 80,
               placeholder: "Ex.: Outra plataforma",
-            }),
+            }), r.default.createElement(PlatformIconField)),
           n.type === "goal" &&
             r.default.createElement(
               r.default.Fragment,

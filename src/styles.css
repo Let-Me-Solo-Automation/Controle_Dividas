@@ -1668,3 +1668,10 @@ html[data-theme-family="glossary"][data-material="liquid"] body .card {backgroun
 @media(max-width:380px) {.delivery-platform-grid {grid-template-columns:minmax(0,1fr);}.delivery-metrics .money {font-size:17px;}}
 #delivery-platform-editor {scroll-margin-top:96px;}
 .workspace-actions > button {display:inline-flex;align-items:center;justify-content:center;gap:8px;}
+
+/* Theme previews need room for labels, star targets and both appearance modes. */
+.theme-library .personal-theme-grid{grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:18px;align-items:start}
+.theme-library-card{position:relative;isolation:isolate;overflow:hidden;scroll-margin-top:110px}
+.theme-library-heading{min-width:0;flex-wrap:nowrap}
+.theme-library-heading strong{min-width:0;overflow-wrap:anywhere;flex:1}
+.theme-library-heading button{position:relative;flex:0 0 44px;width:44px;height:44px}

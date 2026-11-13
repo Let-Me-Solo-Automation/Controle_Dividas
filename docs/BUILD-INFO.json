@@ -15,8 +15,11 @@
   "uiScenariosValidated": 15,
   "validationScope": "Targeted release regressions; accounting, reserve and delivery models",
   "figmaHTMLBytes": 376,
-  "figmaArchiveBytes": 854025,
+  "figmaArchiveBytes": 854869,
   "figmaUploadStatus": "blocked-connect-tunnel-http-403",
   "figmaLargestFileBytes": 725370,
-  "figmaLargestJavaScriptBytes": 725370
+  "figmaLargestJavaScriptBytes": 725370,
+  "webRevision": "platform-icon-picker-and-theme-layout",
+  "webRevisionValidated": "TypeScript and interactive Figma export regression",
+  "androidIncludesWebRevision": false
 }

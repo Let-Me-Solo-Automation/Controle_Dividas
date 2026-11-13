@@ -169,9 +169,7 @@ export function DeliveryWorkspace({
       <MotionCard className="card">
         <h2>Saldo operacional · todo o histórico</h2>
         <p>
-          Os ganhos continuam no total produzido após a retirada. Este controle
-          de repasse não cria nova receita: cada entrega já registra a entrada
-          na conta escolhida.
+          Os ganhos continuam no total produzido após a retirada. Entregas já recebidas entram na conta ao cadastrar; valores a receber entram apenas no repasse, sem duplicar a receita.
         </p>
         <div className="delivery-metrics">
           <div>
