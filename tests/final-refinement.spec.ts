@@ -214,6 +214,11 @@ test("goal badge arrows are part of the select target and completed status is gr
   const status = widget.locator(".semantic-select").nth(1);
   await status.locator("select").selectOption("Concluída");
   await expect(status).toHaveClass(/tone-complete/);
+  await page.locator('.goal-item').first().click();
+  await page.getByText('Ajustar valor da meta',{exact:true}).click();
+  await expect(page.getByRole('textbox',{name:'Valor da meta (R$)',exact:true})).toBeVisible();
+  expect(await page.getByRole('textbox',{name:'Valor da meta (R$)',exact:true}).evaluate(el=>el.clientWidth)).toBeLessThanOrEqual(320);
+  expect(await page.locator('.animated-disclosure-title').first().evaluate(el=>el.clientWidth)).toBeGreaterThan(100);
   await page.emulateMedia({ reducedMotion: "reduce" });
   await page.evaluate(() => window.scrollTo(0, 0));
   await page.screenshot({

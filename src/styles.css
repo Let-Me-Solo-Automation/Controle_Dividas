@@ -1754,3 +1754,4 @@ html body :is(button,a,summary,[role=button]):focus-visible{box-shadow:none!impo
 html body :is(input,select,textarea):focus-visible{box-shadow:none!important;outline:none!important}
 .date-filter:has(.date-input)>svg{display:none}.date-filter .date-input{min-width:130px;max-width:230px}.semantic-select{transition:background-color .2s,color .2s}.finance-calendar-filters .date-input{flex:1 1 120px;min-width:120px}
 .semantic-select:focus-within{outline:2px solid var(--muted);outline-offset:2px}
+html body .card:has(.goal-target-editor) > .button.full{width:auto;max-width:100%;min-height:42px;padding:10px 14px;font-size:13px;display:inline-flex}

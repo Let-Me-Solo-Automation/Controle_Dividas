@@ -14,7 +14,7 @@ import { AnimatedDisclosure } from "../../components/AnimatedDisclosure";
 import { SaveToggleButton } from "../../components/SaveToggleButton";
 import { DateInput } from "../../components/DateInput";
 import { resizeIcon } from "../../lib/image-resize";
-import { platformIcon } from "./PlatformPicker";
+import { platformIcon, platformBackground } from "./PlatformPicker";
 import {
   nextPayout,
   platformTotals,
@@ -262,7 +262,12 @@ export function DeliveryWorkspace({
                         key={name}
                         onClick={() => openPlatform(name)}
                       >
-                        <span className="delivery-app-icon">
+                        <span
+                          className="delivery-app-icon"
+                          style={{
+                            background: platformBackground(name, plans),
+                          }}
+                        >
                           {image ? (
                             <img src={image} alt="" />
                           ) : (
@@ -618,7 +623,12 @@ export function DeliveryWorkspace({
                       key={row.id}
                       onClick={() => onOpen(row)}
                     >
-                      <span className="delivery-app-icon small">
+                      <span
+                        className="delivery-app-icon small"
+                        style={{
+                          background: platformBackground(row.platform, plans),
+                        }}
+                      >
                         {platformIcon(row.platform, plans) ? (
                           <img src={platformIcon(row.platform, plans)} alt="" />
                         ) : (

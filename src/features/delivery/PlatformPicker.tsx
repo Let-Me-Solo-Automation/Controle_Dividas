@@ -15,6 +15,20 @@ export function platformIcon(name: string, settings: any = {}) {
             : "";
   return settings[name]?.icon || platformLogos[key] || "";
 }
+export function platformBackground(name: string, settings: any = {}) {
+  if (settings[name]?.icon) return "var(--surface)";
+  return /ifood/i.test(name)
+    ? "#c51925"
+    : /99/.test(name)
+      ? "#ffdd00"
+      : /keeta/i.test(name)
+        ? "#39a851"
+        : /uber/i.test(name)
+          ? "#171717"
+          : /indrive/i.test(name)
+            ? "#c0ef59"
+            : "var(--bg)";
+}
 export function PlatformPicker({
   names,
   settings,
@@ -52,7 +66,14 @@ export function PlatformPicker({
                 required
               />
               {icon ? (
-                <img src={icon} alt="" />
+                <img
+                  src={icon}
+                  alt=""
+                  style={{
+                    background: platformBackground(name, settings),
+                    padding: 4,
+                  }}
+                />
               ) : (
                 <span aria-hidden="true">{name.slice(0, 2)}</span>
               )}
