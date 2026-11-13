@@ -264,6 +264,7 @@ export function FinanceHighlights({ items }: { items: Highlight[] }) {
 }
 
 export function FinanceShortcuts({
+  entries = [],
   onNavigate,
   onCreate,
   onSearch,
@@ -271,6 +272,7 @@ export function FinanceShortcuts({
   onNavigate: (screen: string) => void;
   onCreate: () => void;
   onSearch: (query: string) => void;
+  entries?: {id:string;title:string;date:string}[];
 }) {
   return (
     <Surface className="production-shortcuts">
@@ -279,6 +281,7 @@ export function FinanceShortcuts({
         musicIcon={<Layers size={18} />}
         sparkleIcon={<Search size={18} />}
         onSubmit={onSearch}
+        suggestions={entries.map(entry=>({id:entry.id,title:entry.title,detail:entry.date.split("-").reverse().join("/")}))}
         tools={[
           <button
             type="button"

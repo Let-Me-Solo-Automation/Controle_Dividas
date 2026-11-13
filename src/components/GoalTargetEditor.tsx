@@ -1,3 +1,4 @@
+import { SaveToggleButton } from "./SaveToggleButton";
 import { useState } from "react";
 import { AdaptiveSlider } from "./reference/AdaptiveSlider";
 import { AnimatedDisclosure } from "./AnimatedDisclosure";
@@ -28,7 +29,10 @@ export function GoalTargetEditor({
     Math.max(100000, target * 3, deposited * 2, cents),
   );
   return (
-    <AnimatedDisclosure className="goal-target-editor" title="Ajustar valor da meta">
+    <AnimatedDisclosure
+      className="goal-target-editor"
+      title="Ajustar valor da meta"
+    >
       <form
         onSubmit={(event) => {
           event.preventDefault();
@@ -79,9 +83,24 @@ export function GoalTargetEditor({
           Guardado de verdade: {format(deposited)}. Alterar o objetivo não
           altera seu patrimônio.
         </p>
-        <button type="submit" className={`save-toggle ${saved ? "is-saved" : ""}`} aria-live="polite">
-          <span aria-hidden="true" className="save-toggle-icon">{saved ? "✓" : "↗"}</span><span>{saved ? "Salvo" : "Salvar valor da meta"}</span>
-        </button>
+        <SaveToggleButton
+          label="Salvar valor"
+          revision={draft}
+          onSave={() => {
+            try {
+              const value = parse(draft);
+              if (!Number.isSafeInteger(value) || value <= 0 || value > 1e12)
+                throw Error("Informe um valor positivo válido.");
+              const ok = onSave(value);
+              if (ok) setMessage("Valor atualizado. Aportes preservados.");
+              return ok;
+            } catch (error) {
+              setMessage((error as Error).message);
+              return false;
+            }
+          }}
+        />
+
         {message && <p role="status">{message}</p>}
       </form>
     </AnimatedDisclosure>

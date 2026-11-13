@@ -1,3 +1,4 @@
+import {CopyConfirmButton} from "./CopyConfirmButton";
 import { firebaseTutorialUrl } from "../brand";
 import { useEffect, useId, useState } from "react";
 import {
@@ -320,14 +321,8 @@ export function FirebaseSectionShare({
               {grant.error}
             </p>
           )}
-          <button
-            type="button"
-            className="button secondary full"
-            onClick={() => onSend(grant.url)}
-          >
-            <Link size={17} />
-            Copiar ou enviar link
-          </button>
+          <CopyConfirmButton value={grant.url} onFallback={onSend}/>
+
           <div className="share-link-footer">
             <button
               type="button"

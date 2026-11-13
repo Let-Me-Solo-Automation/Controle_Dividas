@@ -20,15 +20,15 @@ test('Figma archive keeps every individual file below 1 MB and split modules sta
   await expect(page.getByRole('heading',{name:'Visão geral',exact:true})).toBeVisible();
   await page.getByRole('button',{name:'Expandir navegação',exact:true}).click();
   await page.getByRole('navigation',{name:'Navegação principal',exact:true}).getByRole('button',{name:'Entregas',exact:true}).click();
-  await expect(page.getByRole('heading',{name:'Desempenho das entregas',exact:true})).toBeVisible();
+  await expect(page.getByRole('heading',{name:'Suas entregas',exact:true})).toBeVisible();
   await page.getByRole('button',{name:'Entrega',exact:true}).click();
   await expect(page.getByRole('group',{name:'Plataforma',exact:true})).toBeVisible();
   await page.getByRole('radio',{name:'Keeta',exact:true}).check();
   await expect(page.locator('input[name="platform"]')).toHaveValue('Keeta');
-  await expect(page.getByLabel('Endereço do cliente (opcional)',{exact:true})).not.toHaveAttribute('required');
+  await expect(page.getByLabel('Endereço de entrega (opcional)',{exact:true})).not.toHaveAttribute('required');
   await page.getByRole('button',{name:'Fechar',exact:true}).click();
   await page.locator('.platform-open').first().click();
-  await expect(page.getByRole('button',{name:'Registrar retirada',exact:true})).toBeVisible();
+  await expect(page.getByRole('button',{name:'Confirmar recebimento do repasse',exact:true})).toBeVisible();
   await page.getByRole('button',{name:'Abrir menu',exact:true}).click();
   await page.locator('.menu-list').getByRole('button',{name:'Personalização',exact:true}).click();
   await expect(page.getByLabel('Buscar estilo no glossário',{exact:true})).toBeVisible();

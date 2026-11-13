@@ -401,3 +401,11 @@ html[data-dark="true"] .finance-calendar-day.is-national-holiday .finance-calend
     padding-inline: 10px;
   }
 }
+/* The month heading owns its row; view controls never overlay navigation. */
+.finance-calendar-toolbar{display:flex!important;flex-wrap:wrap;gap:14px;padding:18px}
+.finance-calendar-title{flex:1 1 180px;min-width:0}
+.finance-calendar-navigation{flex:1 1 100%;flex-wrap:wrap;min-width:0;order:2}
+.finance-calendar-navigation h3{flex:1;min-width:130px;overflow-wrap:normal;font-size:16px;line-height:1.4}
+.finance-calendar-view{order:3;flex-wrap:wrap;max-width:100%}
+.finance-calendar-date{order:4;flex:1 1 130px;min-width:0;display:block;grid-column:auto;grid-row:auto}
+.finance-calendar-date .date-input{font-size:14px}

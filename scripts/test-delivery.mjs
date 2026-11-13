@@ -16,3 +16,13 @@ const pending={platforms:['Uber'],accounts:[{id:'bank'}],deliveries:[{platform:'
 recordWithdrawal(pending,{platform:'Uber',amount:400,date:'2026-11-12',note:'Parcial',accountId:'bank'});
 assert.equal(pending.entries.length,1);assert.equal(pending.entries[0].amount,400);assert.equal(platformTotals(pending,'Uber').pendingAvailable,600);validateDeliveryMetadata(pending);
 assert.throws(()=>recordWithdrawal(pending,{platform:'Uber',amount:100,date:'2026-11-12',note:'',accountId:'missing'}));
+const {recordDelivery}=await import('data:text/javascript;base64,'+Buffer.from(compiled.outputFiles[0].text).toString('base64'));
+const deliveries={platforms:['Keeta'],accounts:[{id:'bank'}],deliveries:[],entries:[],deliveryPlatformSettings:{Keeta:{accountId:'bank',receiptStatus:'pending'}}};
+const input={platform:'Keeta',title:'Restaurante',pickup:'',destination:'',amount:1000,incentive:250,km:2,date:'2026-11-13'};
+recordDelivery(deliveries,input);assert.equal(deliveries.deliveries[0].amount,1250);assert.equal(deliveries.deliveries[0].cost,0);assert.equal(deliveries.entries.length,0);
+recordWithdrawal(deliveries,{platform:'Keeta',amount:1250,date:'2026-11-13',note:'Semanal',accountId:'bank'});assert.equal(deliveries.entries.length,1);assert.equal(deliveries.entries[0].amount,1250);validateDeliveryMetadata(deliveries);
+assert.throws(()=>recordWithdrawal(deliveries,{platform:'Keeta',amount:1250,date:'2026-11-13',note:'Duplicado',accountId:'bank'}));
+deliveries.deliveryPlatformSettings.Keeta.receiptStatus='received';recordDelivery(deliveries,input);assert.equal(deliveries.entries.length,2);recordWithdrawal(deliveries,{platform:'Keeta',amount:1250,date:'2026-11-13',note:'Recebido',accountId:'bank'});assert.equal(deliveries.entries.length,2);validateDeliveryMetadata(deliveries);
+assert.throws(()=>recordDelivery({...deliveries,deliveryPlatformSettings:{}},input));
+assert.equal(nextPayout({mode:'weekly',weekday:5,lastConfirmed:'2026-11-13'},new Date('2026-11-13T12:00:00')),'2026-11-20');
+console.log('Entregas com incentivo, conta fixa, repasse confirmado sem duplicidade e próximo ciclo validados.');

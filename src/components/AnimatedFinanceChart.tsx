@@ -1,4 +1,4 @@
-import { useId, useRef } from "react";
+import { useId, useRef, useState } from "react";
 import {
   motion,
   useInView,
@@ -41,6 +41,7 @@ function VisibleFinanceChart({
   colors = [],
   kind = "area",
 }: Props) {
+  const [selected,setSelected]=useState<number|null>(null);
   const preferences = useMotionPreferences();
   if (preferences.chart && preferences.chart !== "auto") kind = preferences.chart;
   const reduced = useReducedMotion();
@@ -74,6 +75,7 @@ function VisibleFinanceChart({
   const grow = animation === "grow";
   const stagger = animation === "stagger";
   const period = (index: number) => labels[index] || `Período ${index + 1}`;
+  const interactive=(index:number)=>({role:"button",tabIndex:0,"aria-label":`${period(index)}: ${money(values[index])}`,onClick:()=>setSelected(index),onKeyDown:(event:any)=>{if(event.key==="Enter"||event.key===" "){event.preventDefault();setSelected(index);}}});
   const description = values.length
     ? values
         .map((value, index) => `${period(index)}: ${money(value)}`)
@@ -82,7 +84,7 @@ function VisibleFinanceChart({
 
   return (
     <motion.div ref={root} className={`chart chart-${kind}`} data-chart-animation={animation} initial={active ? {opacity:0,filter:preferences.efficient?"blur(0px)":"blur(4px)",y:6} : false} animate={{opacity:shown?1:0,filter:preferences.efficient?"none":shown?"blur(0px)":"blur(4px)",y:shown?0:6}} transition={{duration:active ? .35 : 0,ease:[.22,1,.36,1]}}>
-      {kind === "donut" ? <div className="finance-donut"><svg viewBox="0 0 300 155" role="img" aria-label={description}><circle cx="78" cy="76" r="53" fill="none" stroke="var(--line)" strokeWidth="16"/>{values.map((value,index)=>{const circumference=2*Math.PI*53;const length=total?Math.max(0,value)/total*circumference:0;const offset=values.slice(0,index).reduce((sum,value)=>sum+Math.max(0,value),0)/Math.max(1,total)*circumference;return <motion.circle key={index} cx="78" cy="76" r="53" fill="none" stroke={colors[index]||palette[index%palette.length]} strokeWidth="16" transform="rotate(-90 78 76)" strokeDashoffset={-offset} initial={active?{strokeDasharray:`0 ${circumference}`} : false} animate={{strokeDasharray:`${shown?length:0} ${circumference}`}} transition={delayed(index)}/>;})}<text x="78" y="72" textAnchor="middle" fill="var(--muted)" fontSize="10">Total</text><text x="78" y="89" textAnchor="middle" fill="var(--text)" fontSize="12">{money(total)}</text></svg><div className="finance-donut-legend">{values.map((value,index)=><div key={index}><i style={{background:colors[index]||palette[index%palette.length]}}/><span>{period(index)}</span><b>{total?Math.round(value/total*100):0}%</b></div>)}</div></div> : (kind === "horizontal" || kind === "bars" && values.length === 2) ? (
+      {kind === "donut" ? <div className="finance-donut"><svg viewBox="0 0 300 155" role="group" aria-label="Gráfico de distribuição"><circle cx="78" cy="76" r="53" fill="none" stroke="var(--line)" strokeWidth="16"/>{values.map((value,index)=>{const circumference=2*Math.PI*53;const length=total?Math.max(0,value)/total*circumference:0;const offset=values.slice(0,index).reduce((sum,value)=>sum+Math.max(0,value),0)/Math.max(1,total)*circumference;return <motion.circle {...interactive(index)} key={index} cx="78" cy="76" r="53" fill="none" stroke={colors[index]||palette[index%palette.length]} strokeWidth="16" transform="rotate(-90 78 76)" strokeDashoffset={-offset} initial={active?{strokeDasharray:`0 ${circumference}`} : false} animate={{strokeDasharray:`${shown?length:0} ${circumference}`}} transition={delayed(index)}/>;})}<text x="78" y="72" textAnchor="middle" fill="var(--muted)" fontSize="10">Total</text><text x="78" y="89" textAnchor="middle" fill="var(--text)" fontSize="12">{money(total)}</text></svg><div className="finance-donut-legend">{values.map((value,index)=><div key={index}><i style={{background:colors[index]||palette[index%palette.length]}}/><span>{period(index)}</span><b>{total?Math.round(value/total*100):0}%</b></div>)}</div></div> : (kind === "horizontal" || kind === "bars" && values.length === 2) ? (
         <div className="finance-comparison" role="img" aria-label={description}>
           {values.map((value, index) => {
             const ratio = value / maximum;
@@ -92,7 +94,7 @@ function VisibleFinanceChart({
             </div>;
           })}
         </div>
-      ) : <svg viewBox="0 0 300 130" role="img" aria-label={description}>
+      ) : <svg viewBox="0 0 300 130" role="group" aria-label="Gráfico de valores por período" onClick={event=>{if(!values.length)return;const bounds=event.currentTarget.getBoundingClientRect();const x=(event.clientX-bounds.left)/bounds.width*300;setSelected(Math.max(0,Math.min(values.length-1,Math.round((x-12)/276*(values.length-1)))));}}>
         <defs>
           <linearGradient id={gradient} x1="0" y1="0" x2="1" y2="1">
             <stop stopColor="var(--accent)" stopOpacity=".4" />
@@ -126,6 +128,7 @@ function VisibleFinanceChart({
             return (
               <motion.rect
                 key={index}
+                {...interactive(index)}
                 className="bar"
                 x={x}
                 y={108 - (value / maximum) * 90}
@@ -199,10 +202,11 @@ function VisibleFinanceChart({
             {points.map(([x, y], index) => (
               <motion.circle
                 key={index}
+                {...interactive(index)}
                 className="point"
                 cx={x}
                 cy={y}
-                r="3"
+                r={selected===index ? 5 : values.length>60?2:4}
                 style={{ transformOrigin: `${x}px ${grow ? 108 : y}px` }}
                 initial={
                   active
@@ -228,6 +232,7 @@ function VisibleFinanceChart({
                   {period(index)}: {money(values[index])}
                 </title>
               </motion.circle>
+
             ))}
           </>
         )}
@@ -236,9 +241,10 @@ function VisibleFinanceChart({
         className={`chart-labels${labels.length > 8 ? " dense-labels" : ""}`}
       >
         {labels.map((label, index) => (
-          <span key={index}>{label}</span>
+          <span key={index}>{labels.length>14&&index%Math.ceil(labels.length/7)!==0&&index!==labels.length-1?"":label}</span>
         ))}
       </div>}
+      {selected!==null&&values[selected]!==undefined&&<div className="chart-value-tooltip" role="status"><span>{period(selected)}</span><strong>{money(values[selected])}</strong><button type="button" aria-label="Fechar valor do gráfico" onClick={()=>setSelected(null)}>×</button></div>}
       <details className="chart-data">
         <summary>Ver valores do gráfico</summary>
         <table>

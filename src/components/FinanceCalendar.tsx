@@ -1,3 +1,4 @@
+import {DateInput} from "./DateInput";
 import { useState } from "react";
 import { ChevronLeft, ChevronRight, CalendarDays, List } from "lucide-react";
 import { DiscreteTabs } from "./nexo-ui";
@@ -173,11 +174,8 @@ export function FinanceCalendar({
         </div>
         <label className="finance-calendar-date">
           Ir para a data
-          <input
+          <DateInput
             aria-label="Ir para a data"
-            type="text"
-            inputMode="numeric"
-            placeholder="AAAA-MM-DD"
             value={selected}
             onChange={(event) => {
               if (validDate(event.target.value)) onSelect(event.target.value);

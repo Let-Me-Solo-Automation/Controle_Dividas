@@ -1,3 +1,4 @@
+import {SemanticSelect} from "../SemanticSelect";
 import { MotionProgress, useMotionPreferences } from "../nexo-ui";
 import React, { useState } from "react";
 import { motion, AnimatePresence, LayoutGroup } from "motion/react";
@@ -359,22 +360,8 @@ export const TaskWidget: React.FC<Props> = ({ data, initialOpen = false }) => {
                       </motion.div>
                       {item.label}
                     </div>
-                    <label
-                      className={`${item.badge} flex items-center gap-2 rounded-lg px-3 py-1 text-sm font-bold opacity-85 transition-colors`}
-                    >
-                      <select aria-label={`${item.label} de ${selectedTask?.title ?? data.title}`} value={item.layoutId === "status" && selectedTask?.completed ? "Concluída" : item.val} onChange={(event) => item.onChange?.(event.target.value)} disabled={!item.onChange || (item.layoutId === "status" && selectedTask?.completed)} className="max-w-[155px] min-w-0 cursor-pointer appearance-none bg-transparent text-inherit outline-none">
-                        {[...new Set([item.val, ...(item.layoutId === "priority" ? ["Baixa", "Normal", "Alta", "Urgente"] : ["Em andamento", "No seu ritmo", "Pausada", ...(selectedTask?.completed ? ["Concluída"] : [])])])].map(value => <option key={value} value={value}>{value}</option>)}
-                      </select>
-                      <span
-                        className={`${item.chevronWrap} border-0.5 flex items-center justify-center rounded-sm p-px transition-colors`}
-                      >
-                        <ChevronDown
-                          size={16}
-                          className={item.chevron}
-                          strokeWidth={2}
-                        />
-                      </span>
-                    </label>
+                    <SemanticSelect label={`${item.label} de ${selectedTask?.title ?? data.title}`} value={item.layoutId === "status" && selectedTask?.completed ? "Concluída" : item.val} options={item.layoutId === "priority" ? ["Baixa","Normal","Alta","Urgente"] : ["Em andamento","Pausada","Concluída","Cancelada"]} onChange={item.onChange} disabled={!item.onChange}/>
+
                   </motion.div>
                 ))}
               </div>

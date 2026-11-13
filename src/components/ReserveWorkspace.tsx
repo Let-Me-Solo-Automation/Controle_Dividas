@@ -1,3 +1,4 @@
+import { DateInput } from "./DateInput";
 import { useState, type FormEvent } from "react";
 import { MotionProgress } from "./nexo-ui";
 import { LiquidDangerButton } from "./LiquidDangerButton";
@@ -47,7 +48,16 @@ const iconLabels = {
   bb: "Banco do Brasil",
   caixa: "Caixa",
 };
-const bankWordmarks: Record<string, string> = { bradesco: "B", itau: "itaú", c6: "C6", nubank: "nu", inter: "inter", santander: "S", bb: "BB", caixa: "X" };
+const bankWordmarks: Record<string, string> = {
+  bradesco: "B",
+  itau: "itaú",
+  c6: "C6",
+  nubank: "nu",
+  inter: "inter",
+  santander: "S",
+  bb: "BB",
+  caixa: "X",
+};
 export function BankMark({ bank }: { bank: Bank }) {
   const Icon = icons[bank.icon as keyof typeof icons] || Landmark;
   return (
@@ -56,9 +66,17 @@ export function BankMark({ bank }: { bank: Bank }) {
       style={{ background: bank.color || "var(--accent)" }}
     >
       {bank.iconImage ? (
-        <img src={bank.iconImage} alt="" style={{ objectPosition: `${bank.iconPositionX ?? 50}% ${bank.iconPositionY ?? 50}%` }} />
+        <img
+          src={bank.iconImage}
+          alt=""
+          style={{
+            objectPosition: `${bank.iconPositionX ?? 50}% ${bank.iconPositionY ?? 50}%`,
+          }}
+        />
       ) : bankWordmarks[bank.icon || ""] ? (
-        <strong className={`bank-wordmark bank-wordmark-${bank.icon}`}>{bankWordmarks[bank.icon || ""]}</strong>
+        <strong className={`bank-wordmark bank-wordmark-${bank.icon}`}>
+          {bankWordmarks[bank.icon || ""]}
+        </strong>
       ) : (
         <Icon size={24} aria-hidden="true" />
       )}
@@ -110,7 +128,8 @@ export function BankFields() {
         </label>
       </div>
       <label>
-        Imagem do banco <span>(opcional · até 20 MB, com ajuste automático)</span>
+        Imagem do banco{" "}
+        <span>(opcional · até 20 MB, com ajuste automático)</span>
         <input
           type="file"
           accept="image/png,image/jpeg,image/webp"
@@ -140,10 +159,43 @@ export function BankFields() {
       {loading && <p role="status">Lendo imagem…</p>}
       {image && (
         <div className="reserve-icon-crop">
-          <div className="reserve-icon-preview"><img src={image} alt="Prévia do ícone do banco" style={{ objectPosition: `${positionX}% ${positionY}%` }} /></div>
-          <label>Enquadramento horizontal<input aria-label="Enquadramento horizontal do ícone" type="range" min="0" max="100" value={positionX} onChange={event => setPositionX(Number(event.target.value))} /></label>
-          <label>Enquadramento vertical<input aria-label="Enquadramento vertical do ícone" type="range" min="0" max="100" value={positionY} onChange={event => setPositionY(Number(event.target.value))} /></label>
-          <button type="button" onClick={() => { setImage(""); setPositionX(50); setPositionY(50); }}>
+          <div className="reserve-icon-preview">
+            <img
+              src={image}
+              alt="Prévia do ícone do banco"
+              style={{ objectPosition: `${positionX}% ${positionY}%` }}
+            />
+          </div>
+          <label>
+            Enquadramento horizontal
+            <input
+              aria-label="Enquadramento horizontal do ícone"
+              type="range"
+              min="0"
+              max="100"
+              value={positionX}
+              onChange={(event) => setPositionX(Number(event.target.value))}
+            />
+          </label>
+          <label>
+            Enquadramento vertical
+            <input
+              aria-label="Enquadramento vertical do ícone"
+              type="range"
+              min="0"
+              max="100"
+              value={positionY}
+              onChange={(event) => setPositionY(Number(event.target.value))}
+            />
+          </label>
+          <button
+            type="button"
+            onClick={() => {
+              setImage("");
+              setPositionX(50);
+              setPositionY(50);
+            }}
+          >
             Remover imagem
           </button>
         </div>
@@ -222,7 +274,7 @@ export function ReserveTransactionFields({
       </div>
       <label>
         Data
-        <input name="date" type="date" required defaultValue={reserveToday()} />
+        <DateInput name="date" required defaultValue={reserveToday()} />
       </label>
       <label>
         Nota curta <span>(opcional)</span>
@@ -325,7 +377,9 @@ export function ReserveWorkspace({
       <div className="reserve-summary">
         <section>
           <span>Patrimônio real nas contas</span>
-          <strong className={totalBalance < 0 ? "money-out" : "money-in"}>{(totalBalance < 0 ? "−" : "+") + format(Math.abs(totalBalance))}</strong>
+          <strong className={totalBalance < 0 ? "money-out" : "money-in"}>
+            {(totalBalance < 0 ? "−" : "+") + format(Math.abs(totalBalance))}
+          </strong>
           <p>O dinheiro que você tem hoje.</p>
         </section>
         <section>
@@ -335,7 +389,9 @@ export function ReserveWorkspace({
         </section>
         <section>
           <span>Disponível para alocar</span>
-          <strong className={totalFree < 0 ? "money-out" : "money-in"}>{(totalFree < 0 ? "−" : "+") + format(Math.abs(totalFree))}</strong>
+          <strong className={totalFree < 0 ? "money-out" : "money-in"}>
+            {(totalFree < 0 ? "−" : "+") + format(Math.abs(totalFree))}
+          </strong>
           <p>Após as reservas e metas.</p>
         </section>
       </div>
@@ -404,12 +460,7 @@ export function ReserveWorkspace({
           </div>
           <label>
             Data
-            <input
-              type="date"
-              name="date"
-              required
-              defaultValue={reserveToday()}
-            />
+            <DateInput name="date" required defaultValue={reserveToday()} />
           </label>
           <label>
             Nota curta <span>(opcional)</span>
@@ -461,12 +512,16 @@ export function ReserveWorkspace({
               </p>
               <span className="reserve-eyebrow">SALDO REAL</span>
               <strong className="reserve-bank-balance">
-                {(balance(bank.id) < 0 ? "−" : "+") + format(Math.abs(balance(bank.id)))}
+                {(balance(bank.id) < 0 ? "−" : "+") +
+                  format(Math.abs(balance(bank.id)))}
               </strong>
               <dl>
                 <div>
                   <dt>Disponível</dt>
-                  <dd className={free(bank.id) < 0 ? "money-out" : "money-in"}>{(free(bank.id) < 0 ? "−" : "+") + format(Math.abs(free(bank.id)))}</dd>
+                  <dd className={free(bank.id) < 0 ? "money-out" : "money-in"}>
+                    {(free(bank.id) < 0 ? "−" : "+") +
+                      format(Math.abs(free(bank.id)))}
+                  </dd>
                 </div>
                 <div>
                   <dt>Na reserva</dt>
@@ -474,7 +529,12 @@ export function ReserveWorkspace({
                 </div>
                 <div>
                   <dt>Nas metas</dt>
-                  <dd className="money-in">+{format(Math.max(0, balance(bank.id) - free(bank.id) - reserved))}</dd>
+                  <dd className="money-in">
+                    +
+                    {format(
+                      Math.max(0, balance(bank.id) - free(bank.id) - reserved),
+                    )}
+                  </dd>
                 </div>
               </dl>
               <div className="reserve-plan">

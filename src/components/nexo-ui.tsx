@@ -1232,6 +1232,7 @@ export function ContextualAIBar({
   musicIcon = <SlidersHorizontal size={19} />,
   sparkleIcon = <Sparkles size={19} />,
   onSubmit,
+  suggestions = [],
 }: {
   defaultExpanded?: boolean;
   placeholder?: string;
@@ -1239,12 +1240,15 @@ export function ContextualAIBar({
   musicIcon?: ReactNode;
   sparkleIcon?: ReactNode;
   onSubmit?: (query: string) => void;
+  suggestions?: {id:string;title:string;detail?:string}[];
 }) {
   const [expanded, setExpanded] = useState(defaultExpanded),
     [query, setQuery] = useState("");
   const id = useId();
+  const normalize=(value:string)=>value.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+  const matches=query.trim()?suggestions.filter(item=>normalize(item.title).includes(normalize(query))).slice(0,6):[];
   return (
-    <LayoutGroup id={id}>
+    <LayoutGroup id={id}><div className={`context-search-shell ${expanded?"is-searching":""}`}>
       <motion.div
         layout
         className="context-bar flex w-full items-center gap-2 overflow-hidden rounded-full p-1.5"
@@ -1255,10 +1259,10 @@ export function ContextualAIBar({
             <motion.button
               key={i}
               type="button"
-              aria-label={v ? "Abrir busca contextual" : "Mostrar atalhos"}
+              aria-label={v ? expanded ? "Minimizar busca contextual" : "Abrir busca contextual" : "Mostrar atalhos"}
               aria-pressed={expanded === v}
               className="relative grid size-10 place-items-center rounded-full"
-              onClick={() => setExpanded(v)}
+              onClick={() => setExpanded(v ? !expanded : false)}
               whileTap={{ scale: 0.92 }}
             >
               {expanded === v && (
@@ -1289,6 +1293,7 @@ export function ContextualAIBar({
                 aria-label={placeholder}
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={event=>{if(event.key==="Escape")setExpanded(false)}}
                 placeholder={placeholder}
                 className="min-w-0 flex-1 bg-transparent px-1 text-sm outline-none"
               />
@@ -1313,7 +1318,8 @@ export function ContextualAIBar({
           )}
         </AnimatePresence>
       </motion.div>
-    </LayoutGroup>
+      <AnimatePresence>{expanded&&query.trim()&&<motion.div className="context-search-results" initial={{opacity:0,y:-5}} animate={{opacity:1,y:0}} exit={{opacity:0}} aria-label="Sugestões do extrato">{matches.length?matches.map(item=><button type="button" key={item.id} onClick={()=>onSubmit?.(item.title)}><Search size={15}/><span>{item.title}<small>{item.detail}</small></span><ArrowRight size={15}/></button>):<p>Nenhum lançamento encontrado.</p>}</motion.div>}</AnimatePresence>
+    </div></LayoutGroup>
   );
 }
 export function DiscreteTabs({

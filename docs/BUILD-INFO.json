@@ -15,11 +15,12 @@
   "uiScenariosValidated": 15,
   "validationScope": "Targeted release regressions; accounting, reserve and delivery models",
   "figmaHTMLBytes": 376,
-  "figmaArchiveBytes": 854869,
+  "figmaArchiveBytes": 861146,
   "figmaUploadStatus": "blocked-connect-tunnel-http-403",
-  "figmaLargestFileBytes": 725370,
-  "figmaLargestJavaScriptBytes": 725370,
-  "webRevision": "platform-icon-picker-and-theme-layout",
-  "webRevisionValidated": "TypeScript and interactive Figma export regression",
-  "androidIncludesWebRevision": false
+  "figmaLargestFileBytes": 725498,
+  "figmaLargestJavaScriptBytes": 725498,
+  "webRevision": "delivery-platform-settings-incentives-payouts-and-ui-refinement",
+  "webRevisionValidated": "TypeScript; financial/reserve/delivery models; six browser regressions including mobile flows and 320 px layout",
+  "androidIncludesWebRevision": false,
+  "webBuiltAtUTC": "2026-11-13T10:23:48.935861+00:00"
 }

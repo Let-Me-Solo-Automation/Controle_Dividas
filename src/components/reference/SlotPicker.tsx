@@ -1,4 +1,5 @@
-import { useState } from "react";
+import {DateInput} from "../DateInput";
+import React, { useState } from "react";
 import { motion, AnimatePresence, LayoutGroup } from "motion/react";
 import { Plus, X } from "lucide-react";
 
@@ -176,11 +177,11 @@ export const SlotPicker = ({
                           transition={springConfig}
                           className="flex items-center gap-2"
                         >
-                          <div className="flex items-center gap-2 flex-1">
+                          <div className="flex min-w-0 flex-wrap items-start gap-2 flex-1">
                             <span className="text-[13px] w-8 text-[#ADACB3] dark:text-[#7C7C85]">
                               De
                             </span>
-                            <input
+                            <SlotInput
                               type={inputType}
                               value={slot.from}
                               onChange={(e) =>
@@ -202,7 +203,7 @@ export const SlotPicker = ({
                             <span className="text-[13px] text-[#ADACB3] dark:text-[#7C7C85]">
                               Até
                             </span>
-                            <input
+                            <SlotInput
                               type={inputType}
                               value={slot.to}
                               aria-label={
@@ -254,3 +255,5 @@ export const SlotPicker = ({
     </div>
   );
 };
+
+function SlotInput(props: React.InputHTMLAttributes<HTMLInputElement>) { return props.type === "date" ? <DateInput {...props}/> : <input {...props}/>; }

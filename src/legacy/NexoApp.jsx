@@ -1,3 +1,7 @@
+import {DeliveryFields} from "../features/delivery/DeliveryFields";
+import {recordDelivery} from "../features/delivery/model";
+import {IncomePeriodChart} from "../components/IncomePeriodChart";
+import {DateInput} from "../components/DateInput";
 import { PlatformPicker, PlatformIconField } from "../features/delivery/PlatformPicker";
 import {validateDeliveryMetadata} from "../features/delivery/model";
 import {DeliveryWorkspace} from "../features/delivery/DeliveryWorkspace";
@@ -1409,7 +1413,7 @@ function Hg(props){return React.createElement(AppModal,props);}
               required: l,
               ...d,
             })
-          : A.default.createElement("input", {
+          : A.default.createElement(t === "date" ? DateInput : "input", {
               "aria-label": e,
               name: a,
               type: t,
@@ -1599,6 +1603,7 @@ function Hg(props){return React.createElement(AppModal,props);}
     }
     function backScreen() {
       if (o) { Aa(); return; }
+      if(!window.dispatchEvent(new Event("marks:navigate-back",{cancelable:true})))return;
       if (t === 'agenda') { toggleAgenda(); return; }
       const previous=screenHistory.current.pop();
       if (!previous) { if (t !== 'dashboard') ke('dashboard'); return; }
@@ -2084,48 +2089,8 @@ function Hg(props){return React.createElement(AppModal,props);}
             break;
           }
           case "delivery": {
-            let S = y(),
-              k = f.km ? Number(f.km.replace(",", ".")) : 0,
-              q = Rl(f.cost || "0");
-            if (!Number.isFinite(k) || k < 0)
-              throw Error("Informe a dist\xE2ncia real em km.");
-            if (!f.platform.trim()) throw Error("Escolha uma plataforma.");
-            let ne = ee();
-            L = le(($) => {
-              ($.deliveries.push({
-                id: ne,
-                platform: f.platform,
-                receiptStatus: f.receiptStatus==='pending'?'pending':'received',
-                title: v(),
-                pickup: f.pickup.trim(),
-                destination: f.destination.trim(),
-                amount: S,
-                km: k,
-                cost: q,
-                date: f.date,
-              }),
-                f.receiptStatus!=='pending' && $.entries.push({
-                  id: ee(),
-                  deliveryId: ne,
-                  title: "Entrega \u2022 " + f.platform,
-                  type: "income",
-                  amount: S,
-                  date: f.date,
-                  accountId: f.accountId,
-                  category: "Entregas",
-                }),
-                q > 0 &&
-                  $.entries.push({
-                    id: ee(),
-                    deliveryId: ne,
-                    title: "Custo da entrega",
-                    type: "expense",
-                    amount: q,
-                    date: f.date,
-                    accountId: f.accountId,
-                    category: "Trabalho",
-                  }));
-            }, "Entrega salva. Ganhos atualizados.");
+            const amount=y(),incentive=f.incentive?Rl(f.incentive):0,km=f.km?Number(f.km.replace(",",".")):0;
+            L=le(data=>recordDelivery(data,{platform:f.platform,title:v(),pickup:f.pickup||"",destination:f.destination||"",amount,incentive,km,date:f.date}),"Entrega salva. Ganhos atualizados.");
             break;
           }
           case "platform":
@@ -2277,7 +2242,7 @@ function Hg(props){return React.createElement(AppModal,props);}
           "label",
           { className: "date-filter" },
           r.default.createElement(Ra, { size: 16 }),
-          r.default.createElement("input", {
+          r.default.createElement(DateInput, {
             "aria-label": "Data de refer\xEAncia",
             type: "date",
             value: m,
@@ -2430,51 +2395,6 @@ function Hg(props){return React.createElement(AppModal,props);}
       );
     }
     function Yg() {
-      let n = [],
-        f = [],
-        [L, y] = Vo,
-        v = new Date(L + "T12:00:00"),
-        S =
-          h === "year"
-            ? 12
-            : h === "day"
-              ? 1
-              : h === "month"
-                ? Math.ceil((new Date(y + "T12:00:00") - v) / 864e5 / 7)
-                : h === "week"
-                  ? 7
-                  : 4;
-      for (let k = 0; k < S; k++) {
-        let q, ne;
-        if (h === "year")
-          ((q = gl(L, k)),
-            (ne = gl(L, k + 1)),
-            f.push(
-              new Date(q + "T12:00:00").toLocaleDateString("pt-BR", {
-                month: "short",
-              }),
-            ));
-        else if (h === "day") (f.push("Total do dia"), (q = L), (ne = y));
-        else {
-          let $ = new Date(v);
-          ($.setDate($.getDate() + k * (h === "month" ? 7 : 1)),
-            (q = Js($)),
-            $.setDate($.getDate() + (h === "month" ? 7 : 1)),
-            (ne = Js($)),
-            f.push(
-              h === "month"
-                ? `${k * 7 + 1}\u2013${Math.min((k + 1) * 7, new Date(y + "T00:00:00").getDate() === 1 ? new Date(new Date(y + "T12:00:00").getTime() - 864e5).getDate() : 31)}`
-                : new Date(q + "T12:00:00").toLocaleDateString("pt-BR", {
-                    weekday: "short",
-                  }),
-            ));
-        }
-        n.push(
-          e.entries
-            .filter(($) => $.type === "income" && $.date >= q && $.date < ne)
-            .reduce(($, Qo) => $ + Qo.amount, 0),
-        );
-      }
       return r.default.createElement(
         J,
         {
@@ -2490,15 +2410,10 @@ function Hg(props){return React.createElement(AppModal,props);}
           r.default.createElement(
             "span",
             { className: "badge" },
-            h === "day" ? "Agrupado por hor\xE1rio" : "Hist\xF3rico real",
+            "Receitas por data",
           ),
         ),
-        r.default.createElement(Fs, {
-          values: n,
-          labels: f,
-          visible: s,
-          kind: O.chart === "auto" ? we.chart : O.chart,
-        }),
+        React.createElement(IncomePeriodChart,{entries:e.entries,range:Vo,scope:h,visible:s,kind:O.chart==="auto"?we.chart:O.chart}),
         r.default.createElement(
           "div",
           { className: "chart-summary" },
@@ -2539,7 +2454,7 @@ function Hg(props){return React.createElement(AppModal,props);}
             "Por km",
             Ct ? P(Math.round(Ha.filter(item=>item.km>0).reduce((sum,item)=>sum+item.amount,0)/Ct)) : "Sem distância",
             Wo,
-            "Receita bruta / km",
+            "Receita bruta / km · " + ([...new Set(Ha.filter(item=>item.km>0).map(item=>item.platform))].join(", ") || "Sem plataformas com km"),
           ),
         ),
         r.default.createElement(
@@ -2913,6 +2828,7 @@ function Hg(props){return React.createElement(AppModal,props);}
         null,
         Qg(),
         React.createElement(FinanceShortcuts, {
+          entries:e.entries,
           onNavigate: ke,
           onCreate: () => { Ma() || U("entry"); },
           onSearch: query => { ke("entries"); me(query); },
@@ -2935,9 +2851,9 @@ function Hg(props){return React.createElement(AppModal,props);}
           ],
           taskData:{
             title:"Metas em movimento",progress:jo?Math.min(100,Math.round(Xo/jo*100)):0,hideProgress:!s,
-            completedCount:e.goals.filter(goal=>za(goal)>=goal.target).length,totalCount:e.goals.length,
+            completedCount:e.goals.filter(goal=>za(goal)>=goal.target||goal.statusLabel==="Concluída").length,totalCount:e.goals.length,
             priority:e.goals[0]?.priority||"Normal",status:e.goals[0]?.statusLabel||"Em andamento",assignees:[],
-            subtasks:(e.goals.some(goal=>goal.pinned)?e.goals.filter(goal=>goal.pinned).slice(0,4):e.goals).map(goal=>({id:goal.id,title:goal.title+" · "+(s?ye(za(goal))+" de "+ye(goal.target):"••••"),completed:za(goal)>=goal.target,progress:za(goal)/goal.target,pinned:!!goal.pinned,onPin:()=>le(data=>{const item=data.goals.find(item=>item.id===goal.id);if(!item.pinned&&data.goals.filter(item=>item.pinned).length>=4)throw Error("Você pode fixar até 4 metas.");item.pinned=!item.pinned;}),priority:goal.priority||"Normal",status:za(goal)>=goal.target?"Concluída":goal.statusLabel||"Em andamento",onPriorityChange:value=>le(data=>{data.goals.find(item=>item.id===goal.id).priority=value;}),onStatusChange:value=>le(data=>{data.goals.find(item=>item.id===goal.id).statusLabel=value;}),action:()=>{if(za(goal)>=goal.target)_l("goals",goal.id);else Ma()||U("contribution",{id:goal.id});}}))
+            subtasks:(e.goals.some(goal=>goal.pinned)?e.goals.filter(goal=>goal.pinned).slice(0,4):e.goals).map(goal=>({id:goal.id,title:goal.title+" · "+(s?ye(za(goal))+" de "+ye(goal.target):"••••"),completed:za(goal)>=goal.target||goal.statusLabel==="Concluída",progress:za(goal)/goal.target,pinned:!!goal.pinned,onPin:()=>le(data=>{const item=data.goals.find(item=>item.id===goal.id);if(!item.pinned&&data.goals.filter(item=>item.pinned).length>=4)throw Error("Você pode fixar até 4 metas.");item.pinned=!item.pinned;}),priority:goal.priority||"Normal",status:za(goal)>=goal.target?"Concluída":goal.statusLabel||"Em andamento",onPriorityChange:value=>le(data=>{data.goals.find(item=>item.id===goal.id).priority=value;}),onStatusChange:value=>le(data=>{data.goals.find(item=>item.id===goal.id).statusLabel=value;}),action:()=>{if(za(goal)>=goal.target)_l("goals",goal.id);else Ma()||U("contribution",{id:goal.id});}}))
           },
           onCreateGoal:()=>U("goal")
         }),
@@ -3306,10 +3222,10 @@ function Hg(props){return React.createElement(AppModal,props);}
           ),
           e.goals.length > 0 && React.createElement(GoalProgress, { data: {
             title: "Metas e aportes", progress: jo ? Math.min(100, Math.round(Xo / jo * 100)) : 0, hideProgress: !s,
-            completedCount: e.goals.filter(goal => za(goal) >= goal.target).length, totalCount: e.goals.length,
+            completedCount: e.goals.filter(goal => za(goal) >= goal.target || goal.statusLabel === "Concluída").length, totalCount: e.goals.length,
             priority: e.goals[0]?.priority || "Normal",
             status: e.goals[0]?.statusLabel || "Em andamento", assignees: [],
-            subtasks: e.goals.map(goal => ({ id: goal.id, title: goal.title + " · " + (s ? ye(za(goal)) + " de " + ye(goal.target) : "••••"), completed: za(goal) >= goal.target, progress: za(goal)/goal.target, pinned: !!goal.pinned, onPin: () => le(data => {const item=data.goals.find(item=>item.id===goal.id);if(!item.pinned&&data.goals.filter(item=>item.pinned).length>=4)throw Error("Você pode fixar até 4 metas.");item.pinned=!item.pinned;}), priority: goal.priority || "Normal", status: za(goal)>=goal.target ? "Concluída" : goal.statusLabel || "Em andamento", onPriorityChange: value => le(data => { data.goals.find(item => item.id === goal.id).priority = value; }), onStatusChange: value => le(data => { data.goals.find(item => item.id === goal.id).statusLabel = value; }), action: () => { if (za(goal) >= goal.target) _l("goals", goal.id); else Ma() || U("contribution", { id: goal.id }); } })),
+            subtasks: e.goals.map(goal => ({ id: goal.id, title: goal.title + " · " + (s ? ye(za(goal)) + " de " + ye(goal.target) : "••••"), completed: za(goal) >= goal.target || goal.statusLabel === "Concluída", progress: za(goal)/goal.target, pinned: !!goal.pinned, onPin: () => le(data => {const item=data.goals.find(item=>item.id===goal.id);if(!item.pinned&&data.goals.filter(item=>item.pinned).length>=4)throw Error("Você pode fixar até 4 metas.");item.pinned=!item.pinned;}), priority: goal.priority || "Normal", status: za(goal)>=goal.target ? "Concluída" : goal.statusLabel || "Em andamento", onPriorityChange: value => le(data => { data.goals.find(item => item.id === goal.id).priority = value; }), onStatusChange: value => le(data => { data.goals.find(item => item.id === goal.id).statusLabel = value; }), action: () => { if (za(goal) >= goal.target) _l("goals", goal.id); else Ma() || U("contribution", { id: goal.id }); } })),
           } }),
           e.goals.map(Ys),
           !e.goals.length &&
@@ -3414,7 +3330,7 @@ function Hg(props){return React.createElement(AppModal,props);}
             "Adicionar ou resgatar valor",
           ),
           React.createElement(GoalTargetEditor,{key:n.id,target:n.target,deposited:f,parse:Rl,format:ye,onSave:value=>le(data=>{data.goals.find(goal=>goal.id===n.id).target=value;},"Valor da meta atualizado.")}),
-          React.createElement(GoalMetaEditor,{key:n.id+"-meta",due:n.due,deadlineLabel:n.deadlineLabel,statusLabel:n.statusLabel,priority:n.priority,onSave:value=>le(data=>Object.assign(data.goals.find(goal=>goal.id===n.id),value),"Prazo e situação atualizados.")}),
+          React.createElement(GoalMetaEditor,{key:n.id+"-meta",due:n.due,deadlineLabel:n.deadlineLabel,statusLabel:L>=1?"Concluída":n.statusLabel,priority:n.priority,onSave:value=>le(data=>Object.assign(data.goals.find(goal=>goal.id===n.id),value),"Prazo e situação atualizados.")}),
           r.default.createElement(
             F,
             {
@@ -4132,52 +4048,7 @@ function Hg(props){return React.createElement(AppModal,props);}
               ),
               r.default.createElement(ve, null, "Depois de registrar, abra o lançamento concluído para anexar o comprovante."),
             ),
-          n.type === "delivery" &&
-            r.default.createElement(
-              r.default.Fragment,
-              null,
-              r.default.createElement(PlatformPicker, { names: e.platforms, settings: e.deliveryPlatformSettings || {} }),
-              r.default.createElement(X, {
-                label: "Recebimento", name: "receiptStatus", options:[{value:"received",label:"Já recebi na conta"},{value:"pending",label:"A receber na plataforma"}],
-              }),
-              r.default.createElement(X, {
-                label: "Nome do estabelecimento",
-                name: "title",
-                required: !0,
-                maxLength: 120,
-                placeholder: "Ex.: Pizza Central",
-              }),
-              r.default.createElement(X, {
-                label: "Endere\xE7o de coleta (opcional)",
-                name: "pickup",
-                maxLength: 240,
-              }),
-              r.default.createElement(X, {
-                label: "Endere\xE7o do cliente (opcional)",
-                name: "destination",
-                maxLength: 240,
-              }),
-              Wa("Valor da entrega (R$)"),
-              r.default.createElement(X, {
-                label: "Distância percorrida (km, opcional)",
-                name: "km",
-                inputMode: "decimal",
-                placeholder: "Ex.: 4,5",
-              }),
-              r.default.createElement(X, {
-                label: "Custo desta entrega (R$)",
-                name: "cost",
-                inputMode: "decimal",
-                defaultValue: "0",
-              }),
-              Vl(),
-              nl(),
-              r.default.createElement(
-                ve,
-                null,
-                "O custo tamb\xE9m gera uma despesa. Registre somente o custo desta corrida, para n\xE3o contar duas vezes o combust\xEDvel.",
-              ),
-            ),
+          n.type === "delivery" && React.createElement(DeliveryFields,{data:e,initialPlatform:n.platform}),
           n.type === "platform" &&
             r.default.createElement(r.default.Fragment, null, r.default.createElement(X, {
               label: "Nome da plataforma",
@@ -4611,14 +4482,15 @@ function Hg(props){return React.createElement(AppModal,props);}
           [
             ["Plataforma", v.platform],
             ["Estabelecimento", v.title],
+            ["Incentivo incluído", v.incentive ? ye(v.incentive) : "Sem incentivo"],
             ["Coleta", v.pickup || "N\xE3o informado"],
             ["Destino", v.destination || "N\xE3o informado"],
-            ["Dist\xE2ncia", v.km + " km"],
+            ["Dist\xE2ncia", v.km ? v.km + " km" : "Não informada"],
             [
               "Receita por km",
               v.km ? (s ? ye(Math.round(v.amount / v.km)) : "••••") : "Sem distância informada",
             ],
-            ["Custo", s ? ye(v.cost) : "\u2022\u2022\u2022\u2022"],
+            ...(v.cost>0 ? [["Custo histórico", s ? ye(v.cost) : "••••"]] : []),
             ["Data", fa(v.date)],
           ].map(([S, k]) =>
             r.default.createElement(
@@ -4867,6 +4739,8 @@ function Hg(props){return React.createElement(AppModal,props);}
               "div",
               { className: "menu-list" },
               [
+                ["deliveries", "Entregas", Ta],
+                ["goals", "Metas", Pa],
                 ["accounts", "Contas e reserva", lt],
                 ["entries", "Lan\xE7amentos", cl],
                 ["recurring", "Recorr\xEAncias", zt],
